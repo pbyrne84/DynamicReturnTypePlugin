@@ -30,7 +30,7 @@ public class MethodCallTypeCalculator {
 
     public PhpType calculateTypeFromParameter( MethodReferenceImpl classMethod, int parameterIndex ) {
         PsiElement[] parameters = classMethod.getParameters();
-        if ( parameters.length < parameterIndex - 1) {
+        if ( parameters.length <=  parameterIndex  ) {
             return null;
         }
 
