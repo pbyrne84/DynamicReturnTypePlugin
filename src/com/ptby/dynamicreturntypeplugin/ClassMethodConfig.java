@@ -27,4 +27,14 @@ public class ClassMethodConfig {
     public int getParameterIndex() {
         return parameterIndex;
     }
+
+
+    @Override
+    public String toString() {
+        return "ClassMethodConfig{" +
+                "\nfqnClassName='" + fqnClassName + '\'' +
+                "\n, methodName='" + methodName + '\'' +
+                "\n, parameterIndex=" + parameterIndex +
+                '}';
+    }
 }
