@@ -37,7 +37,7 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.PhockitoTypeProvider"/>
+        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>
     </extensions>
     <depends>com.jetbrains.php</depends>
     <depends>com.intellij.modules.platform</depends>
