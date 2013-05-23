@@ -64,7 +64,6 @@ public class MethodCallValidator {
         String rawReference = fieldReference.getType().toString();
         int endIndex = rawReference.lastIndexOf( '|' );
         if ( endIndex == -1 ) {
-            System.out.println( "bad raw reference " + rawReference );
             return false;
         }
         String[] split = rawReference.substring( 0, endIndex ).split( "(#P#C|\\.)" );
@@ -86,7 +85,6 @@ public class MethodCallValidator {
                     return true;
                 }
             }
-
         }
 
         return false;
