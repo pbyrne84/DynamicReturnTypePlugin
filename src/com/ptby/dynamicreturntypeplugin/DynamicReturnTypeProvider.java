@@ -15,6 +15,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
     private final MethodCallTypeCalculator methodCallTypeCalculator = new MethodCallTypeCalculator();
+    private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
 
 
     public PhpType getType( PsiElement psiElement ) {
@@ -25,7 +26,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
         );
 
         List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
-                new FunctionCallConfig( "verify", 0 )
+                new FunctionCallConfig( "\\verify", 0 ),
+                new FunctionCallConfig( "\\Funky\\moo", 0 )
         );
 
         DynamicReturnTypeConfig dynamicReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
@@ -63,19 +65,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
     private PhpType getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs, FunctionReferenceImpl functionReference ) {
+        String fullFunctionName = functionReference.getNamespaceName() + functionReference.getName();
         for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
-            if ( functionCallConfig.getFunctionName().equals( functionReference.getName() ) ) {
-                PsiElement[] parameters = functionReference.getParameters();
-                if ( parameters.length <= functionCallConfig.getParameterIndex() ) {
-                    return null;
-                }
-
-                PsiElement parameter = parameters[ functionCallConfig.getParameterIndex() ];
-                if ( !(parameter instanceof PhpTypedElement) ) {
-                    return null;
-                }
-
-                return (( PhpTypedElement )parameter ).getType();
+            if ( functionCallConfig.getFunctionName().equals( fullFunctionName ) ) {
+                return callReturnTypeCaster
+                        .calculateTypeFromFunctionParameter( functionReference,functionCallConfig.getParameterIndex()  );
             }
         }
 
