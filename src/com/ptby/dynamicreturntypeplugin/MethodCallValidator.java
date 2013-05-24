@@ -61,7 +61,12 @@ public class MethodCallValidator {
 
 
     private boolean validateAgainstFieldReference( MethodReferenceImpl methodReference, ClassMethodConfig classMethodConfig, FieldReferenceImpl fieldReference ) {
-        String rawReference = fieldReference.getType().toString();
+        PhpType fieldReferenceType = fieldReference.getType();
+        String rawReference = fieldReferenceType.toString();
+        if ( rawReference.equals( classMethodConfig.getFqnClassName() ) ) {
+            return true;
+        }
+
         int endIndex = rawReference.lastIndexOf( '|' );
         if ( endIndex == -1 ) {
             return false;
