@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin;
 
+import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.parser.PhpElementTypes;
@@ -19,21 +20,25 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
     public PhpType getType( PsiElement psiElement ) {
-        List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 ),
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0 ),
-                new ClassMethodConfig( "\\TaskData", "getObject", 1 )
-        );
+        try {
+            List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
+                    new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 ),
+                    new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0 ),
+                    new ClassMethodConfig( "\\TaskData", "getObject", 1 )
+            );
 
-        List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
-                new FunctionCallConfig( "\\verify", 0 ),
-                new FunctionCallConfig( "\\Funky\\moo", 0 )
-        );
+            List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
+                    new FunctionCallConfig( "\\verify", 0 ),
+                    new FunctionCallConfig( "\\Funky\\moo", 0 )
+            );
 
-        DynamicReturnTypeConfig dynamicReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
+            DynamicReturnTypeConfig dynamicReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
 
 
-        return createDynmamicReturnType( psiElement, dynamicReturnTypeConfig );
+            return createDynmamicReturnType( psiElement, dynamicReturnTypeConfig );
+        } catch ( IndexNotReadyException e ) {
+           return null;
+        }
     }
 
 
@@ -70,10 +75,21 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
             if ( functionCallConfig.getFunctionName().equals( fullFunctionName ) ) {
                 return callReturnTypeCaster
                         .calculateTypeFromFunctionParameter( functionReference,functionCallConfig.getParameterIndex()  );
+            }else if ( validateAgainstPossibleGlobalFunction( functionReference, functionCallConfig ) )  {
+                return callReturnTypeCaster
+                        .calculateTypeFromFunctionParameter( functionReference,functionCallConfig.getParameterIndex()  );
             }
         }
 
         return null;
 
+    }
+
+
+    private boolean validateAgainstPossibleGlobalFunction( FunctionReferenceImpl functionReference, FunctionCallConfig functionCallConfig ) {
+        String text = functionReference.getText();
+        return  !text.contains( "\\" ) &&
+                functionCallConfig.getFunctionName().lastIndexOf( "\\" ) != -1 &&
+                ( "\\" + functionReference.getName() ).equals( functionCallConfig.getFunctionName() );
     }
 }
