@@ -18,18 +18,18 @@ public class MethodCallTypeCalculator {
     }
 
 
-    public PhpType calculateFromMethodCall( ClassMethodConfig classMethodConfig, MethodReferenceImpl classMethod ) {
+    public PhpType calculateFromMethodCall( ClassMethodConfig classMethodConfig, MethodReferenceImpl methodReference ) {
         if ( methodCallValidator
-                .isValidMethodCall( classMethod, classMethodConfig ) ) {
-            return calculateTypeFromParameter( classMethod, classMethodConfig.getParameterIndex() );
+                .isValidMethodCall( methodReference, classMethodConfig ) ) {
+            return calculateTypeFromParameter( methodReference, classMethodConfig.getParameterIndex() );
         }
 
         return null;
     }
 
 
-    public PhpType calculateTypeFromParameter( MethodReferenceImpl classMethod, int parameterIndex ) {
-        PsiElement[] parameters = classMethod.getParameters();
+    public PhpType calculateTypeFromParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
+        PsiElement[] parameters = methodReference.getParameters();
         if ( parameters.length <=  parameterIndex  ) {
             return null;
         }
@@ -39,9 +39,9 @@ public class MethodCallTypeCalculator {
             PhpType type = ( ( PhpTypedElement ) element ).getType();
             if ( !type.toString().equals( "void" ) ) {
                 if ( type.toString().equals( "string" ) ) {
-                    return castStringToPhpType( classMethod, element );
+                    return castStringToPhpType( methodReference, element );
                 }else if( type.toString().matches( "#K#C(.*)\\.(.*)\\|\\?" )){
-                    return castClassConstantToPhpType( classMethod, element, type.toString() );
+                    return castClassConstantToPhpType( methodReference, element, type.toString() );
                 }
 
                 return type;
@@ -52,7 +52,7 @@ public class MethodCallTypeCalculator {
     }
 
 
-    private PhpType castClassConstantToPhpType( MethodReferenceImpl classMethod, PsiElement element, String classConstant ) {
+    private PhpType castClassConstantToPhpType( MethodReferenceImpl methodReference, PsiElement element, String classConstant ) {
         String[] constantParts = classConstant.split( "(#K#C|\\.|\\|\\?)" );
         if ( constantParts.length < 3 ) {
             return null;
@@ -61,7 +61,7 @@ public class MethodCallTypeCalculator {
         String className = constantParts[ 1 ];
         String constantName = constantParts[ 2 ];
 
-        PhpIndex phpIndex = PhpIndex.getInstance( classMethod.getProject() );
+        PhpIndex phpIndex = PhpIndex.getInstance( methodReference.getProject() );
         Collection<PhpClass> classesByFQN = phpIndex.getClassesByFQN( className );
         for ( PhpClass phpClass : classesByFQN ) {
             Collection<Field> fields = phpClass.getFields();
@@ -85,14 +85,14 @@ public class MethodCallTypeCalculator {
     }
 
 
-    private PhpType castStringToPhpType( MethodReferenceImpl classMethod, PsiElement element ) {
+    private PhpType castStringToPhpType( MethodReferenceImpl methodReference, PsiElement element ) {
         String potentialClassName = element.getText().trim();
         if ( potentialClassName.equals( "" )) {
             return null;
         }
 
         String classWithoutQuotes = potentialClassName.replaceAll( "(\"|')", "" );
-        PhpIndex phpIndex = PhpIndex.getInstance( classMethod.getProject() );
+        PhpIndex phpIndex = PhpIndex.getInstance( methodReference.getProject() );
         Collection<PhpClass> phpClasses = phpIndex.getClassesByFQN( classWithoutQuotes );
 
         if ( phpClasses.size() == 0  ) {

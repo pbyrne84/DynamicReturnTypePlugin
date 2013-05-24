@@ -36,7 +36,9 @@ public class MethodCallValidator {
     }
 
 
-    private boolean validateAgainstVariableReference( MethodReferenceImpl methodReference, ClassMethodConfig classMethodConfig, VariableImpl variableImpl ) {
+    private boolean validateAgainstVariableReference( MethodReferenceImpl methodReference,
+                                                      ClassMethodConfig classMethodConfig,
+                                                      VariableImpl variableImpl ) {
         PhpType methodPhpType = variableImpl.getType();
         if ( methodPhpType.toString().equals( classMethodConfig.getFqnClassName() ) ) {
             return true;
@@ -60,7 +62,10 @@ public class MethodCallValidator {
     }
 
 
-    private boolean validateAgainstFieldReference( MethodReferenceImpl methodReference, ClassMethodConfig classMethodConfig, FieldReferenceImpl fieldReference ) {
+    private boolean validateAgainstFieldReference( MethodReferenceImpl methodReference,
+                                                   ClassMethodConfig classMethodConfig,
+                                                   FieldReferenceImpl fieldReference ) {
+
         PhpType fieldReferenceType = fieldReference.getType();
         String rawReference = fieldReferenceType.toString();
         if ( rawReference.equals( classMethodConfig.getFqnClassName() ) ) {

@@ -3,11 +3,12 @@ package com.ptby.dynamicreturntypeplugin;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.parser.PhpElementTypes;
+import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
+import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider {
@@ -17,28 +18,68 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
     public PhpType getType( PsiElement psiElement ) {
-        ArrayList <ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
+        List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
                 new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 ),
                 new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0 ),
                 new ClassMethodConfig( "\\TaskData", "getObject", 1 )
         );
 
-        return createCustomPhockitoMethodType( psiElement, classMethodConfigs );
+        List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
+                new FunctionCallConfig( "verify", 0 )
+        );
+
+        DynamicReturnTypeConfig dynamicReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
+
+
+        return createDynmamicReturnType( psiElement, dynamicReturnTypeConfig );
     }
 
 
-    private PhpType createCustomPhockitoMethodType( PsiElement psiElement, List<ClassMethodConfig> classMethodConfigList ) {
+    private PhpType createDynmamicReturnType( PsiElement psiElement, DynamicReturnTypeConfig dynamicReturnTypeConfig ) {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
 
-            for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
-                PhpType phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, classMethod );
-                if ( phpType != null ) {
-                    return phpType;
-                }
+            return getTypeFromMethodCall( dynamicReturnTypeConfig.getClassMethodConfigs(), classMethod );
+        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
+            FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
+
+            return getTypeFromFunctionCall( dynamicReturnTypeConfig.getFunctionCallConfigs(), functionReference );
+        }
+
+        return null;
+    }
+
+
+    private PhpType getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
+        for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
+            PhpType phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
+            if ( phpType != null ) {
+                return phpType;
             }
         }
 
         return null;
+    }
+
+
+    private PhpType getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs, FunctionReferenceImpl functionReference ) {
+        for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
+            if ( functionCallConfig.getFunctionName().equals( functionReference.getName() ) ) {
+                PsiElement[] parameters = functionReference.getParameters();
+                if ( parameters.length <= functionCallConfig.getParameterIndex() ) {
+                    return null;
+                }
+
+                PsiElement parameter = parameters[ functionCallConfig.getParameterIndex() ];
+                if ( !(parameter instanceof PhpTypedElement) ) {
+                    return null;
+                }
+
+                return (( PhpTypedElement )parameter ).getType();
+            }
+        }
+
+        return null;
+
     }
 }
