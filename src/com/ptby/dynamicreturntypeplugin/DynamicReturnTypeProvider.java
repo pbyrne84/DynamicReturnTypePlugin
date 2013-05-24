@@ -17,14 +17,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
     public PhpType getType( PsiElement psiElement ) {
-        ClassMethodConfig phockitoTestCaseClassMethodConfig
-                = new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 );
-
-        ClassMethodConfig taskDataClassMethodConfig = new ClassMethodConfig( "\\TaskData", "getObject", 1 );
-
-        ArrayList <ClassMethodConfig> classMethodConfigs = new ArrayList<ClassMethodConfig>();
-        classMethodConfigs.add( phockitoTestCaseClassMethodConfig );
-        classMethodConfigs.add( taskDataClassMethodConfig );
+        ArrayList <ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
+                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 ),
+                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0 ),
+                new ClassMethodConfig( "\\TaskData", "getObject", 1 )
+        );
 
         return createCustomPhockitoMethodType( psiElement, classMethodConfigs );
     }
