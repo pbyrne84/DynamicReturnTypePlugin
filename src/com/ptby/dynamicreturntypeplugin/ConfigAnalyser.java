@@ -21,7 +21,7 @@ public class ConfigAnalyser {
 
     public DynamicReturnTypeConfig analyseConfig( Project project ) throws IOException {
         VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( project
-                .getBasePath() + File.separatorChar + "dynamicreturntypemeta.json"
+                .getBasePath() + File.separatorChar + "dynamicReturnTypeMeta.json"
         );
         if ( metaFile == null ) {
             return null;
