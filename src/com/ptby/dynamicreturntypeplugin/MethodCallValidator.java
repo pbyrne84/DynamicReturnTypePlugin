@@ -5,6 +5,7 @@ import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
 import com.jetbrains.php.lang.psi.elements.Variable;
+import com.jetbrains.php.lang.psi.elements.impl.ClassReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
@@ -29,9 +30,27 @@ public class MethodCallValidator {
             return validateAgainstVariableReference( methodReference, classMethodConfig, ( VariableImpl ) classReference );
         } else if ( classReference instanceof FieldReferenceImpl ) {
             return validateAgainstFieldReference( methodReference, classMethodConfig, ( FieldReferenceImpl ) classReference );
+        } else if ( classReference instanceof ClassReferenceImpl ) {
+            return validateAgainstClassReference( methodReference, classMethodConfig, ( ClassReferenceImpl ) classReference );
         }
 
         return false;
+
+    }
+
+
+    private boolean validateAgainstClassReference( MethodReferenceImpl methodReference,
+                                                   ClassMethodConfig classMethodConfig,
+                                                   ClassReferenceImpl classReference ) {
+        if ( classReference.getFQN() == null ) {
+            return false;
+        }
+
+        return classReference.getFQN().equals( classMethodConfig.getFqnClassName() ) &&
+                methodReference.getName()
+                               .equals( classMethodConfig
+                                       .getMethodName()
+                               );
 
     }
 

@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin;
 
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
@@ -12,12 +14,14 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider;
 import java.io.IOException;
 import java.util.List;
 
-public class DynamicReturnTypeProvider implements PhpTypeProvider {
+import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
+public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
     private final MethodCallTypeCalculator methodCallTypeCalculator = new MethodCallTypeCalculator();
     private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
     private final ConfigAnalyser configAnalyser;
+    private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
     public DynamicReturnTypeProvider() {
@@ -28,13 +32,23 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
     public PhpType getType( PsiElement psiElement ) {
         try {
             try {
-                return createDynmamicReturnType( psiElement );
-            } catch ( IOException e ) {
-                e.printStackTrace();
-            }
+                try {
+                    return createDynmamicReturnType( psiElement );
+                } catch ( MalformedJsonException e ) {
+                    logger.warn( e );
+                } catch ( JsonSyntaxException e ) {
+                    logger.warn( e );
+                } catch ( IOException e ) {
+                    logger.error( e );
+                }
 
-        } catch ( IndexNotReadyException e ) {
+            } catch ( IndexNotReadyException e ) {
+                logger.error( e );
+            }
+        } catch ( Exception e ) {
+            logger.error( e );
         }
+
 
         return null;
     }
@@ -42,7 +56,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
     private DynamicReturnTypeConfig getDynamicReturnTypeConfig( PsiElement psiElement ) throws IOException {
         DynamicReturnTypeConfig dynamicReturnTypeConfig = configAnalyser.analyseConfig( psiElement.getProject() );
-        if ( dynamicReturnTypeConfig == null  ) {
+        if ( dynamicReturnTypeConfig == null ) {
             return new DynamicReturnTypeConfig();
         }
 
@@ -50,9 +64,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
     }
 
 
-
-
-    private PhpType createDynmamicReturnType( PsiElement psiElement  ) throws IOException {
+    private PhpType createDynmamicReturnType( PsiElement psiElement ) throws IOException {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
 
@@ -62,7 +74,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
         } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
             FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
 
-            return getTypeFromFunctionCall( getDynamicReturnTypeConfig( psiElement).getFunctionCallConfigs(), functionReference );
+            return getTypeFromFunctionCall( getDynamicReturnTypeConfig( psiElement )
+                    .getFunctionCallConfigs(), functionReference
+            );
         }
 
         return null;
