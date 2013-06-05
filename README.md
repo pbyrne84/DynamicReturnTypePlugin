@@ -57,7 +57,6 @@ class DynamicReturnTypeTest extends PHPUnit_Framework_TestCase
 
         $this->phockito->verify( $domDocument )->appendChild($newNode);
     }
-
 }
 ```
 
