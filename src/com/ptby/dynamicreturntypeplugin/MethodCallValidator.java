@@ -13,8 +13,13 @@ import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MethodCallValidator {
+    private Map<String,Boolean> validMethodCallCache = new HashMap<String, Boolean>();
+
+
     public MethodCallValidator() {
     }
 
@@ -63,21 +68,18 @@ public class MethodCallValidator {
             return true;
         }
 
-        PhpIndex phpIndex = PhpIndex.getInstance( methodReference.getProject() );
-        Collection<PhpClass> phpClasses = phpIndex
-                .getClassesByFQN( methodPhpType.toString() );
-        for ( PhpClass phpClass : phpClasses ) {
-            PhpClass currentSuperClass = phpClass.getSuperClass();
-            while ( currentSuperClass != null ) {
-                String fqn = currentSuperClass.getFQN();
-                if ( fqn != null && fqn.equals( classMethodConfig.getFqnClassName() ) ) {
-                    return true;
-                }
-                currentSuperClass = currentSuperClass.getSuperClass();
-            }
+
+        if( validMethodCallCache.containsKey( methodPhpType.toString() ) ){
+            return validMethodCallCache.get(  methodPhpType.toString() );
         }
 
-        return false;
+        boolean hasSuperClass = methodPhpType
+                .findSuper(  classMethodConfig.getFqnClassName(), methodPhpType.toString(), PhpIndex
+                        .getInstance( methodReference.getProject() )
+                );
+
+        validMethodCallCache.put(  methodPhpType.toString(), hasSuperClass );
+        return hasSuperClass;
     }
 
 

@@ -33,7 +33,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
         try {
             try {
                 try {
-                    return createDynmamicReturnType( psiElement );
+                    return createDynamicReturnType( psiElement );
                 } catch ( MalformedJsonException e ) {
                     logger.warn( e );
                 } catch ( JsonSyntaxException e ) {
@@ -64,14 +64,14 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
     }
 
 
-    private PhpType createDynmamicReturnType( PsiElement psiElement ) throws IOException {
+    private PhpType createDynamicReturnType( PsiElement psiElement ) throws IOException {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
 
             return getTypeFromMethodCall( getDynamicReturnTypeConfig( psiElement )
                     .getClassMethodConfigs(), classMethod
             );
-        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
+        }else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
             FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
 
             return getTypeFromFunctionCall( getDynamicReturnTypeConfig( psiElement )
