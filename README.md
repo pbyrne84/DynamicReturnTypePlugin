@@ -11,7 +11,7 @@ eg. Phockito php example
 class DynamicReturnTypeTest extends PHPUnit_Framework_TestCase
 {
     /** @var  Phockito */
-    public $phockito;
+    private $phockito;
 
     protected function setUp()
     {
