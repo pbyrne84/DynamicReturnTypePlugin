@@ -24,6 +24,14 @@
       ]]></description>
 
     <change-notes>
+        <![CDATA[
+        <h2>1.0.1</h2>
+        <ul>
+            <li>Cache internal lookups for method calls in inheritance lookups as phpindex can lockup on some actions</li>
+        </ul>
+
+        ]]>
+
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->

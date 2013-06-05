@@ -18,14 +18,16 @@ import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
-    private final MethodCallTypeCalculator methodCallTypeCalculator = new MethodCallTypeCalculator();
+    private final MethodCallTypeCalculator methodCallTypeCalculator;
     private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
     private final ConfigAnalyser configAnalyser;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
     public DynamicReturnTypeProvider() {
-        configAnalyser = new ConfigAnalyser();
+        MethodCallValidator methodCallValidator = new MethodCallValidator();
+        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, new CallReturnTypeCaster() );
+        configAnalyser = new ConfigAnalyser( methodCallValidator );
     }
 
 

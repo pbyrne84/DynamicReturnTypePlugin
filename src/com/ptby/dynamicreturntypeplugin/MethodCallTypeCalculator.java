@@ -4,11 +4,15 @@ import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 public class MethodCallTypeCalculator {
-    public final MethodCallValidator methodCallValidator = new MethodCallValidator();
-    private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
 
 
-    public MethodCallTypeCalculator() {
+    private final MethodCallValidator methodCallValidator;
+    private final CallReturnTypeCaster callReturnTypeCaster;
+
+
+    public MethodCallTypeCalculator( MethodCallValidator methodCallValidator, CallReturnTypeCaster callReturnTypeCaster ) {
+        this.methodCallValidator = methodCallValidator;
+        this.callReturnTypeCaster = callReturnTypeCaster;
     }
 
 

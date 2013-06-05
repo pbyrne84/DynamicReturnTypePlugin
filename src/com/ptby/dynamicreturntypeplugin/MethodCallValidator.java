@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodCallValidator {
+public class MethodCallValidator implements JsonConfigurationChangeListener {
     private Map<String,Boolean> validMethodCallCache = new HashMap<String, Boolean>();
 
 
@@ -117,5 +117,12 @@ public class MethodCallValidator {
         }
 
         return false;
+    }
+
+
+    @Override
+    public void jsonFileHasChanged() {
+        validMethodCallCache = new HashMap<String, Boolean>();
+
     }
 }
