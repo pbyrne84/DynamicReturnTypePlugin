@@ -1,5 +1,6 @@
 DynamicReturnTypePlugin
 =======================
+( Jetbrains url http://plugins.jetbrains.com/plugin/7251 )
 
 Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. It can use either the instance type of the passed parameter or a string lookup.
 Note: Use fully qualified names.
