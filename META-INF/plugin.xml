@@ -2,21 +2,32 @@
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <small>most HTML tags may be used</small>
+        Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. It can use either the instance type of the passed parameter or a string lookup.
+        Full documentation with examples on github page.
+
+        Can be configured for :
+         <ul>
+            <li>Instance method calls</li>
+            <li>Static method calls</li>
+            <li>Function calls</li>
+        </ul>
+
+        Accepts the following to calculate return type
+        <ul>
+            <li>Parameter object type</li>
+            <li>Parameter string type</li>
+            <li>Class constants that resolve to __CLASS__</li>
+        </ul>
       ]]></description>
 
-    <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
-      ]]>
+    <change-notes>
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="129.196"/>
+    <idea-version since-build="129.362"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
          on how to target different products -->
