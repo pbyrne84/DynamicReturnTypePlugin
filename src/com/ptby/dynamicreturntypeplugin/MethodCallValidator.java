@@ -4,11 +4,9 @@ import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
-import com.jetbrains.php.lang.psi.elements.Variable;
 import com.jetbrains.php.lang.psi.elements.impl.ClassReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.jetbrains.php.lang.psi.elements.impl.PhpClassImpl;
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
@@ -78,7 +76,7 @@ public class MethodCallValidator {
                         .getInstance( methodReference.getProject() )
                 );
 
-        validMethodCallCache.put(  methodPhpType.toString(), hasSuperClass );
+        validMethodCallCache.put( methodPhpType.toString(), hasSuperClass );
         return hasSuperClass;
     }
 
