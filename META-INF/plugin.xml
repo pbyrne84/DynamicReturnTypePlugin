@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -35,7 +35,7 @@
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="129.362"/>
+    <idea-version since-build="129.757"/>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
          on how to target different products -->
@@ -56,7 +56,8 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>
+<!--        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>-->
+        <php.typeProvider2 implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>
     </extensions>
     <depends>com.jetbrains.php</depends>
     <depends>com.intellij.modules.platform</depends>

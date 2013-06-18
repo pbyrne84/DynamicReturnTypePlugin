@@ -3,20 +3,24 @@ package com.ptby.dynamicreturntypeplugin;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
 import com.intellij.openapi.project.IndexNotReadyException;
+import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
+import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.parser.PhpElementTypes;
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
-import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider;
+import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
-public class DynamicReturnTypeProvider implements PhpTypeProvider {
+public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     private final MethodCallTypeCalculator methodCallTypeCalculator;
     private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
@@ -31,11 +35,22 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
     }
 
 
-    public PhpType getType( PsiElement psiElement ) {
+    @Override
+    public char getKey() {
+        return 0;
+    }
+
+
+    public String getType( PsiElement psiElement ) {
         try {
             try {
                 try {
-                    return createDynamicReturnType( psiElement );
+                    PhpType dynamicReturnType = createDynamicReturnType( psiElement );
+                    if( dynamicReturnType == null ){
+                        return null;
+                    }
+
+                    return dynamicReturnType.toString();
                 } catch ( MalformedJsonException e ) {
                     logger.warn( e );
                 } catch ( JsonSyntaxException e ) {
@@ -53,6 +68,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider {
 
 
         return null;
+    }
+
+
+    @Override
+    public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
+        return PhpIndex.getInstance( project ).getAnyByFQN( type );
     }
 
 
