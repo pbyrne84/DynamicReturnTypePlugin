@@ -9,7 +9,7 @@ import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
-import com.ptby.dynamicreturntypeplugin.JsonConfigurationChangeListener;
+import com.ptby.dynamicreturntypeplugin.json.JsonConfigurationChangeListener;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 
 import java.util.Collection;

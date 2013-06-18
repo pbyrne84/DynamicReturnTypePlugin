@@ -1,4 +1,4 @@
-package com.ptby.dynamicreturntypeplugin;
+package com.ptby.dynamicreturntypeplugin.json;
 
 public interface JsonConfigurationChangeListener {
 

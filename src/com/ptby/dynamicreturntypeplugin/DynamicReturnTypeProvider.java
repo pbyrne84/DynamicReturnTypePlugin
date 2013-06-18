@@ -17,6 +17,7 @@ import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
+import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
