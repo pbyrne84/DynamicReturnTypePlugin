@@ -63,7 +63,6 @@ public class CallReturnTypeCalculator {
             return null;
         }
 
-        String classWithoutQuotes = potentialClassName.replaceAll( "(\"|')", "" );
-        return classWithoutQuotes;
+       return potentialClassName.replaceAll( "(\"|')", "" );
     }
 }
