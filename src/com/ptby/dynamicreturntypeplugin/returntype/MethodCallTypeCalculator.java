@@ -1,4 +1,4 @@
-package com.ptby.dynamicreturntypeplugin;
+package com.ptby.dynamicreturntypeplugin.returntype;
 
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;

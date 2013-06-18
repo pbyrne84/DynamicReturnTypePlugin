@@ -1,10 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
-import com.ptby.dynamicreturntypeplugin.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.ClassMethodConfigList;
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.FunctionCallConfig;
-import com.ptby.dynamicreturntypeplugin.FunctionCallConfigList;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigList;
+import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigList;
 import org.junit.Test;
 
 import java.util.List;

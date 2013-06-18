@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.ptby.dynamicreturntypeplugin.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 
 import java.util.ArrayList;
 import java.util.List;

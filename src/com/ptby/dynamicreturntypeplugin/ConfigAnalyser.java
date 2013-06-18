@@ -3,6 +3,7 @@ package com.ptby.dynamicreturntypeplugin;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.json.JsonToDynamicReturnTypeConfigConverter;
 
 import java.io.File;
