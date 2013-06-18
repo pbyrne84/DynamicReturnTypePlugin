@@ -12,8 +12,8 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 import java.util.Collection;
 
-public class CallReturnTypeCaster {
-    public CallReturnTypeCaster() {
+public class CallReturnTypeCalculator {
+    public CallReturnTypeCalculator() {
     }
 
 

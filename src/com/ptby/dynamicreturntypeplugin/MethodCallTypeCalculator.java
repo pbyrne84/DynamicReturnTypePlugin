@@ -1,18 +1,17 @@
 package com.ptby.dynamicreturntypeplugin;
 
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 
 public class MethodCallTypeCalculator {
 
 
     private final MethodCallValidator methodCallValidator;
-    private final CallReturnTypeCaster callReturnTypeCaster;
+    private final CallReturnTypeCalculator callReturnTypeCalculator;
 
 
-    public MethodCallTypeCalculator( MethodCallValidator methodCallValidator, CallReturnTypeCaster callReturnTypeCaster ) {
+    public MethodCallTypeCalculator( MethodCallValidator methodCallValidator, CallReturnTypeCalculator callReturnTypeCalculator ) {
         this.methodCallValidator = methodCallValidator;
-        this.callReturnTypeCaster = callReturnTypeCaster;
+        this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
 
 
@@ -20,7 +19,7 @@ public class MethodCallTypeCalculator {
         if ( methodCallValidator
                 .isValidMethodCall( methodReference, classMethodConfig ) ) {
 
-            return callReturnTypeCaster
+            return callReturnTypeCalculator
                     .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
         }
 

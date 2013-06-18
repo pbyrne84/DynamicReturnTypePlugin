@@ -24,7 +24,7 @@ import static com.intellij.openapi.diagnostic.Logger.getInstance;
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     private final MethodCallTypeCalculator methodCallTypeCalculator;
-    private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
+    private final CallReturnTypeCalculator callReturnTypeCalculator = new CallReturnTypeCalculator();
     private final ConfigAnalyser configAnalyser;
     private final FunctionCallReturnTypeScanner functionCallReturnTypeScanner;
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
@@ -35,9 +35,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         MethodCallValidator methodCallValidator = new MethodCallValidator();
         configAnalyser = new ConfigAnalyser( methodCallValidator );
 
-        functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCaster );
+        functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
 
-        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCaster );
+        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCalculator );
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
     }
 

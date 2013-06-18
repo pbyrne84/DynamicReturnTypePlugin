@@ -1,13 +1,10 @@
 package com.ptby.dynamicreturntypeplugin;
 
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
-import com.jetbrains.php.lang.psi.resolve.types.PhpType;
-
-import java.util.List;
 
 public class FunctionCallTypeCalculator {
     public final MethodCallValidator methodCallValidator = new MethodCallValidator();
-    private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
+    private final CallReturnTypeCalculator callReturnTypeCalculator = new CallReturnTypeCalculator();
 
 
     public FunctionCallTypeCalculator() {
@@ -16,7 +13,7 @@ public class FunctionCallTypeCalculator {
 
     public String calculateFromFunctionCall( FunctionCallConfig functionCallConfig, FunctionReferenceImpl functionReference ) {
         if ( functionCallConfig.getFunctionName().equals( functionReference.getName() ) ) {
-            return callReturnTypeCaster
+            return callReturnTypeCalculator
                     .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex() );
         }
 

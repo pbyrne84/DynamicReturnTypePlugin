@@ -1,19 +1,19 @@
 package com.ptby.dynamicreturntypeplugin.scanner;
 
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
-import com.ptby.dynamicreturntypeplugin.CallReturnTypeCaster;
+import com.ptby.dynamicreturntypeplugin.CallReturnTypeCalculator;
 import com.ptby.dynamicreturntypeplugin.FunctionCallConfig;
 
 import java.util.List;
 
 public class FunctionCallReturnTypeScanner {
 
-    private final CallReturnTypeCaster callReturnTypeCaster;
+    private final CallReturnTypeCalculator callReturnTypeCalculator;
 
 
-    public FunctionCallReturnTypeScanner( CallReturnTypeCaster callReturnTypeCaster ){
+    public FunctionCallReturnTypeScanner( CallReturnTypeCalculator callReturnTypeCalculator ){
 
-        this.callReturnTypeCaster = callReturnTypeCaster;
+        this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
 
     public String getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs,
@@ -21,7 +21,7 @@ public class FunctionCallReturnTypeScanner {
         String fullFunctionName = functionReference.getNamespaceName() + functionReference.getName();
         for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
             if ( functionCallIsValid( functionCallConfig, fullFunctionName, functionReference ) ) {
-                return callReturnTypeCaster
+                return callReturnTypeCalculator
                         .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
                         );
             }
