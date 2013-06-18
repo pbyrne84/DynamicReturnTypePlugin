@@ -12,6 +12,8 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
+import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
+import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -24,13 +26,19 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final MethodCallTypeCalculator methodCallTypeCalculator;
     private final CallReturnTypeCaster callReturnTypeCaster = new CallReturnTypeCaster();
     private final ConfigAnalyser configAnalyser;
+    private final FunctionCallReturnTypeScanner functionCallReturnTypeScanner;
+    private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
     public DynamicReturnTypeProvider() {
         MethodCallValidator methodCallValidator = new MethodCallValidator();
-        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, new CallReturnTypeCaster() );
         configAnalyser = new ConfigAnalyser( methodCallValidator );
+
+        functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCaster );
+
+        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCaster );
+        methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
     }
 
 
@@ -67,7 +75,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             e.printStackTrace();
         }
 
-
         return null;
     }
 
@@ -95,60 +102,17 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             List<ClassMethodConfig> classMethodConfigs
                     = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
 
-            return getTypeFromMethodCall( classMethodConfigs, classMethod );
+            return methodCallReturnTypeScanner.getTypeFromMethodCall( classMethodConfigs, classMethod );
         } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
             FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
 
             List<FunctionCallConfig> functionCallConfigs
                     = getDynamicReturnTypeConfig( psiElement ).getFunctionCallConfigs();
 
-            return getTypeFromFunctionCall( functionCallConfigs, functionReference
+            return functionCallReturnTypeScanner.getTypeFromFunctionCall( functionCallConfigs, functionReference
             );
         }
 
         return null;
-    }
-
-
-    private String getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
-        for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
-            String phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
-            if ( phpType != null ) {
-                return phpType;
-            }
-        }
-
-        return null;
-    }
-
-
-    private String getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs,
-                                            FunctionReferenceImpl functionReference ) {
-        String fullFunctionName = functionReference.getNamespaceName() + functionReference.getName();
-        for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
-            if ( functionCallIsValid( functionCallConfig, fullFunctionName, functionReference ) ) {
-                return callReturnTypeCaster
-                        .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
-                        );
-            }
-        }
-
-        return null;
-    }
-
-
-    private boolean functionCallIsValid( FunctionCallConfig functionCallConfig,
-                                         String fullFunctionName,
-                                         FunctionReferenceImpl functionReference ) {
-        return functionCallConfig.getFunctionName().equals( fullFunctionName ) ||
-                validateAgainstPossibleGlobalFunction( functionReference, functionCallConfig );
-    }
-
-
-    private boolean validateAgainstPossibleGlobalFunction( FunctionReferenceImpl functionReference, FunctionCallConfig functionCallConfig ) {
-        String text = functionReference.getText();
-        return !text.contains( "\\" ) &&
-                functionCallConfig.getFunctionName().lastIndexOf( "\\" ) != -1 &&
-                ( "\\" + functionReference.getName() ).equals( functionCallConfig.getFunctionName() );
     }
 }
