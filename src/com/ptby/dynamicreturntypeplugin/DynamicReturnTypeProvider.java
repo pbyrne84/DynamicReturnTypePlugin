@@ -11,7 +11,6 @@ import com.jetbrains.php.lang.parser.PhpElementTypes;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
 
 import java.io.IOException;
@@ -46,24 +45,26 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             try {
                 try {
                     String dynamicReturnType = createDynamicReturnType( psiElement );
-                    if( dynamicReturnType == null ){
+                    if ( dynamicReturnType == null ) {
                         return null;
                     }
 
                     return dynamicReturnType;
                 } catch ( MalformedJsonException e ) {
-                    logger.warn( e );
+                    logger.warn( "MalformedJsonException", e );
                 } catch ( JsonSyntaxException e ) {
-                    logger.warn( e );
+                    logger.warn( "JsonSyntaxException", e );
                 } catch ( IOException e ) {
-                    logger.error( e );
+                    logger.error( "IOException", e );
                 }
 
             } catch ( IndexNotReadyException e ) {
-                logger.error( e );
+                logger.error( "IndexNotReadyException", e );
             }
         } catch ( Exception e ) {
-            logger.error( e );
+            logger.error( "Exception", e );
+
+            e.printStackTrace();
         }
 
 
@@ -91,14 +92,17 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
 
-            return getTypeFromMethodCall( getDynamicReturnTypeConfig( psiElement )
-                    .getClassMethodConfigs(), classMethod
-            );
-        }else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
+            List<ClassMethodConfig> classMethodConfigs
+                    = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
+
+            return getTypeFromMethodCall( classMethodConfigs, classMethod );
+        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
             FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
 
-            return getTypeFromFunctionCall( getDynamicReturnTypeConfig( psiElement )
-                    .getFunctionCallConfigs(), functionReference
+            List<FunctionCallConfig> functionCallConfigs
+                    = getDynamicReturnTypeConfig( psiElement ).getFunctionCallConfigs();
+
+            return getTypeFromFunctionCall( functionCallConfigs, functionReference
             );
         }
 
@@ -118,14 +122,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private String getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs, FunctionReferenceImpl functionReference ) {
+    private String getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs,
+                                            FunctionReferenceImpl functionReference ) {
         String fullFunctionName = functionReference.getNamespaceName() + functionReference.getName();
         for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
-            if ( functionCallConfig.getFunctionName().equals( fullFunctionName ) ) {
-                return callReturnTypeCaster
-                        .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
-                        );
-            } else if ( validateAgainstPossibleGlobalFunction( functionReference, functionCallConfig ) ) {
+            if ( functionCallIsValid( functionCallConfig, fullFunctionName, functionReference ) ) {
                 return callReturnTypeCaster
                         .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
                         );
@@ -133,7 +134,14 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         }
 
         return null;
+    }
 
+
+    private boolean functionCallIsValid( FunctionCallConfig functionCallConfig,
+                                         String fullFunctionName,
+                                         FunctionReferenceImpl functionReference ) {
+        return functionCallConfig.getFunctionName().equals( fullFunctionName ) ||
+                validateAgainstPossibleGlobalFunction( functionReference, functionCallConfig );
     }
 
 
