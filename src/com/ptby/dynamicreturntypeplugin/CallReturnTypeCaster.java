@@ -17,19 +17,19 @@ public class CallReturnTypeCaster {
     }
 
 
-    public PhpType calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
+    public String calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
         PsiElement[] parameters = methodReference.getParameters();
         return calculateTypeFromParameter( methodReference, parameterIndex, parameters );
     }
 
 
-    public PhpType calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
+    public String calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
         PsiElement[] parameters = functionReference.getParameters();
         return calculateTypeFromParameter( functionReference, parameterIndex, parameters );
     }
 
 
-    private PhpType calculateTypeFromParameter( PsiElementBase elementBase, int parameterIndex, PsiElement[] parameters ) {
+    private String calculateTypeFromParameter( PsiElementBase elementBase, int parameterIndex, PsiElement[] parameters ) {
         if ( parameters.length <= parameterIndex ) {
             return null;
         }
@@ -44,7 +44,9 @@ public class CallReturnTypeCaster {
                     return castClassConstantToPhpType( elementBase, element, type.toString() );
                 }
 
-                return type;
+                for ( String singleType : type.getTypes() ) {
+                    return singleType.substring( 3 );
+                }
             }
         }
 
@@ -52,7 +54,7 @@ public class CallReturnTypeCaster {
     }
 
 
-    private PhpType castClassConstantToPhpType( PsiElementBase elementBase, PsiElement element, String classConstant ) {
+    private String castClassConstantToPhpType( PsiElementBase elementBase, PsiElement element, String classConstant ) {
         String[] constantParts = classConstant.split( "(#K#C|\\.|\\|\\?)" );
         if ( constantParts.length < 3 ) {
             return null;
@@ -75,7 +77,7 @@ public class CallReturnTypeCaster {
                     if ( constantText.equals( "__CLASS__" ) ) {
                         PhpType phpType = new PhpType();
                         phpType.add( className );
-                        return phpType;
+                        return className;
                     }
                 }
             }
@@ -85,22 +87,13 @@ public class CallReturnTypeCaster {
     }
 
 
-   private  PhpType castStringToPhpType( PsiElementBase elementBase, PsiElement element ) {
+   private  String castStringToPhpType( PsiElementBase elementBase, PsiElement element ) {
         String potentialClassName = element.getText().trim();
         if ( potentialClassName.equals( "" ) ) {
             return null;
         }
 
         String classWithoutQuotes = potentialClassName.replaceAll( "(\"|')", "" );
-        PhpIndex phpIndex = PhpIndex.getInstance( elementBase.getProject() );
-        Collection<PhpClass> phpClasses = phpIndex.getClassesByFQN( classWithoutQuotes );
-
-        if ( phpClasses.size() == 0 ) {
-            return null;
-        }
-
-        PhpType phpType = new PhpType();
-        phpType.add( classWithoutQuotes );
-        return phpType;
+        return classWithoutQuotes;
     }
 }

@@ -16,9 +16,10 @@ public class MethodCallTypeCalculator {
     }
 
 
-    public PhpType calculateFromMethodCall( ClassMethodConfig classMethodConfig, MethodReferenceImpl methodReference ) {
+    public String calculateFromMethodCall( ClassMethodConfig classMethodConfig, MethodReferenceImpl methodReference ) {
         if ( methodCallValidator
                 .isValidMethodCall( methodReference, classMethodConfig ) ) {
+
             return callReturnTypeCaster
                     .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
         }

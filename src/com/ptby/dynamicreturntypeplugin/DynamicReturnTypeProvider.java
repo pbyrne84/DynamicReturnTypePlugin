@@ -45,12 +45,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         try {
             try {
                 try {
-                    PhpType dynamicReturnType = createDynamicReturnType( psiElement );
+                    String dynamicReturnType = createDynamicReturnType( psiElement );
                     if( dynamicReturnType == null ){
                         return null;
                     }
 
-                    return dynamicReturnType.toString();
+                    return dynamicReturnType;
                 } catch ( MalformedJsonException e ) {
                     logger.warn( e );
                 } catch ( JsonSyntaxException e ) {
@@ -87,7 +87,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private PhpType createDynamicReturnType( PsiElement psiElement ) throws IOException {
+    private String createDynamicReturnType( PsiElement psiElement ) throws IOException {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
 
@@ -106,9 +106,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private PhpType getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
+    private String getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
-            PhpType phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
+            String phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
             if ( phpType != null ) {
                 return phpType;
             }
@@ -118,7 +118,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private PhpType getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs, FunctionReferenceImpl functionReference ) {
+    private String getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs, FunctionReferenceImpl functionReference ) {
         String fullFunctionName = functionReference.getNamespaceName() + functionReference.getName();
         for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
             if ( functionCallConfig.getFunctionName().equals( fullFunctionName ) ) {

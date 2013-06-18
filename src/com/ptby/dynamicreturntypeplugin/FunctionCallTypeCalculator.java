@@ -14,7 +14,7 @@ public class FunctionCallTypeCalculator {
     }
 
 
-    public PhpType calculateFromFunctionCall( FunctionCallConfig functionCallConfig, FunctionReferenceImpl functionReference ) {
+    public String calculateFromFunctionCall( FunctionCallConfig functionCallConfig, FunctionReferenceImpl functionReference ) {
         if ( functionCallConfig.getFunctionName().equals( functionReference.getName() ) ) {
             return callReturnTypeCaster
                     .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex() );
