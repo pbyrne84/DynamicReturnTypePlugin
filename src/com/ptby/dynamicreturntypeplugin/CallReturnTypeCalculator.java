@@ -20,18 +20,16 @@ public class CallReturnTypeCalculator {
 
 
     public String calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
-        PsiElement[] parameters = methodReference.getParameters();
-        return calculateTypeFromParameter( methodReference, parameterIndex, parameters );
+        return calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
     }
 
 
     public String calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
-        PsiElement[] parameters = functionReference.getParameters();
-        return calculateTypeFromParameter( functionReference, parameterIndex, parameters );
+        return calculateTypeFromParameter(  parameterIndex, functionReference.getParameters() );
     }
 
 
-    private String calculateTypeFromParameter( PsiElementBase elementBase, int parameterIndex, PsiElement[] parameters ) {
+    private String calculateTypeFromParameter(  int parameterIndex, PsiElement[] parameters ) {
         if ( parameters.length <= parameterIndex ) {
             return null;
         }
@@ -41,9 +39,9 @@ public class CallReturnTypeCalculator {
             PhpType type = ( ( PhpTypedElement ) element ).getType();
             if ( !type.toString().equals( "void" ) ) {
                 if ( type.toString().equals( "string" ) ) {
-                    return cleanClassText( elementBase, element );
-                } else if ( type.toString().matches( "#K#C(.*)\\.(.*)\\|\\?" ) ) {
-                    return classConstantAnalyzer.castClassConstantToPhpType( elementBase, element, type.toString() );
+                    return cleanClassText( element );
+                } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type.toString() ) ) {
+                    return type.toString();
                 }
 
                 for ( String singleType : type.getTypes() ) {
@@ -57,7 +55,7 @@ public class CallReturnTypeCalculator {
 
 
 
-   private  String cleanClassText( PsiElementBase elementBase, PsiElement element ) {
+   private  String cleanClassText( PsiElement element ) {
         String potentialClassName = element.getText().trim();
         if ( potentialClassName.equals( "" ) ) {
             return null;

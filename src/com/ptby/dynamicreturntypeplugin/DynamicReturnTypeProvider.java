@@ -12,6 +12,7 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 
@@ -28,6 +29,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final ConfigAnalyser configAnalyser;
     private final FunctionCallReturnTypeScanner functionCallReturnTypeScanner;
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
+    private final ClassConstantAnalyzer classConstantAnalyzer;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
@@ -39,6 +41,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCalculator );
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
+
+        classConstantAnalyzer = new ClassConstantAnalyzer();
     }
 
 
@@ -81,6 +85,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
+        if( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ){
+            return PhpIndex.getInstance( project ).getAnyByFQN(
+                    classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
+            );
+        }
+
         return PhpIndex.getInstance( project ).getAnyByFQN( type );
     }
 
