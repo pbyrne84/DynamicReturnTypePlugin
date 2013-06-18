@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.index;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.PsiElementBase;
 import com.jetbrains.php.PhpIndex;
@@ -11,8 +12,12 @@ import java.util.Collection;
 
 public class ClassConstantAnalyzer {
 
+    public String castClassConstantToPhpType( PsiElementBase elementBase, PsiElement element, String classConstant ) {
+        return castClassConstantToPhpType(classConstant,  elementBase.getProject() );
+    }
 
-    private String castClassConstantToPhpType( PsiElementBase elementBase, PsiElement element, String classConstant ) {
+
+    public String castClassConstantToPhpType( String classConstant, Project project ) {
         String[] constantParts = classConstant.split( "(#K#C|\\.|\\|\\?)" );
         if ( constantParts.length < 3 ) {
             return null;
@@ -21,7 +26,7 @@ public class ClassConstantAnalyzer {
         String className = constantParts[ 1 ];
         String constantName = constantParts[ 2 ];
 
-        PhpIndex phpIndex = PhpIndex.getInstance( elementBase.getProject() );
+        PhpIndex phpIndex = PhpIndex.getInstance( project  );
         Collection<PhpClass> classesByFQN = phpIndex.getClassesByFQN( className );
         for ( PhpClass phpClass : classesByFQN ) {
             Collection<Field> fields = phpClass.getFields();
