@@ -1,4 +1,4 @@
-package com.ptby.dynamicreturntypeplugin;
+package com.ptby.dynamicreturntypeplugin.typecalculation;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.impl.PsiElementBase;

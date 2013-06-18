@@ -19,6 +19,8 @@ import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
+import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
+import com.ptby.dynamicreturntypeplugin.typecalculation.MethodCallTypeCalculator;
 
 import java.io.IOException;
 import java.util.Collection;

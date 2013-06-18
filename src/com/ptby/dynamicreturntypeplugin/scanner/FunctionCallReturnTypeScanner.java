@@ -1,7 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.scanner;
 
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
-import com.ptby.dynamicreturntypeplugin.CallReturnTypeCalculator;
+import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 
 import java.util.List;
