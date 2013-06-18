@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.callvalidator;
 
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
@@ -123,7 +125,7 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
 
 
     @Override
-    public void jsonFileHasChanged() {
+    public void notifyJsonFileHasChanged( VirtualFile virtualFile ) {
         validMethodCallCache = new HashMap<String, Boolean>();
 
     }

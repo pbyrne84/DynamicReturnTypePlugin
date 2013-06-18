@@ -1,19 +1,16 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 
-import java.io.File;
 import java.io.IOException;
 
-public class ConfigAnalyser {
+public class ConfigAnalyser implements JsonConfigurationChangeListener {
     private final JsonConfigurationChangeListener configurationChangeListener;
-    private DynamicReturnTypeConfig currentConfig;
-    private long lastModifiedTime = 0;
-
     JsonToDynamicReturnTypeConfigConverter jsonToDynamicReturnTypeConfigConverter;
+    private DynamicReturnTypeConfig currentConfig = new DynamicReturnTypeConfig();
+
 
     public ConfigAnalyser( JsonConfigurationChangeListener configurationChangeListener ) {
         this.configurationChangeListener = configurationChangeListener;
@@ -21,28 +18,25 @@ public class ConfigAnalyser {
     }
 
 
-    public DynamicReturnTypeConfig analyseConfig( Project project ) throws IOException {
-        VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( project
-                .getBasePath() + File.separatorChar + "dynamicReturnTypeMeta.json"
-        );
-        if ( metaFile == null ) {
-            return null;
-        }
-
-        long modificationStamp = metaFile.getModificationStamp();
-        if ( lastModifiedTime == modificationStamp && currentConfig != null ) {
-            return currentConfig;
-        }
-
-        configurationChangeListener.jsonFileHasChanged();
-
-        lastModifiedTime = modificationStamp;
-        String json = new String( metaFile.contentsToByteArray() );
-        currentConfig = jsonToDynamicReturnTypeConfigConverter.convertJson( json );
-
+    public DynamicReturnTypeConfig getCurrentConfig() {
         return currentConfig;
     }
 
 
+    @Override
+    public void notifyJsonFileHasChanged( VirtualFile virtualFile ) throws IOException {
+        configurationChangeListener.notifyJsonFileHasChanged( virtualFile );
+        initialiseNewConfig( virtualFile );
+    }
+
+
+    private DynamicReturnTypeConfig initialiseNewConfig( VirtualFile virtualFile ) throws IOException {
+
+
+        String json = new String( virtualFile.contentsToByteArray() );
+        currentConfig = jsonToDynamicReturnTypeConfigConverter.convertJson( json );
+
+        return currentConfig;
+    }
 
 }

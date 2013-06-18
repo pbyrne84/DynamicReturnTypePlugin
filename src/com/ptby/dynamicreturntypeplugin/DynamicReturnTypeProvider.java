@@ -2,8 +2,14 @@ package com.ptby.dynamicreturntypeplugin;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataConstants;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKey;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.PhpIndex;
@@ -18,6 +24,7 @@ import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
+import com.ptby.dynamicreturntypeplugin.json.JsonFileSystemChangeListener;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
@@ -38,6 +45,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
+    private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
 
 
     public DynamicReturnTypeProvider() {
@@ -50,6 +58,18 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
 
         classConstantAnalyzer = new ClassConstantAnalyzer();
+
+        jsonFileSystemChangeListener = new JsonFileSystemChangeListener();
+        jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
+
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                DataContext dataContext = DataManager.getInstance().getDataContext();
+                Project project = (Project) dataContext.getData(DataConstants.PROJECT);
+                jsonFileSystemChangeListener.setCurrentProject( project );
+            }
+        } );
     }
 
 
@@ -92,7 +112,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
-        if( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ){
+
+        if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
             return PhpIndex.getInstance( project ).getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
             );
@@ -103,12 +124,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     private DynamicReturnTypeConfig getDynamicReturnTypeConfig( PsiElement psiElement ) throws IOException {
-        DynamicReturnTypeConfig dynamicReturnTypeConfig = configAnalyser.analyseConfig( psiElement.getProject() );
-        if ( dynamicReturnTypeConfig == null ) {
-            return new DynamicReturnTypeConfig();
-        }
-
-        return dynamicReturnTypeConfig;
+        return configAnalyser.getCurrentConfig();
     }
 
 
