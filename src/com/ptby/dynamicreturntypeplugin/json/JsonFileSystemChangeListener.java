@@ -35,8 +35,9 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
             return;
         }
 
-        VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( currentProject
-                .getBasePath() + File.separatorChar + "dynamicReturnTypeMeta.json"
+        String jsonFilePath = currentProject
+                .getBasePath() + File.separatorChar + "dynamicReturnTypeMeta.json";
+        VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( jsonFilePath
         );
 
         notifyOfConfigUpdate( metaFile );

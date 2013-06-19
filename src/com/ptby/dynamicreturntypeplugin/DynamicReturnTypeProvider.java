@@ -24,6 +24,7 @@ import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
+import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.JsonFileSystemChangeListener;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
@@ -48,6 +49,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
+    private VariableAnalyser variableAnalyser;
 
 
     public DynamicReturnTypeProvider() {
@@ -59,16 +61,22 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCalculator );
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
 
-        classConstantAnalyzer = new ClassConstantAnalyzer();
 
         jsonFileSystemChangeListener = new JsonFileSystemChangeListener();
         jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
 
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
+        classConstantAnalyzer  = new ClassConstantAnalyzer();
+        variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
 
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
+                try {
+                    Thread.sleep( 500 );
+                } catch ( InterruptedException e ) {
+                    e.printStackTrace();
+                }
                 DataContext dataContext = DataManager.getInstance().getDataContext();
                 Project project = (Project) dataContext.getData(DataConstants.PROJECT);
                 jsonFileSystemChangeListener.setCurrentProject( project );
@@ -124,6 +132,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             );
         }else if( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
             return phpIndex.getAnyByFQN( fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project   ) );
+        }else if( variableAnalyser.verifySignatureIsVariableCall( type )){
+            return phpIndex.getAnyByFQN(
+                    variableAnalyser.getClassNameFromFieldLookup( type, project )
+            );
+
         }
 
         return phpIndex.getAnyByFQN( type );

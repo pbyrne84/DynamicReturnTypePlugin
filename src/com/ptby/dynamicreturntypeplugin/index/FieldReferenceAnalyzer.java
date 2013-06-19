@@ -33,9 +33,7 @@ public class FieldReferenceAnalyzer {
 
 
     public boolean verifySignatureIsFieldCall( String signature ) {
-        System.out.println( signature );
         boolean matches = signature.matches( FIELD_CALL_PATTERN );
-        System.out.println( matches );
         return matches;
     }
 
@@ -48,6 +46,11 @@ public class FieldReferenceAnalyzer {
         String calledMethod   = split[ 1 ];
         String passedType     = split[ 2 ];
 
+        return locateType( phpIndex, fieldSignature, calledMethod, passedType );
+    }
+
+
+    private String locateType( PhpIndex phpIndex, String fieldSignature, String calledMethod, String passedType ) {
         Collection<? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
         for ( PhpNamedElement fieldElement : fieldElements ) {
             DynamicReturnTypeConfig currentConfig = this.configAnalyser.getCurrentConfig();
@@ -59,6 +62,6 @@ public class FieldReferenceAnalyzer {
             }
         }
 
-        return "";
+        return null;
     }
 }

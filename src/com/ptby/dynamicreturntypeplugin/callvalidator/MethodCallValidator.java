@@ -38,7 +38,8 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
         if ( classReference instanceof VariableImpl ) {
             return validateAgainstVariableReference( methodReference, classMethodConfig, ( VariableImpl ) classReference );
         } else if ( classReference instanceof FieldReferenceImpl ) {
-            return validateAgainstFieldReference( classMethodConfig, ( FieldReferenceImpl ) classReference );
+            //return validateAgainstFieldReference( classMethodConfig, ( FieldReferenceImpl ) classReference );
+            return true;
         } else if ( classReference instanceof ClassReferenceImpl ) {
             return validateAgainstClassReference( methodReference, classMethodConfig, ( ClassReferenceImpl ) classReference );
         }
@@ -68,11 +69,11 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
                                                       ClassMethodConfig classMethodConfig,
                                                       VariableImpl variableImpl ) {
         PhpType methodPhpType = variableImpl.getType();
-        if ( methodPhpType.toString().equals( classMethodConfig.getFqnClassName() ) ) {
+     /*   if ( methodPhpType.toString().equals( classMethodConfig.getFqnClassName() ) ) {
             return true;
         }
 
-
+*/
         if( validMethodCallCache.containsKey( methodPhpType.toString() ) ){
             return validMethodCallCache.get(  methodPhpType.toString() );
         }
@@ -82,7 +83,7 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
                         .getInstance( methodReference.getProject() )
                 );
 
-        validMethodCallCache.put( methodPhpType.toString(), hasSuperClass );
+       // validMethodCallCache.put( methodPhpType.toString(), hasSuperClass );
         return hasSuperClass;
     }
 

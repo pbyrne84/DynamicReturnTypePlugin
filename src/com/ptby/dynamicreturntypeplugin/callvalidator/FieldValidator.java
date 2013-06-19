@@ -23,7 +23,6 @@ public class FieldValidator {
         PhpType fieldReferenceType = fieldReference.getType();
         String rawReference = fieldReferenceType.toString();
 
-        System.out.println( "???? " + fieldReference.getInferredType( 1000 ) );
         if ( rawReference.equals( classMethodConfig.getFqnClassName() ) ) {
             return true;
         }
@@ -45,18 +44,7 @@ public class FieldValidator {
         Project project = methodReference.getProject();
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        for( int i = 0; i < 100; i++  ){
-            System.out.println("fieldReference.getDeclaredType( " + i + ") " + fieldReference.getDeclaredType( i ) );
-
-        }
         Collection<? extends PhpNamedElement> bySignature = phpIndex.getBySignature( "#P#C\\AdvertsOfDirectEmployersView.oTaskData", null, 0 );
-        System.out.println("bySignature.size() " + " " + rawReference + " " + bySignature.size() );
-
-        for ( PhpNamedElement phpNamedElement : bySignature ) {
-            System.out.println( "aa " + phpNamedElement.getName());
-            System.out.println( "aa " + phpNamedElement.getType());
-        }
-
 
         Collection <PhpClass> classesByFQN = phpIndex.getClassesByFQN( currentClassName );
         for ( PhpClass phpClass : classesByFQN ) {
