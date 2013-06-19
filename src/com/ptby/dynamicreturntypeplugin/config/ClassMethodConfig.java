@@ -14,6 +14,10 @@ public class ClassMethodConfig {
     }
 
 
+    public boolean methodCallMatches( String actualFqnClassName, String actualMethodName ) {
+        return fqnClassName.equals( actualFqnClassName ) && methodName.equals( actualMethodName );
+    }
+
     public String getFqnClassName() {
         return fqnClassName;
     }

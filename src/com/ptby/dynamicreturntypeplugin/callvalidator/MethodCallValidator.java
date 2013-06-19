@@ -1,11 +1,13 @@
 package com.ptby.dynamicreturntypeplugin.callvalidator;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.ClassReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
@@ -36,7 +38,7 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
         if ( classReference instanceof VariableImpl ) {
             return validateAgainstVariableReference( methodReference, classMethodConfig, ( VariableImpl ) classReference );
         } else if ( classReference instanceof FieldReferenceImpl ) {
-            return validateAgainstFieldReference( methodReference, classMethodConfig, ( FieldReferenceImpl ) classReference );
+            return validateAgainstFieldReference( classMethodConfig, ( FieldReferenceImpl ) classReference );
         } else if ( classReference instanceof ClassReferenceImpl ) {
             return validateAgainstClassReference( methodReference, classMethodConfig, ( ClassReferenceImpl ) classReference );
         }
@@ -85,12 +87,20 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
     }
 
 
-    private boolean validateAgainstFieldReference( MethodReferenceImpl methodReference,
-                                                   ClassMethodConfig classMethodConfig,
+    /**
+     * Cannot seem to be able to get a fields type without hitting the index so am going to have to add deferral
+     * logic now
+     *
+     * @param classMethodConfig
+     * @param fieldReference
+     * @return
+     */
+    private boolean validateAgainstFieldReference( ClassMethodConfig classMethodConfig,
                                                    FieldReferenceImpl fieldReference ) {
 
         PhpType fieldReferenceType = fieldReference.getType();
         String rawReference = fieldReferenceType.toString();
+
         if ( rawReference.equals( classMethodConfig.getFqnClassName() ) ) {
             return true;
         }
@@ -105,22 +115,38 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
             return false;
         }
 
+/*
         String currentClassName = split[ 1 ];
         String currentField = split[ 2 ];
 
-        PhpIndex phpIndex = PhpIndex.getInstance( methodReference.getProject() );
-        Collection<PhpClass> classesByFQN = phpIndex.getClassesByFQN( currentClassName );
+        Project project = methodReference.getProject();
+        PhpIndex phpIndex = PhpIndex.getInstance( project );
+
+        for( int i = 0; i < 100; i++  ){
+            System.out.println("fieldReference.getDeclaredType( " + i + ") " + fieldReference.getDeclaredType( i ) );
+
+        }
+        Collection <? extends PhpNamedElement> bySignature = phpIndex.getBySignature( "#P#C\\AdvertsOfDirectEmployersView.oTaskData", null, 0 );
+        System.out.println("bySignature.size() " + " " + rawReference + " " + bySignature.size() );
+
+        for ( PhpNamedElement phpNamedElement : bySignature ) {
+            System.out.println( "aa " + phpNamedElement.getName());
+            System.out.println( "aa " + phpNamedElement.getType());
+        }
+
+
+        Collection < PhpClass > classesByFQN = phpIndex.getClassesByFQN( currentClassName );
         for ( PhpClass phpClass : classesByFQN ) {
             Collection<Field> fields = phpClass.getFields();
             for ( Field field : fields ) {
-                if ( field.getName().equals( currentField ) && field.getType().toString()
-                                                                    .equals( classMethodConfig.getFqnClassName() ) ) {
+                if ( field.getName().equals( currentField ) &&
+                        field.getType().toString().equals( classMethodConfig.getFqnClassName() ) ) {
                     return true;
                 }
             }
-        }
+        }*/
 
-        return false;
+        return true;
     }
 
 

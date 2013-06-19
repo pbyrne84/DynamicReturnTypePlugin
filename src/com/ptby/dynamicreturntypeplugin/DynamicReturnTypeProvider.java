@@ -23,6 +23,7 @@ import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
+import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.JsonFileSystemChangeListener;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
@@ -46,6 +47,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
+    private FieldReferenceAnalyzer fieldReferenceAnalyzer;
 
 
     public DynamicReturnTypeProvider() {
@@ -61,6 +63,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         jsonFileSystemChangeListener = new JsonFileSystemChangeListener();
         jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
+
+        fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
 
 
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -113,13 +117,16 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
 
+        PhpIndex phpIndex = PhpIndex.getInstance( project );
         if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
-            return PhpIndex.getInstance( project ).getAnyByFQN(
+            return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
             );
+        }else if( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
+            return phpIndex.getAnyByFQN( fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project   ) );
         }
 
-        return PhpIndex.getInstance( project ).getAnyByFQN( type );
+        return phpIndex.getAnyByFQN( type );
     }
 
 

@@ -1,12 +1,13 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation;
 
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.PsiElementBase;
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
+import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
+import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 
 public class CallReturnTypeCalculator {
 
@@ -20,7 +21,27 @@ public class CallReturnTypeCalculator {
 
 
     public String calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
+        if( methodReference.getClassReference() instanceof FieldReferenceImpl ){
+            return packageFieldReference( methodReference,  parameterIndex  );
+        }
+
         return calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+    }
+
+
+    private String packageFieldReference( MethodReferenceImpl methodReference, int parameterIndex ) {
+
+        FieldReferenceImpl classReference = ( FieldReferenceImpl )methodReference.getClassReference();
+
+        String returnType           = calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+        String typeAsString         = classReference.getType().toString();
+        String intellijReference    = typeAsString.substring( 0, typeAsString.length() -2 );
+        String packagedFieldReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
+                intellijReference, methodReference.getName(), returnType
+        );
+        return packagedFieldReference;
+
+
     }
 
 
