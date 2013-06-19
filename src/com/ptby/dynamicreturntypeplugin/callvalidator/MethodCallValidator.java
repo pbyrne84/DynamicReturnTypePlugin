@@ -36,7 +36,7 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
 
         PhpExpression classReference = methodReference.getClassReference();
         if ( classReference instanceof VariableImpl ) {
-            return validateAgainstVariableReference( methodReference, classMethodConfig, ( VariableImpl ) classReference );
+            return true;
         } else if ( classReference instanceof FieldReferenceImpl ) {
             //return validateAgainstFieldReference( classMethodConfig, ( FieldReferenceImpl ) classReference );
             return true;
@@ -74,9 +74,6 @@ public class MethodCallValidator implements JsonConfigurationChangeListener {
         }
 
 */
-        if( validMethodCallCache.containsKey( methodPhpType.toString() ) ){
-            return validMethodCallCache.get(  methodPhpType.toString() );
-        }
 
         boolean hasSuperClass = methodPhpType
                 .findSuper(  classMethodConfig.getFqnClassName(), methodPhpType.toString(), PhpIndex
