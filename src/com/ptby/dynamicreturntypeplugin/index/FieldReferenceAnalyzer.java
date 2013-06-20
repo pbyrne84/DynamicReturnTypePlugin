@@ -3,8 +3,10 @@ package com.ptby.dynamicreturntypeplugin.index;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.Field;
+import com.jetbrains.php.lang.psi.elements.Method;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.elements.impl.FieldImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
@@ -22,15 +24,17 @@ public class FieldReferenceAnalyzer {
     public static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
     private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
+    private final OriginalCallAnalyzer originalCallAnalyzer;
 
 
-    public FieldReferenceAnalyzer( ConfigAnalyser configAnalyser) {
+    public FieldReferenceAnalyzer( ConfigAnalyser configAnalyser ) {
         this.configAnalyser = configAnalyser;
         classConstantAnalyzer = new ClassConstantAnalyzer();
+        originalCallAnalyzer = new OriginalCallAnalyzer();
     }
 
 
-    static public String packageForGetTypeResponse( String intellijReference, String methodName, String returnType ){
+    static public String packageForGetTypeResponse( String intellijReference, String methodName, String returnType ) {
         return intellijReference + ":" + methodName + ":" + returnType;
     }
 
@@ -41,24 +45,24 @@ public class FieldReferenceAnalyzer {
     }
 
 
-    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project){
-        String[] split   = signature.split( ":" );
+    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {
+        String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
         String fieldSignature = split[ 0 ];
-        String calledMethod   = split[ 1 ];
-        String passedType     = split[ 2 ];
+        String calledMethod = split[ 1 ];
+        String passedType = split[ 2 ];
 
         String type = locateType( phpIndex, fieldSignature, calledMethod, passedType );
-        if( type == null ){
-            return Collections.emptySet();
+        if ( type == null ) {
+            return originalCallAnalyzer
+                    .getTypeForMethodThatHasIncorrectObject( phpIndex, fieldSignature, calledMethod );
         }
 
         if ( type.indexOf( "#C" ) == 0 ) {
             return phpIndex.getBySignature( type, null, 0 );
-        }else if( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
-            type = classConstantAnalyzer.getClassNameFromConstantLookup( type, project  );
-            System.out.println("looked up class constant");
+        } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
+            type = classConstantAnalyzer.getClassNameFromConstantLookup( type, project );
         }
         return phpIndex.getAnyByFQN( type );
     }
@@ -66,17 +70,21 @@ public class FieldReferenceAnalyzer {
 
     private String locateType( PhpIndex phpIndex, String fieldSignature, String calledMethod, String passedType ) {
         Collection<? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
-        for ( PhpNamedElement fieldElement : fieldElements ) {
-            DynamicReturnTypeConfig currentConfig = this.configAnalyser.getCurrentConfig();
-            PhpType type = fieldElement.getType();
+        if( fieldElements.size() == 0 ){
+            return null;
+        }
 
-            for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
-                if( classMethodConfig.getMethodName( ).equals( calledMethod ) ){
-                    if( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ){
-                        return passedType;
-                    }else{
+        PhpNamedElement fieldElement = fieldElements.iterator().next();
 
-                    }
+        DynamicReturnTypeConfig currentConfig = this.configAnalyser.getCurrentConfig();
+        PhpType type = fieldElement.getType();
+
+        for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
+            if ( classMethodConfig.getMethodName().equals( calledMethod ) ) {
+                if ( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ) {
+                    return passedType;
+                } else {
+
                 }
             }
         }
