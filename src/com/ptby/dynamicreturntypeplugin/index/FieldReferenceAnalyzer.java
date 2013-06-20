@@ -11,6 +11,7 @@ import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -38,7 +39,7 @@ public class FieldReferenceAnalyzer {
     }
 
 
-    public String getClassNameFromFieldLookup( String signature, Project project){
+    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project){
         String[] split   = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
@@ -46,7 +47,15 @@ public class FieldReferenceAnalyzer {
         String calledMethod   = split[ 1 ];
         String passedType     = split[ 2 ];
 
-        return locateType( phpIndex, fieldSignature, calledMethod, passedType );
+        String type = locateType( phpIndex, fieldSignature, calledMethod, passedType );
+        if( type == null ){
+            return Collections.emptySet();
+        }
+
+        if ( type.indexOf( "#C" ) == 0 ) {
+            return phpIndex.getBySignature( type, null, 0 );
+        }
+        return phpIndex.getAnyByFQN( type );
     }
 
 

@@ -1,18 +1,18 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation;
 
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
+import com.ptby.dynamicreturntypeplugin.callvalidator.DeprecatedMethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 
 public class MethodCallTypeCalculator {
 
 
-    private final MethodCallValidator methodCallValidator;
+    private final DeprecatedMethodCallValidator deprecatedMethodCallValidator;
     private final CallReturnTypeCalculator callReturnTypeCalculator;
 
 
-    public MethodCallTypeCalculator( MethodCallValidator methodCallValidator, CallReturnTypeCalculator callReturnTypeCalculator ) {
-        this.methodCallValidator = methodCallValidator;
+    public MethodCallTypeCalculator( DeprecatedMethodCallValidator deprecatedMethodCallValidator, CallReturnTypeCalculator callReturnTypeCalculator ) {
+        this.deprecatedMethodCallValidator = deprecatedMethodCallValidator;
         this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
 

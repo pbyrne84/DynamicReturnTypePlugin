@@ -5,11 +5,8 @@ import com.google.gson.stream.MalformedJsonException;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKey;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.PhpIndex;
@@ -18,7 +15,7 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
-import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
+import com.ptby.dynamicreturntypeplugin.callvalidator.DeprecatedMethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
@@ -53,12 +50,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     public DynamicReturnTypeProvider() {
-        MethodCallValidator methodCallValidator = new MethodCallValidator();
-        configAnalyser = new ConfigAnalyser( methodCallValidator );
+        DeprecatedMethodCallValidator deprecatedMethodCallValidator = new DeprecatedMethodCallValidator();
+        configAnalyser = new ConfigAnalyser( deprecatedMethodCallValidator );
 
         functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
 
-        methodCallTypeCalculator = new MethodCallTypeCalculator( methodCallValidator, callReturnTypeCalculator );
+        methodCallTypeCalculator = new MethodCallTypeCalculator( deprecatedMethodCallValidator, callReturnTypeCalculator );
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
 
 
@@ -72,14 +69,20 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         java.awt.EventQueue.invokeLater( new Runnable() {
             public void run() {
-                try {
-                    Thread.sleep( 500 );
-                } catch ( InterruptedException e ) {
-                    e.printStackTrace();
-                }
-                DataContext dataContext = DataManager.getInstance().getDataContext();
-                Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
-                jsonFileSystemChangeListener.setCurrentProject( project );
+                Project project = null;
+           /*     while( project == null ){*/
+                    try {
+                        Thread.sleep( 100 );
+                    } catch ( InterruptedException e ) {
+                        e.printStackTrace();
+                    }
+
+                    DataContext dataContext = DataManager.getInstance().getDataContext();
+                     project = ( Project ) dataContext.getData( DataConstants.PROJECT );
+                 /*   if( project != null ){*/
+                        jsonFileSystemChangeListener.setCurrentProject( project );
+                   /* }*/
+            /*    }*/
             }
         }
         );
@@ -154,14 +157,14 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
-
+        System.out.println("attempted type " + type);
         PhpIndex phpIndex = PhpIndex.getInstance( project );
         if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
             );
         } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
-            return phpIndex.getAnyByFQN( fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project ) );
+            return  fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project );
         } else if ( variableAnalyser.verifySignatureIsVariableCall( type ) ) {
             return phpIndex.getAnyByFQN(
                     variableAnalyser.getClassNameFromFieldLookup( type, project )
@@ -169,7 +172,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         }
 
-        return phpIndex.getAnyByFQN( type );
+
+        System.out.println("unfound type " + type);
+        return phpIndex.getBySignature( type, null, 0 );
     }
 
 
