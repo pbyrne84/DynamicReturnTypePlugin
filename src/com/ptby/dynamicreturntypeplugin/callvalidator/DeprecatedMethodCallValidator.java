@@ -20,11 +20,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodCallValidator implements JsonConfigurationChangeListener {
+public class DeprecatedMethodCallValidator implements JsonConfigurationChangeListener {
     private Map<String,Boolean> validMethodCallCache = new HashMap<String, Boolean>();
 
 
-    public MethodCallValidator() {
+    public DeprecatedMethodCallValidator() {
     }
 
 
