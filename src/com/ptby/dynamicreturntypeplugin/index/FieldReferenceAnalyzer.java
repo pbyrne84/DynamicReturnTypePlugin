@@ -55,9 +55,14 @@ public class FieldReferenceAnalyzer {
         for ( PhpNamedElement fieldElement : fieldElements ) {
             DynamicReturnTypeConfig currentConfig = this.configAnalyser.getCurrentConfig();
             PhpType type = fieldElement.getType();
+
             for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
-                if( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ){
-                    return passedType;
+                if( classMethodConfig.getMethodName( ).equals( calledMethod ) ){
+                    if( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ){
+                        return passedType;
+                    }else{
+
+                    }
                 }
             }
         }

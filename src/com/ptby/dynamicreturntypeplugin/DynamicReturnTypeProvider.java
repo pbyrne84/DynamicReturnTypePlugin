@@ -46,8 +46,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final FunctionCallReturnTypeScanner functionCallReturnTypeScanner;
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private final ClassConstantAnalyzer classConstantAnalyzer;
-    private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
+    private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
 
@@ -66,11 +66,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
 
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
-        classConstantAnalyzer  = new ClassConstantAnalyzer();
-        variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
+        classConstantAnalyzer = new ClassConstantAnalyzer();
+        variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
 
 
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater( new Runnable() {
             public void run() {
                 try {
                     Thread.sleep( 500 );
@@ -78,10 +78,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
                     e.printStackTrace();
                 }
                 DataContext dataContext = DataManager.getInstance().getDataContext();
-                Project project = (Project) dataContext.getData(DataConstants.PROJECT);
+                Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
                 jsonFileSystemChangeListener.setCurrentProject( project );
             }
-        } );
+        }
+        );
     }
 
 
@@ -122,6 +123,35 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
+    private String createDynamicReturnType( PsiElement psiElement ) throws IOException {
+        if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
+            MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
+
+            List<ClassMethodConfig> classMethodConfigs
+                    = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
+
+            String typeFromMethodCall
+                    = methodCallReturnTypeScanner.getTypeFromMethodCall( classMethodConfigs, classMethod );
+
+            return typeFromMethodCall;
+        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
+            FunctionReferenceImpl functionReference
+                    = ( FunctionReferenceImpl ) psiElement;
+
+            List<FunctionCallConfig> functionCallConfigs
+                    = getDynamicReturnTypeConfig( psiElement ).getFunctionCallConfigs();
+
+            String typeFromFunctionCall = functionCallReturnTypeScanner
+                    .getTypeFromFunctionCall( functionCallConfigs, functionReference
+                    );
+
+            return typeFromFunctionCall;
+        }
+
+        return null;
+    }
+
+
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
 
@@ -130,9 +160,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
             );
-        }else if( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
-            return phpIndex.getAnyByFQN( fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project   ) );
-        }else if( variableAnalyser.verifySignatureIsVariableCall( type )){
+        } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
+            return phpIndex.getAnyByFQN( fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project ) );
+        } else if ( variableAnalyser.verifySignatureIsVariableCall( type ) ) {
             return phpIndex.getAnyByFQN(
                     variableAnalyser.getClassNameFromFieldLookup( type, project )
             );
@@ -148,24 +178,4 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private String createDynamicReturnType( PsiElement psiElement ) throws IOException {
-        if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
-            MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
-
-            List<ClassMethodConfig> classMethodConfigs
-                    = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
-
-            return methodCallReturnTypeScanner.getTypeFromMethodCall( classMethodConfigs, classMethod );
-        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
-            FunctionReferenceImpl functionReference = ( FunctionReferenceImpl ) psiElement;
-
-            List<FunctionCallConfig> functionCallConfigs
-                    = getDynamicReturnTypeConfig( psiElement ).getFunctionCallConfigs();
-
-            return functionCallReturnTypeScanner.getTypeFromFunctionCall( functionCallConfigs, functionReference
-            );
-        }
-
-        return null;
-    }
 }

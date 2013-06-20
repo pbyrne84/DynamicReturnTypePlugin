@@ -17,12 +17,19 @@ public class MethodCallReturnTypeScanner {
 
     public String getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
-            String phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
-            if ( phpType != null ) {
-                return phpType;
+            if ( validateMethodName( methodReference, classMethodConfig ) ) {
+                String phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
+                if ( phpType != null ) {
+                    return phpType;
+                }
             }
         }
 
         return null;
+    }
+
+
+    private boolean validateMethodName( MethodReferenceImpl methodReference, ClassMethodConfig classMethodConfig ) {
+        return methodReference.getName().equals( classMethodConfig.getMethodName() );
     }
 }

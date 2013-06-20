@@ -1,25 +1,23 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation;
 
-import com.intellij.psi.PsiElement;
+import com.jetbrains.php.lang.psi.elements.FieldReference;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
-import com.jetbrains.php.lang.psi.elements.PhpTypedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
-import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 
 public class CallReturnTypeCalculator {
 
-
-    private final ClassConstantAnalyzer classConstantAnalyzer;
+    private final ParameterTypeCalculator parameterTypeCalculator;
 
 
     public CallReturnTypeCalculator() {
-        classConstantAnalyzer = new ClassConstantAnalyzer();
+        parameterTypeCalculator = new ParameterTypeCalculator( new ClassConstantAnalyzer() );
+
     }
 
 
@@ -34,18 +32,23 @@ public class CallReturnTypeCalculator {
 
         }
 
-        return calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+        return parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
     }
 
 
     private String packageFieldReference( MethodReferenceImpl methodReference, int parameterIndex ) {
-
         FieldReferenceImpl fieldReference = ( FieldReferenceImpl ) methodReference.getClassReference();
 
-        String returnType = calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
-        String typeAsString = fieldReference.getType().toString();
-        String intellijReference = typeAsString.substring( 0, typeAsString.length() - 2 );
-        String packagedFieldReference = VariableAnalyser.packageForGetTypeResponse(
+        String returnType = parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+
+        String intellijReference;
+        if( methodReference.getSignature().matches( "#M#C(.*)" )){
+            intellijReference = createLocalScopedFieldReference( methodReference );
+        }else{
+            intellijReference = fieldReference.getSignature();
+        }
+
+        String packagedFieldReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
                 intellijReference, methodReference.getName(), cleanReturnTypeOfPreviousCalls( returnType )
         );
 
@@ -53,11 +56,18 @@ public class CallReturnTypeCalculator {
     }
 
 
+    private String createLocalScopedFieldReference( MethodReferenceImpl methodReference ) {
+        FieldReference fieldReference = ( FieldReference ) methodReference.getClassReference();
+        return fieldReference.getSignature();
+    }
+
+
+
     private String packageVariableReference( MethodReferenceImpl methodReference, int parameterIndex ) {
-        String returnType = calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+        String returnType = parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
         String name = methodReference.getName();
         String[] methodCallParts = methodReference.getSignature().split( "\\." );
-        String packagedVariableReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
+        String packagedVariableReference = VariableAnalyser.packageForGetTypeResponse(
                 methodCallParts[ 0 ], name, cleanReturnTypeOfPreviousCalls( returnType )
         );
 
@@ -66,53 +76,22 @@ public class CallReturnTypeCalculator {
 
 
     public String calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
-        String functionReturnType = calculateTypeFromParameter( parameterIndex, functionReference.getParameters() );
+        String functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(
+                parameterIndex, functionReference.getParameters()
+        );
 
         return cleanReturnTypeOfPreviousCalls( functionReturnType );
     }
 
 
     private String cleanReturnTypeOfPreviousCalls( String functionReturnType ) {
+        if( functionReturnType == null ){
+            return null;
+        }
         String[] functionReturnTypeParts = functionReturnType.split( ":" );
 
         return functionReturnTypeParts[ functionReturnTypeParts.length - 1 ];
     }
 
 
-    private String calculateTypeFromParameter( int parameterIndex, PsiElement[] parameters ) {
-        if ( parameters.length <= parameterIndex ) {
-            return null;
-        }
-
-        PsiElement element = parameters[ parameterIndex ];
-        if ( element instanceof PhpTypedElement ) {
-            PhpType type = ( ( PhpTypedElement ) element ).getType();
-            if ( !type.toString().equals( "void" ) ) {
-                if ( type.toString().equals( "string" ) ) {
-                    return cleanClassText( element );
-                } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type.toString() ) ) {
-                    return type.toString();
-                }
-
-                for ( String singleType : type.getTypes() ) {
-                    if ( singleType.substring( 0, 1 ).equals( "\\" ) ) {
-                        return "#C" + singleType;
-                    }
-                    return singleType.substring( 3 );
-                }
-            }
-        }
-
-        return null;
-    }
-
-
-    private String cleanClassText( PsiElement element ) {
-        String potentialClassName = element.getText().trim();
-        if ( potentialClassName.equals( "" ) ) {
-            return null;
-        }
-
-        return potentialClassName.replaceAll( "(\"|')", "" );
-    }
 }

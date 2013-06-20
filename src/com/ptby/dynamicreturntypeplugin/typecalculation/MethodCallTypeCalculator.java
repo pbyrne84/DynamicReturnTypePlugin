@@ -18,14 +18,8 @@ public class MethodCallTypeCalculator {
 
 
     public String calculateFromMethodCall( ClassMethodConfig classMethodConfig, MethodReferenceImpl methodReference ) {
-        if ( methodCallValidator
-                .isValidMethodCall( methodReference, classMethodConfig ) ) {
-
-            return callReturnTypeCalculator
-                    .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
-        }
-
-        return null;
+        return callReturnTypeCalculator
+                .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
     }
 
 }
