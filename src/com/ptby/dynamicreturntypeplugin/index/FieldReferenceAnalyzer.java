@@ -21,10 +21,12 @@ public class FieldReferenceAnalyzer {
     //#P#C\AdvertsOfDirectEmployersView.oTaskData|?
     public static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
     private final ConfigAnalyser configAnalyser;
+    private final ClassConstantAnalyzer classConstantAnalyzer;
 
 
     public FieldReferenceAnalyzer( ConfigAnalyser configAnalyser) {
         this.configAnalyser = configAnalyser;
+        classConstantAnalyzer = new ClassConstantAnalyzer();
     }
 
 
@@ -54,6 +56,9 @@ public class FieldReferenceAnalyzer {
 
         if ( type.indexOf( "#C" ) == 0 ) {
             return phpIndex.getBySignature( type, null, 0 );
+        }else if( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
+            type = classConstantAnalyzer.getClassNameFromConstantLookup( type, project  );
+            System.out.println("looked up class constant");
         }
         return phpIndex.getAnyByFQN( type );
     }

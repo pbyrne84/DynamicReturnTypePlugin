@@ -157,7 +157,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
-        System.out.println("attempted type " + type);
         PhpIndex phpIndex = PhpIndex.getInstance( project );
         if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
             return phpIndex.getAnyByFQN(
@@ -172,8 +171,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         }
 
-
-        System.out.println("unfound type " + type);
         return phpIndex.getBySignature( type, null, 0 );
     }
 
