@@ -46,7 +46,7 @@ public class CallReturnTypeCalculator {
         String typeAsString = fieldReference.getType().toString();
         String intellijReference = typeAsString.substring( 0, typeAsString.length() - 2 );
         String packagedFieldReference = VariableAnalyser.packageForGetTypeResponse(
-                intellijReference, methodReference.getName(), returnType
+                intellijReference, methodReference.getName(), cleanReturnTypeOfPreviousCalls( returnType )
         );
 
         return packagedFieldReference;
@@ -57,9 +57,8 @@ public class CallReturnTypeCalculator {
         String returnType = calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
         String name = methodReference.getName();
         String[] methodCallParts = methodReference.getSignature().split( "\\." );
-
         String packagedVariableReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
-                methodCallParts[ 0 ], name, returnType
+                methodCallParts[ 0 ], name, cleanReturnTypeOfPreviousCalls( returnType )
         );
 
         return packagedVariableReference;
@@ -67,7 +66,16 @@ public class CallReturnTypeCalculator {
 
 
     public String calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
-        return calculateTypeFromParameter( parameterIndex, functionReference.getParameters() );
+        String functionReturnType = calculateTypeFromParameter( parameterIndex, functionReference.getParameters() );
+
+        return cleanReturnTypeOfPreviousCalls( functionReturnType );
+    }
+
+
+    private String cleanReturnTypeOfPreviousCalls( String functionReturnType ) {
+        String[] functionReturnTypeParts = functionReturnType.split( ":" );
+
+        return functionReturnTypeParts[ functionReturnTypeParts.length - 1 ];
     }
 
 
@@ -87,7 +95,7 @@ public class CallReturnTypeCalculator {
                 }
 
                 for ( String singleType : type.getTypes() ) {
-                    if( singleType.substring( 0,1 ).equals( "\\" ) ){
+                    if ( singleType.substring( 0, 1 ).equals( "\\" ) ) {
                         return "#C" + singleType;
                     }
                     return singleType.substring( 3 );
