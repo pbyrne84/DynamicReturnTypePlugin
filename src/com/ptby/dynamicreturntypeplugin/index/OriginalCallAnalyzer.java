@@ -106,7 +106,9 @@ public class OriginalCallAnalyzer {
     }
 
 
-
+    /**
+     * There does not seem to be an easy way to get a primitive representation from the index
+     */
     class PrimitiveClass implements PhpClass{
 
         private final PhpType type;
