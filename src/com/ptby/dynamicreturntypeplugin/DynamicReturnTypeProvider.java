@@ -5,6 +5,7 @@ import com.google.gson.stream.MalformedJsonException;
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
 import com.intellij.patterns.PlatformPatterns;
@@ -85,12 +86,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             public void run() {
                 DataContext dataContext = DataManager.getInstance().getDataContext();
                 Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
-                 /*   if( project != null ){*/
-                try {
-                    jsonFileSystemChangeListener.setCurrentProject( project );
-                } catch ( NullPointerException e ) {
+                if( project == null ){
                     attemptToInitialiseFileListener();
+                    return;
                 }
+
+                jsonFileSystemChangeListener.setCurrentProject( project );
             }
         }
         );
@@ -125,7 +126,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
                 logger.error( "IndexNotReadyException", e );
             }
         } catch ( Exception e ) {
-            logger.error( "Exception", e );
+            if( !(e instanceof ProcessCanceledException ) ){
+                logger.error( "Exception", e );
+            }
 
             e.printStackTrace();
         }
@@ -137,7 +140,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private String createDynamicReturnType( PsiElement psiElement ) throws IOException {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
-
             List<ClassMethodConfig> classMethodConfigs
                     = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
 
