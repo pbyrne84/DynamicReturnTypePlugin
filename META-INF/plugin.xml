@@ -27,14 +27,14 @@
         <![CDATA[
         <h2>1.0.1</h2>
         <ul>
-            <li>Cache internal lookups for method calls in inheritance look ups as phpindex can lockup on some actions</li>
+            <li>Cache internal look ups for method calls in inheritance look ups as phpindex can lockup on some actions</li>
         </ul>
 
         <h2>1.0.2 ( make compatible with 6.0.3 open api changes so major restructuring, please leave a comment if any problems )</h2>
          <ul>
             <li>Configuration changes of the dynamicReturnTypeMeta.json configuration file in the root are done on the save event so may be sticky.</li>
             <li>Please keep an eye on methods that have the same names return type being overwritten, if not a complete match it should defer back to the original return type.</li>
-            <li>Should now be completely lock up safe as there is no file/phpindex lookups which in the original getType implementation which caused the problems.</li>
+            <li>Should now be completely lock up safe as there is no file/phpindex look ups which in the original getType implementation which caused the problems.</li>
         </ul>
 
         ]]>
