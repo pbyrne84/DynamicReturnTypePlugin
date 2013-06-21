@@ -55,10 +55,24 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
 
     @Override
     public void contentsChanged( VirtualFileEvent virtualFileEvent ) {
+        notifyOnUpdateIfCorrectFile( virtualFileEvent );
+    }
+
+
+    private void notifyOnUpdateIfCorrectFile( VirtualFileEvent virtualFileEvent ) {
         if( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
             notifyOfConfigUpdate( virtualFileEvent.getFile() );
         }
     }
+
+
+    private void notifyOfDeletionIfCorrectFile( VirtualFileEvent virtualFileEvent ) {
+        if( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
+            notifyOfConfigDeletion();
+        }
+    }
+
+
 
 
     private void notifyOfConfigUpdate( VirtualFile virtualFile ) {
@@ -72,15 +86,24 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
     }
 
 
+    private void notifyOfConfigDeletion() {
+        for ( JsonConfigurationChangeListener jsonConfigurationChangeListener : jsonConfigurationChangeListeners ) {
+            jsonConfigurationChangeListener.notifyJsonFileIsDeleted();
+        }
+    }
+
+
+
+
     @Override
     public void fileCreated( VirtualFileEvent virtualFileEvent ) {
-
+        notifyOnUpdateIfCorrectFile( virtualFileEvent );
     }
 
 
     @Override
     public void fileDeleted( VirtualFileEvent virtualFileEvent ) {
-
+        notifyOfDeletionIfCorrectFile( virtualFileEvent );
     }
 
 

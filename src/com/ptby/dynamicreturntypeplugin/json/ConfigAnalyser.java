@@ -7,13 +7,11 @@ import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import java.io.IOException;
 
 public class ConfigAnalyser implements JsonConfigurationChangeListener {
-    private final JsonConfigurationChangeListener configurationChangeListener;
     JsonToDynamicReturnTypeConfigConverter jsonToDynamicReturnTypeConfigConverter;
     private DynamicReturnTypeConfig currentConfig = new DynamicReturnTypeConfig();
 
 
-    public ConfigAnalyser( JsonConfigurationChangeListener configurationChangeListener ) {
-        this.configurationChangeListener = configurationChangeListener;
+    public ConfigAnalyser(  ) {
         jsonToDynamicReturnTypeConfigConverter = new JsonToDynamicReturnTypeConfigConverter();
     }
 
@@ -25,8 +23,13 @@ public class ConfigAnalyser implements JsonConfigurationChangeListener {
 
     @Override
     public void notifyJsonFileHasChanged( VirtualFile virtualFile ) throws IOException {
-        configurationChangeListener.notifyJsonFileHasChanged( virtualFile );
         initialiseNewConfig( virtualFile );
+    }
+
+
+    @Override
+    public void notifyJsonFileIsDeleted(){
+        currentConfig = new DynamicReturnTypeConfig();
     }
 
 

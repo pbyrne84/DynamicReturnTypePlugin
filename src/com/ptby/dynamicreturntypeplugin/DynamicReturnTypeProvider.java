@@ -16,7 +16,6 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
-import com.ptby.dynamicreturntypeplugin.callvalidator.DeprecatedMethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
@@ -55,12 +54,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     public DynamicReturnTypeProvider() {
-        DeprecatedMethodCallValidator deprecatedMethodCallValidator = new DeprecatedMethodCallValidator();
-        configAnalyser = new ConfigAnalyser( deprecatedMethodCallValidator );
+        configAnalyser = new ConfigAnalyser();
 
         functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
 
-        methodCallTypeCalculator = new MethodCallTypeCalculator( deprecatedMethodCallValidator, callReturnTypeCalculator );
+        methodCallTypeCalculator = new MethodCallTypeCalculator( callReturnTypeCalculator );
         methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
 
 
@@ -128,9 +126,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         } catch ( Exception e ) {
             if( !(e instanceof ProcessCanceledException ) ){
                 logger.error( "Exception", e );
+                e.printStackTrace();
             }
-
-            e.printStackTrace();
         }
 
         return null;
@@ -177,9 +174,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( signature ) ) {
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup( signature, project );
         } else if ( variableAnalyser.verifySignatureIsVariableCall( signature ) ) {
-            return phpIndex.getAnyByFQN(
-                    variableAnalyser.getClassNameFromFieldLookup( signature, project )
-            );
+            return variableAnalyser.getClassNameFromFieldLookup( signature, project );
         }
 
         if( signature.indexOf( "#" ) != 0 ) {

@@ -14,12 +14,14 @@ public class VariableAnalyser {
     private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final MethodCallValidator methodCallValidator;
+    private final OriginalCallAnalyzer originalCallAnalyzer;
 
 
     public VariableAnalyser( ConfigAnalyser configAnalyser, ClassConstantAnalyzer classConstantAnalyzer ) {
         this.configAnalyser = configAnalyser;
         this.classConstantAnalyzer = classConstantAnalyzer;
         this.methodCallValidator = new MethodCallValidator( configAnalyser );
+        originalCallAnalyzer = new OriginalCallAnalyzer();
     }
 
 
@@ -35,7 +37,7 @@ public class VariableAnalyser {
     }
 
 
-    public String getClassNameFromFieldLookup( String signature, Project project ) {
+    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
@@ -44,17 +46,17 @@ public class VariableAnalyser {
         String passedType = split[ split.length - 1 ];
 
         if ( !validateCall( phpIndex, variableSignature, calledMethod ) ) {
-            return null;
+            return originalCallAnalyzer.getMethodCallReturnType( phpIndex, variableSignature.substring( 4 ), calledMethod );
         }
 
         if ( classConstantAnalyzer.verifySignatureIsClassConstant( passedType ) ) {
             String classNameFromConstantLookup = classConstantAnalyzer
                     .getClassNameFromConstantLookup( passedType, project );
 
-            return classNameFromConstantLookup;
+            return phpIndex.getAnyByFQN( classNameFromConstantLookup );
         }
 
-        return locateType(   passedType );
+        return phpIndex.getAnyByFQN( passedType );
     }
 
 

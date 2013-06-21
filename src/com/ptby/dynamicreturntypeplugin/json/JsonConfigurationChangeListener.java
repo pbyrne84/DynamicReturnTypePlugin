@@ -8,4 +8,6 @@ import java.io.IOException;
 public interface JsonConfigurationChangeListener {
 
     public void notifyJsonFileHasChanged( VirtualFile virtualFileEvent ) throws IOException;
+
+    void notifyJsonFileIsDeleted();
 }

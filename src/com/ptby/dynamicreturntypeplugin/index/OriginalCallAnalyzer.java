@@ -80,11 +80,12 @@ public class OriginalCallAnalyzer {
         for ( PhpClass phpClass : anyByFQN ) {
             if ( null != ( method = findClassMethodByName( phpClass, calledMethod ) ) ) {
                 String returnType = method.getType().toString();
-                Collection<PhpClass> anyByFQN1 = phpIndex.getAnyByFQN( returnType );
+                Collection<PhpClass> registeredTypes = phpIndex.getAnyByFQN( returnType );
 
-                if( anyByFQN1.size() > 0 ){
-                    return anyByFQN1;
+                if( registeredTypes.size() > 0 ){
+                    return registeredTypes;
                 }
+
                 Collection<PhpClass> primitiveList = new ArrayList<PhpClass>( );
                 primitiveList.add( new PrimitiveClass( method.getType() ) );
                 return primitiveList;

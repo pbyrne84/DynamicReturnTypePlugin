@@ -77,17 +77,5 @@ public class FieldReferenceAnalyzer {
         }
 
         return passedType;
-
-    /*    for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
-            if ( classMethodConfig.getMethodName().equals( calledMethod ) ) {
-                if ( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ) {
-                    return passedType;
-                } else {
-
-                }
-            }
-        }
-
-        return null;*/
     }
 }
