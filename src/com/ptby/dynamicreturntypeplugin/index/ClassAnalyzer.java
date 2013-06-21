@@ -7,6 +7,7 @@ import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class ClassAnalyzer {
     private static final String CLASS_CALL_PATTERN = "(#C.*):(.*):(.*)";
@@ -37,6 +38,10 @@ public class ClassAnalyzer {
     public Collection<? extends PhpNamedElement> getClassNameFromClassLookup( String signature, Project project ) {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
+
+        if( split.length < 3 ) {
+            return Collections.emptySet();
+        }
 
         String classSignature = split[ 0 ];
         String calledMethod = split[ 1 ];

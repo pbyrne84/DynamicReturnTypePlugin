@@ -8,6 +8,7 @@ import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -44,6 +45,10 @@ public class FieldReferenceAnalyzer {
     public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
+
+        if( split.length < 3 ) {
+            return Collections.emptySet();
+        }
 
         String fieldSignature = split[ 0 ];
         String calledMethod = split[ 1 ];
