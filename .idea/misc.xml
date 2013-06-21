@@ -111,11 +111,6 @@
     <option name="OPEN_IN_BROWSER" value="false" />
     <option name="OUTPUT_DIRECTORY" />
   </component>
-  <component name="HierarchyBrowserManager">
-    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
-    <option name="SORT_ALPHABETICALLY" value="false" />
-    <option name="HIDE_CLASSES_WHERE_METHOD_NOT_IMPLEMENTED" value="false" />
-  </component>
   <component name="IdProvider" IDEtalkID="2660D7F97B6A0C3A7FC219AEECE9380F" />
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" />

@@ -46,4 +46,27 @@ public class MethodCallValidator {
         }
         return false;
     }
+
+
+    public boolean validateCallMatchesConfig( PhpIndex phpIndex,String method ,String classSignature ) {
+        String cleanedClassSignature = classSignature.substring( 2 );
+        DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
+
+        for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
+            if ( classMethodConfig.methodCallMatches( cleanedClassSignature, method ) ) {
+                return true;
+            }
+
+            if ( classMethodConfig.getMethodName().equals( method ) ) {
+                String expectedFqnClassName = classMethodConfig.getFqnClassName();
+
+                boolean hasSuperClass = PhpType.findSuper( expectedFqnClassName, cleanedClassSignature, phpIndex );
+                if ( hasSuperClass ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

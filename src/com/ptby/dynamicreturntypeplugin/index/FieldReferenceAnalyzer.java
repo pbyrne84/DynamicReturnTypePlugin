@@ -2,19 +2,12 @@ package com.ptby.dynamicreturntypeplugin.index;
 
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.psi.elements.Field;
-import com.jetbrains.php.lang.psi.elements.Method;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
-import com.jetbrains.php.lang.psi.elements.impl.FieldImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -59,7 +52,7 @@ public class FieldReferenceAnalyzer {
         String type = locateType( phpIndex, fieldSignature, calledMethod, passedType );
         if ( type == null ) {
             return originalCallAnalyzer
-                    .getTypeForMethodThatHasIncorrectObject( phpIndex, fieldSignature, calledMethod );
+                    .getFieldInstanceOriginalReturnType( phpIndex, fieldSignature, calledMethod );
         }
 
         if ( type.indexOf( "#C" ) == 0 ) {

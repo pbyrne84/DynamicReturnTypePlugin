@@ -16,9 +16,9 @@ import java.util.Collections;
  */
 public class OriginalCallAnalyzer {
 
-    public Collection<? extends PhpNamedElement> getTypeForMethodThatHasIncorrectObject( PhpIndex phpIndex,
-                                                                                         String originalCallSignature,
-                                                                                         String calledMethod ) {
+    public Collection<? extends PhpNamedElement> getFieldInstanceOriginalReturnType( PhpIndex phpIndex,
+                                                                                     String originalCallSignature,
+                                                                                     String calledMethod ) {
         Collection<? extends PhpNamedElement> methodSignatures = phpIndex
                 .getBySignature( originalCallSignature, null, 0 );
 
@@ -27,13 +27,10 @@ public class OriginalCallAnalyzer {
         }
 
         FieldImpl field = ( FieldImpl ) methodSignatures.iterator().next();
-
-        Method method;
-        Collection<PhpClass> anyByFQN = phpIndex.getAnyByFQN( field.getType().toString() );
-        for ( PhpClass phpClass : anyByFQN ) {
-            if ( null != ( method = findClassMethodByName( phpClass, calledMethod ) ) ) {
-                return phpIndex.getAnyByFQN( method.getType().toString() );
-            }
+        String classToFindOrigalTurnTypeOf = field.getType().toString();
+        Collection<? extends PhpNamedElement> type;
+        if ( null != ( type = getMethodCallReturnType( phpIndex, classToFindOrigalTurnTypeOf, calledMethod ) ) ) {
+            return type;
         }
 
 
@@ -41,7 +38,7 @@ public class OriginalCallAnalyzer {
     }
 
 
-    protected Method findClassMethodByName( PhpClass phpClass, String methodName ) {
+    private Method findClassMethodByName( PhpClass phpClass, String methodName ) {
         for ( Method method : phpClass.getMethods() ) {
             if ( method.getName().equals( methodName ) ) {
                 return method;
@@ -50,4 +47,23 @@ public class OriginalCallAnalyzer {
 
         return null;
     }
+
+
+    public Collection<? extends PhpNamedElement> getMethodCallReturnType( PhpIndex phpIndex,
+                                                                          String className,
+                                                                          String calledMethod ) {
+
+        Method method;
+        Collection<PhpClass> anyByFQN = phpIndex.getAnyByFQN( className );
+        for ( PhpClass phpClass : anyByFQN ) {
+            if ( null != ( method = findClassMethodByName( phpClass, calledMethod ) ) ) {
+                return phpIndex.getAnyByFQN( method.getType().toString() );
+            }
+        }
+
+        return null;
+    }
+
 }
+
+

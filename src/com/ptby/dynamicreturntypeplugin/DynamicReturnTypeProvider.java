@@ -19,6 +19,7 @@ import com.ptby.dynamicreturntypeplugin.callvalidator.DeprecatedMethodCallValida
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.index.ClassAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
@@ -44,6 +45,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
+    private final ClassAnalyzer classAnalyzer;
     private int maxFileListenerInitialisationAttempts = 5;
     private int currentFileListenerAttempt = 0;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
@@ -67,6 +69,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
         classConstantAnalyzer = new ClassConstantAnalyzer();
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
+        classAnalyzer = new ClassAnalyzer( configAnalyser );
 
 
         attemptToInitialiseFileListener();
@@ -161,29 +164,31 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     @Override
-    public Collection<? extends PhpNamedElement> getBySignature( String type, Project project ) {
+    public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
-        if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
+        if( classAnalyzer.verifySignatureIsFieldCall( signature ) ){
+           return  classAnalyzer.getClassNameFromClassLookup( signature, project );
+        } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( signature ) ) {
             return phpIndex.getAnyByFQN(
-                    classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
+                    classConstantAnalyzer.getClassNameFromConstantLookup( signature, project )
             );
-        } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
-            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project );
-        } else if ( variableAnalyser.verifySignatureIsVariableCall( type ) ) {
+        } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( signature ) ) {
+            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( signature, project );
+        } else if ( variableAnalyser.verifySignatureIsVariableCall( signature ) ) {
             return phpIndex.getAnyByFQN(
-                    variableAnalyser.getClassNameFromFieldLookup( type, project )
+                    variableAnalyser.getClassNameFromFieldLookup( signature, project )
             );
         }
 
-        if( type.indexOf( "#" ) != 0 ) {
-            if( type.indexOf( "\\" ) != 0 ){
-                type = "\\" + type;
+        if( signature.indexOf( "#" ) != 0 ) {
+            if( signature.indexOf( "\\" ) != 0 ){
+                signature = "\\" + signature;
             }
 
-            return phpIndex.getAnyByFQN( type );
+            return phpIndex.getAnyByFQN( signature );
         }
 
-        return phpIndex.getBySignature( type, null, 0 );
+        return phpIndex.getBySignature( signature, null, 0 );
     }
 
 

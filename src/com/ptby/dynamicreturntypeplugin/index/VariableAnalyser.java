@@ -74,7 +74,6 @@ public class VariableAnalyser {
     private String locateType( String passedType ) {
         return passedType.substring( 2  );
 
-
     }
 
 }
