@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -76,6 +76,10 @@
             <li>Should now be lock up safe due to the api changes and internal restructuring.</li>
         </ul>
 
+     <h3>1.0.3 </h3>
+         <ul>
+            <li>Fix index out of bounds issues when decomposing signatures<br/>
+        </ul>
         ]]>
 
     </change-notes>
