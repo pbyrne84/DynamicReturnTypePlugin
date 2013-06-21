@@ -5,8 +5,10 @@
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
-        Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. It can use either the instance type of the passed parameter or a string lookup.
-        Full documentation with examples on github page.
+        Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. <br>
+        It can use either the instance type of the passed parameter or a string lookup.  <br> <br>
+
+        Full documentation with examples on github page. <br> <br>
 
         Can be configured for :
          <ul>
@@ -17,39 +19,40 @@
 
         Accepts the following to calculate return type
         <ul>
-            <li>Parameter object instance( eg. new \DOMDocument() as a parameter instance value will infer a DOMDocument will be returned )</li>
-            <li>Parameter string type ( eg. '\DOMDocument' as a parameter string value will infer a DOMDocument will be returned )</li>
+            <li>Parameter object instance( eg. new \DOMDocument() as a parameter instance value will infer a <br/>
+            DOMDocument will be returned )</li>
+            <li>Parameter string type ( eg. '\DOMDocument' as a parameter string value will infer a DOMDocument<br/>
+             will be returned )</li>
             <li>Class constants that resolve to __CLASS__ will resolve similar to the ::class feature in 5.5 behaves.</li>
         </ul>
 
         <h3>Configuration</h3>
-        Example dynamicReturnTypeMeta.json configuration in project root
-        <pre>
-    {
-        "methodCalls": [
-            {
-                "class": "\\Phockito",
-                "method": "mock",
-                "position": 0
-            },
-             {
-                "class": "\\Phockito",
-                "method": "verify",
-                "position": 0
-            }
-        ],
-        "functionCalls": [
-            {
-                "function": "\\verify",
-                "position": 0
-            },
-            {
-                "function": "\\mock",
-                "position": 0
-            }
-        ]
-    }
-        </pre>
+        Example dynamicReturnTypeMeta.json configuration in project root       <br/>
+
+    {                                                               <br/>
+        "methodCalls": [                                            <br/>
+            {                                                       <br/>
+                "class": "\\Phockito",                              <br/>
+                "method": "mock",                                   <br/>
+                "position": 0                                       <br/>
+            },                                                      <br/>
+             {                                                      <br/>
+                "class": "\\Phockito",                              <br/>
+                "method": "verify",                                 <br/>
+                "position": 0                                       <br/>
+            }                                                       <br/>
+        ],                                                          <br/>
+        "functionCalls": [                                          <br/>
+            {                                                       <br/>
+                "function": "\\verify",                             <br/>
+                "position": 0                                       <br/>
+            },                                                      <br/>
+            {                                                       <br/>
+                "function": "\\mock",                               <br/>
+                "position": 0                                       <br/>
+            }                                                       <br/>
+        ]                                                           <br/>
+    }                                                   <br/>  <br/>
 
         Position is the parameter index to infer the return type from.<br/>
         Classes and function names must be fully qualified with a leading \ as per example.<br/>
@@ -66,8 +69,10 @@
 
         <h3>1.0.2 ( make compatible with 6.0.3 open api changes so major restructuring, please leave a comment if any problems )</h3>
          <ul>
-            <li>Configuration changes of the dynamicReturnTypeMeta.json configuration file in the root are done on the save event so may be sticky, open configuration add a space and save if sticks.</li>
-            <li>Please keep an eye on methods that have the same names return type being overwritten, if not a complete match it should defer back to the original return type.</li>
+            <li>Configuration changes of the dynamicReturnTypeMeta.json configuration file in the root are done on the   <br/>
+            save event so may be sticky, open configuration add a space and save if sticks.</li>         <br/>
+            <li>Please keep an eye on methods that have the same names return type being overwritten, if not   <br/>
+            a complete match it should defer back to the original return type.</li>
             <li>Should now be lock up safe due to the api changes and internal restructuring.</li>
         </ul>
 
