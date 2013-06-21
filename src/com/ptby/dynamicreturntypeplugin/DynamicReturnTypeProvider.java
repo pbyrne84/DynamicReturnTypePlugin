@@ -84,7 +84,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             public void run() {
                 DataContext dataContext = DataManager.getInstance().getDataContext();
                 Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
-                if( project == null ){
+                if ( project == null ) {
                     attemptToInitialiseFileListener();
                     return;
                 }
@@ -98,33 +98,28 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public char getKey() {
-        return 0;
+        return 'Ђ';
     }
 
 
     public String getType( PsiElement psiElement ) {
         try {
             try {
-                try {
-                    String dynamicReturnType = createDynamicReturnType( psiElement );
-                    if ( dynamicReturnType == null ) {
-                        return null;
-                    }
-
-                    return dynamicReturnType;
-                } catch ( MalformedJsonException e ) {
-                    logger.warn( "MalformedJsonException", e );
-                } catch ( JsonSyntaxException e ) {
-                    logger.warn( "JsonSyntaxException", e );
-                } catch ( IOException e ) {
-                    logger.error( "IOException", e );
+                String dynamicReturnType = createDynamicReturnType( psiElement );
+                if ( dynamicReturnType == null ) {
+                    return null;
                 }
 
-            } catch ( IndexNotReadyException e ) {
-                logger.error( "IndexNotReadyException", e );
+                return dynamicReturnType;
+            } catch ( MalformedJsonException e ) {
+                logger.warn( "MalformedJsonException", e );
+            } catch ( JsonSyntaxException e ) {
+                logger.warn( "JsonSyntaxException", e );
+            } catch ( IOException e ) {
+                logger.warn( "IOException", e );
             }
         } catch ( Exception e ) {
-            if( !(e instanceof ProcessCanceledException ) ){
+            if ( !( e instanceof ProcessCanceledException ) ) {
                 logger.error( "Exception", e );
                 e.printStackTrace();
             }
@@ -138,7 +133,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
             List<ClassMethodConfig> classMethodConfigs
-                    = getDynamicReturnTypeConfig( psiElement ).getClassMethodConfigs();
+                    = configAnalyser.getCurrentConfig().getClassMethodConfigs();
 
             String typeFromMethodCall
                     = methodCallReturnTypeScanner.getTypeFromMethodCall( classMethodConfigs, classMethod );
@@ -149,7 +144,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
                     = ( FunctionReferenceImpl ) psiElement;
 
             List<FunctionCallConfig> functionCallConfigs
-                    = getDynamicReturnTypeConfig( psiElement ).getFunctionCallConfigs();
+                    = configAnalyser.getCurrentConfig().getFunctionCallConfigs();
 
             String typeFromFunctionCall = functionCallReturnTypeScanner
                     .getTypeFromFunctionCall( functionCallConfigs, functionReference
@@ -165,8 +160,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
-        if( classAnalyzer.verifySignatureIsFieldCall( signature ) ){
-           return  classAnalyzer.getClassNameFromClassLookup( signature, project );
+        if ( classAnalyzer.verifySignatureIsFieldCall( signature ) ) {
+            return classAnalyzer.getClassNameFromClassLookup( signature, project );
         } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( signature ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( signature, project )
@@ -177,8 +172,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             return variableAnalyser.getClassNameFromFieldLookup( signature, project );
         }
 
-        if( signature.indexOf( "#" ) != 0 ) {
-            if( signature.indexOf( "\\" ) != 0 ){
+        if ( signature.indexOf( "#" ) != 0 ) {
+            if ( signature.indexOf( "\\" ) != 0 ) {
                 signature = "\\" + signature;
             }
 
@@ -187,11 +182,4 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         return phpIndex.getBySignature( signature, null, 0 );
     }
-
-
-    private DynamicReturnTypeConfig getDynamicReturnTypeConfig( PsiElement psiElement ) throws IOException {
-        return configAnalyser.getCurrentConfig();
-    }
-
-
 }

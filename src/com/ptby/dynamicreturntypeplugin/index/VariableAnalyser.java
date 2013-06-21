@@ -9,16 +9,13 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import java.util.Collection;
 
 public class VariableAnalyser {
-    //#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\JE\Match\Solr\Advert\AdvertBoardLocationTermsCalculator.CLASS_NAME|?
     public static final String VARIABLE_PATTERN = "(#M#C.*):(.*):(.*)";
-    private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final MethodCallValidator methodCallValidator;
     private final OriginalCallAnalyzer originalCallAnalyzer;
 
 
     public VariableAnalyser( ConfigAnalyser configAnalyser, ClassConstantAnalyzer classConstantAnalyzer ) {
-        this.configAnalyser = configAnalyser;
         this.classConstantAnalyzer = classConstantAnalyzer;
         this.methodCallValidator = new MethodCallValidator( configAnalyser );
         originalCallAnalyzer = new OriginalCallAnalyzer();
@@ -72,10 +69,4 @@ public class VariableAnalyser {
 
         return false;
     }
-
-    private String locateType( String passedType ) {
-        return passedType.substring( 2  );
-
-    }
-
 }

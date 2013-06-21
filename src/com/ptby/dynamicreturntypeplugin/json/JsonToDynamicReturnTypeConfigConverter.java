@@ -16,6 +16,10 @@ public class JsonToDynamicReturnTypeConfigConverter {
     public DynamicReturnTypeConfig convertJson( String json ) {
         Gson gson = new Gson();
         JsonElement jsonElement = gson.fromJson( json, JsonElement.class );
+        if( jsonElement == null ){
+            return new DynamicReturnTypeConfig();
+        }
+
         JsonObject jsonObject = jsonElement.getAsJsonObject();
 
         JsonArray methodCalls = jsonObject.getAsJsonArray( "methodCalls" );
