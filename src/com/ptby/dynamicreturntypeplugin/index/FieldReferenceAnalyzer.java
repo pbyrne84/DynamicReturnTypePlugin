@@ -8,6 +8,7 @@ import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.elements.impl.FieldImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
+import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
@@ -25,12 +26,14 @@ public class FieldReferenceAnalyzer {
     private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final OriginalCallAnalyzer originalCallAnalyzer;
+    private final MethodCallValidator methodCallValidator;
 
 
     public FieldReferenceAnalyzer( ConfigAnalyser configAnalyser ) {
         this.configAnalyser = configAnalyser;
         classConstantAnalyzer = new ClassConstantAnalyzer();
         originalCallAnalyzer = new OriginalCallAnalyzer();
+        methodCallValidator = new MethodCallValidator( configAnalyser );
     }
 
 
@@ -75,11 +78,14 @@ public class FieldReferenceAnalyzer {
         }
 
         PhpNamedElement fieldElement = fieldElements.iterator().next();
-
-        DynamicReturnTypeConfig currentConfig = this.configAnalyser.getCurrentConfig();
         PhpType type = fieldElement.getType();
+        if(!methodCallValidator.validateCallMatchesConfig(  phpIndex, calledMethod, "#C" + type.toString(), fieldElements ) ){
+            return null;
+        }
 
-        for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
+        return passedType;
+
+    /*    for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
             if ( classMethodConfig.getMethodName().equals( calledMethod ) ) {
                 if ( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ) {
                     return passedType;
@@ -89,6 +95,6 @@ public class FieldReferenceAnalyzer {
             }
         }
 
-        return null;
+        return null;*/
     }
 }

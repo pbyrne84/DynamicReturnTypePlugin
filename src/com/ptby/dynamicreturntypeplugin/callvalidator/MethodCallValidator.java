@@ -25,18 +25,17 @@ public class MethodCallValidator {
                                               Collection<? extends PhpNamedElement> fieldElements ) {
         for ( PhpNamedElement fieldElement : fieldElements ) {
             DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
-            PhpType type = fieldElement.getType();
+            PhpType fieldElementType = fieldElement.getType();
             for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
-                if ( classMethodConfig.methodCallMatches( type.toString(), calledMethod ) ) {
+                if ( classMethodConfig.methodCallMatches( fieldElementType.toString(), calledMethod ) ) {
                     return true;
                 }
 
                 if ( classMethodConfig.getMethodName().equals( calledMethod ) ) {
-                    String varialeFqnClassName = cleanedVariableSignature.substring( 2 );
-                    boolean hasSuperClass = fieldElement.getType()
-                                                        .findSuper( classMethodConfig
-                                                                .getFqnClassName(), varialeFqnClassName, phpIndex
-                                                        );
+                    String actualFqnClassName = cleanedVariableSignature.substring( 2 );
+                    String expectedFqnClassName = classMethodConfig.getFqnClassName();
+
+                    boolean hasSuperClass = PhpType.findSuper( expectedFqnClassName, actualFqnClassName, phpIndex );
                     if ( hasSuperClass ) {
                         return true;
                     }
