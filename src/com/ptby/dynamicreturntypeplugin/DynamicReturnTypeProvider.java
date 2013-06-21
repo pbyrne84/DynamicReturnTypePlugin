@@ -44,6 +44,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
+    private int maxFileListenerInitialisationAttempts = 5;
+    private int currentFileListenerAttempt = 0;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
@@ -67,22 +69,25 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
 
 
+        attemptToInitialiseFileListener();
+    }
+
+
+    private void attemptToInitialiseFileListener() {
+        if ( ++currentFileListenerAttempt == maxFileListenerInitialisationAttempts ) {
+            return;
+        }
+
         java.awt.EventQueue.invokeLater( new Runnable() {
             public void run() {
-                Project project = null;
-           /*     while( project == null ){*/
-                    try {
-                        Thread.sleep( 100 );
-                    } catch ( InterruptedException e ) {
-                        e.printStackTrace();
-                    }
-
-                    DataContext dataContext = DataManager.getInstance().getDataContext();
-                     project = ( Project ) dataContext.getData( DataConstants.PROJECT );
+                DataContext dataContext = DataManager.getInstance().getDataContext();
+                Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
                  /*   if( project != null ){*/
-                        jsonFileSystemChangeListener.setCurrentProject( project );
-                   /* }*/
-            /*    }*/
+                try {
+                    jsonFileSystemChangeListener.setCurrentProject( project );
+                } catch ( NullPointerException e ) {
+                    attemptToInitialiseFileListener();
+                }
             }
         }
         );
@@ -163,12 +168,19 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
                     classConstantAnalyzer.getClassNameFromConstantLookup( type, project )
             );
         } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( type ) ) {
-            return  fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project );
+            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( type, project );
         } else if ( variableAnalyser.verifySignatureIsVariableCall( type ) ) {
             return phpIndex.getAnyByFQN(
                     variableAnalyser.getClassNameFromFieldLookup( type, project )
             );
+        }
 
+        if( type.indexOf( "#" ) != 0 ) {
+            if( type.indexOf( "\\" ) != 0 ){
+                type = "\\" + type;
+            }
+
+            return phpIndex.getAnyByFQN( type );
         }
 
         return phpIndex.getBySignature( type, null, 0 );
