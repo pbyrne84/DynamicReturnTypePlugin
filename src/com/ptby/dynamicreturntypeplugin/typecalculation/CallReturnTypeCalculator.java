@@ -37,37 +37,34 @@ public class CallReturnTypeCalculator {
     public String calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
         PhpExpression classReference = methodReference.getClassReference();
         if ( classReference instanceof FieldReference ) {
-            return fieldResponsePackager.packageFieldReference( methodReference, parameterIndex );
+            ParameterType parameterType = parameterTypeCalculator
+                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+
+            return fieldResponsePackager.packageFieldReference( methodReference, parameterType );
         }else if ( classReference instanceof Variable ) {
-            return variableResponsePackager.packageVariableReference( methodReference, parameterIndex );
+            ParameterType parameterType = parameterTypeCalculator
+                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+
+            return variableResponsePackager.packageVariableReference( methodReference, parameterType );
         }else if( classReference instanceof ClassReference ){
-            return classResponsePackager.packageClassReference( methodReference, parameterIndex );
+            ParameterType parameterType = parameterTypeCalculator
+                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+            return classResponsePackager.packageClassReference( methodReference, parameterType );
         }
 
-        return parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+        return parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() )
+                                      .toString();
     }
-
-
-
 
 
     public GetTypeResponse calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
-        String functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(
+        ParameterType functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(
                 parameterIndex, functionReference.getParameters()
         );
 
-        return new GetTypeResponse( cleanReturnTypeOfPreviousCalls( functionReturnType ) );
+        return new GetTypeResponse( functionReturnType.toString()  );
     }
 
-
-    private String cleanReturnTypeOfPreviousCalls( String functionReturnType ) {
-        if( functionReturnType == null ){
-            return null;
-        }
-
-        String[] functionReturnTypeParts = functionReturnType.split( ":" );
-        return functionReturnTypeParts[ functionReturnTypeParts.length - 1 ];
-    }
 
 
 }

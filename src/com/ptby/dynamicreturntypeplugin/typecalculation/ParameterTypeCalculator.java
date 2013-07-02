@@ -14,9 +14,9 @@ public class ParameterTypeCalculator {
     }
 
 
-    public String calculateTypeFromParameter( int parameterIndex, PsiElement[] parameters ) {
+    public ParameterType calculateTypeFromParameter( int parameterIndex, PsiElement[] parameters ) {
         if ( parameters.length <= parameterIndex ) {
-            return null;
+            return new ParameterType( null );
         }
 
         PsiElement element = parameters[ parameterIndex ];
@@ -24,21 +24,21 @@ public class ParameterTypeCalculator {
             PhpType type = ( ( PhpTypedElement ) element ).getType();
             if ( !type.toString().equals( "void" ) ) {
                 if ( type.toString().equals( "string" ) ) {
-                    return cleanClassText( element );
+                    return new ParameterType( cleanClassText( element ) );
                 } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type.toString() ) ) {
-                    return type.toString();
+                    return new ParameterType( type.toString() );
                 }
 
                 for ( String singleType : type.getTypes() ) {
                     if ( singleType.substring( 0, 1 ).equals( "\\" ) ) {
-                        return "#C" + singleType;
+                        return new ParameterType( "#C" + singleType );
                     }
-                    return singleType.substring( 3 );
+                    return new ParameterType( singleType.substring( 3 ) );
                 }
             }
         }
 
-        return null;
+        return new ParameterType( null );
     }
 
 

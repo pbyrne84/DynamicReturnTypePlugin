@@ -16,7 +16,8 @@ public class MethodCallReturnTypeScanner {
         this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
 
-    public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
+    public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList,
+                                                  MethodReferenceImpl methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
             if ( validateMethodName( methodReference, classMethodConfig ) ) {
                 String phpType = callReturnTypeCalculator

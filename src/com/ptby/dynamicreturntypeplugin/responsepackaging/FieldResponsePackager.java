@@ -5,23 +5,17 @@ import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
+import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterType;
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator;
 
 public class FieldResponsePackager {
 
-
-    private final ParameterTypeCalculator parameterTypeCalculator;
-
-
     public FieldResponsePackager() {
-        parameterTypeCalculator = new ParameterTypeCalculator( new ClassConstantAnalyzer() );
     }
 
 
-    public String packageFieldReference( MethodReferenceImpl methodReference, int parameterIndex ) {
+    public String packageFieldReference( MethodReferenceImpl methodReference, ParameterType parameterType) {
         FieldReferenceImpl fieldReference = ( FieldReferenceImpl ) methodReference.getClassReference();
-
-        String returnType = parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
 
         String intellijReference;
         if( methodReference.getSignature().matches( "#M#C(.*)" )){
@@ -31,7 +25,7 @@ public class FieldResponsePackager {
         }
 
         String packagedFieldReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
-                intellijReference, methodReference.getName(), cleanReturnTypeOfPreviousCalls( returnType )
+                intellijReference, methodReference.getName(), parameterType.toString()
         );
 
         return packagedFieldReference;
@@ -41,17 +35,6 @@ public class FieldResponsePackager {
         FieldReference fieldReference = ( FieldReference ) methodReference.getClassReference();
         return fieldReference.getSignature();
     }
-
-    private String cleanReturnTypeOfPreviousCalls( String functionReturnType ) {
-        if( functionReturnType == null ){
-            return null;
-        }
-
-        String[] functionReturnTypeParts = functionReturnType.split( ":" );
-        return functionReturnTypeParts[ functionReturnTypeParts.length - 1 ];
-    }
-
-
 }
 
 
