@@ -4,15 +4,10 @@ import com.jetbrains.php.lang.psi.elements.ClassReference;
 import com.jetbrains.php.lang.psi.elements.FieldReference;
 import com.jetbrains.php.lang.psi.elements.PhpExpression;
 import com.jetbrains.php.lang.psi.elements.Variable;
-import com.jetbrains.php.lang.psi.elements.impl.ClassReferenceImpl;
-import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
-import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
-import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.responsepackaging.ClassResponsePackager;
 import com.ptby.dynamicreturntypeplugin.responsepackaging.FieldResponsePackager;
 import com.ptby.dynamicreturntypeplugin.responsepackaging.VariableResponsePackager;
@@ -34,26 +29,32 @@ public class CallReturnTypeCalculator {
     }
 
 
-    public String calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
+    public GetTypeResponse calculateTypeFromMethodParameter( MethodReferenceImpl methodReference, int parameterIndex ) {
         PhpExpression classReference = methodReference.getClassReference();
         if ( classReference instanceof FieldReference ) {
-            ParameterType parameterType = parameterTypeCalculator
-                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
-
-            return fieldResponsePackager.packageFieldReference( methodReference, parameterType );
+            return fieldResponsePackager.packageFieldReference(
+                    methodReference, createParameterType( methodReference, parameterIndex )
+            );
         }else if ( classReference instanceof Variable ) {
-            ParameterType parameterType = parameterTypeCalculator
-                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
-
-            return variableResponsePackager.packageVariableReference( methodReference, parameterType );
+            return variableResponsePackager.packageVariableReference(
+                    methodReference, createParameterType( methodReference, parameterIndex )
+            );
         }else if( classReference instanceof ClassReference ){
-            ParameterType parameterType = parameterTypeCalculator
-                    .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
-            return classResponsePackager.packageClassReference( methodReference, parameterType );
+            return classResponsePackager.packageClassReference(
+                    methodReference, createParameterType( methodReference, parameterIndex
+            ) );
         }
 
-        return parameterTypeCalculator.calculateTypeFromParameter( parameterIndex, methodReference.getParameters() )
-                                      .toString();
+        ParameterType parameterType = parameterTypeCalculator
+                .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+
+        return new GetTypeResponse( parameterType.toString() );
+    }
+
+
+    private ParameterType createParameterType( MethodReferenceImpl methodReference, int parameterIndex ) {
+        return parameterTypeCalculator
+                        .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
     }
 
 

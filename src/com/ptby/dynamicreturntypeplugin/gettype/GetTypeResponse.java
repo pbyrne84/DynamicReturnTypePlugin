@@ -9,6 +9,11 @@ public class GetTypeResponse {
     }
 
 
+    public boolean isNull() {
+        return response == null;
+    }
+
+
     @Override
     public String toString() {
         return response;

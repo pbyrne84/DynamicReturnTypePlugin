@@ -12,18 +12,19 @@ public class MethodCallReturnTypeScanner {
     private final CallReturnTypeCalculator callReturnTypeCalculator;
 
 
-    public MethodCallReturnTypeScanner(   CallReturnTypeCalculator callReturnTypeCalculator ){
+    public MethodCallReturnTypeScanner( CallReturnTypeCalculator callReturnTypeCalculator ) {
         this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
+
 
     public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList,
                                                   MethodReferenceImpl methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
             if ( validateMethodName( methodReference, classMethodConfig ) ) {
-                String phpType = callReturnTypeCalculator
+                GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
-                if ( phpType != null ) {
-                    return new GetTypeResponse( phpType );
+                if ( !getTypeResponse.isNull() ) {
+                    return getTypeResponse;
                 }
             }
         }

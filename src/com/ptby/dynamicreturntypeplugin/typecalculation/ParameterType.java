@@ -5,8 +5,24 @@ public class ParameterType {
 
 
     public ParameterType( String parameterType ) {
-
         this.parameterType = parameterType;
+    }
+
+    public String getClassReferenceString(){
+        if( this.parameterType == null ){
+            return null;
+
+        }
+
+        String returnType = parameterType;
+        if( returnType.indexOf( "#" ) == -1 ){
+            if( returnType.indexOf( "\\" ) == -1 ){
+                returnType = "\\" + returnType;
+            }
+            returnType = "#C" + returnType;
+        }
+
+        return returnType;
     }
 
 
