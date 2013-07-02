@@ -6,19 +6,13 @@ import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.progress.ProcessCanceledException;
-import com.intellij.openapi.project.IndexNotReadyException;
 import com.intellij.openapi.project.Project;
-import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.parser.PhpElementTypes;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
-import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
-import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
 import com.ptby.dynamicreturntypeplugin.index.ClassAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
@@ -28,25 +22,18 @@ import com.ptby.dynamicreturntypeplugin.json.JsonFileSystemChangeListener;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
-import com.ptby.dynamicreturntypeplugin.typecalculation.MethodCallTypeCalculator;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
-    private final MethodCallTypeCalculator methodCallTypeCalculator;
-    private final CallReturnTypeCalculator callReturnTypeCalculator = new CallReturnTypeCalculator();
-    private final ConfigAnalyser configAnalyser;
-    private final FunctionCallReturnTypeScanner functionCallReturnTypeScanner;
-    private final MethodCallReturnTypeScanner methodCallReturnTypeScanner;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
     private final ClassAnalyzer classAnalyzer;
-    private int maxFileListenerInitialisationAttempts = 5;
+    private final GetTypeResponseFactory getTypeResponseFactory;
     private int currentFileListenerAttempt = 0;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
@@ -54,13 +41,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     public DynamicReturnTypeProvider() {
-        configAnalyser = new ConfigAnalyser();
-
-        functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
-
-        methodCallTypeCalculator = new MethodCallTypeCalculator( callReturnTypeCalculator );
-        methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( methodCallTypeCalculator );
-
+        ConfigAnalyser configAnalyser = new ConfigAnalyser();
 
         jsonFileSystemChangeListener = new JsonFileSystemChangeListener();
         jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
@@ -70,12 +51,25 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
         classAnalyzer = new ClassAnalyzer( configAnalyser );
 
+        getTypeResponseFactory = createGetTyepResponseFactory( configAnalyser );
 
         attemptToInitialiseFileListener();
     }
 
 
+    private GetTypeResponseFactory createGetTyepResponseFactory( ConfigAnalyser configAnalyser ) {
+        CallReturnTypeCalculator callReturnTypeCalculator = new CallReturnTypeCalculator();
+        FunctionCallReturnTypeScanner functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
+        MethodCallReturnTypeScanner methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( callReturnTypeCalculator );
+
+        return new GetTypeResponseFactory(
+                configAnalyser, methodCallReturnTypeScanner, functionCallReturnTypeScanner
+        );
+    }
+
+
     private void attemptToInitialiseFileListener() {
+        int maxFileListenerInitialisationAttempts = 5;
         if ( ++currentFileListenerAttempt == maxFileListenerInitialisationAttempts ) {
             return;
         }
@@ -105,12 +99,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     public String getType( PsiElement psiElement ) {
         try {
             try {
-                String dynamicReturnType = createDynamicReturnType( psiElement );
-                if ( dynamicReturnType == null ) {
-                    return null;
-                }
+                GetTypeResponse dynamicReturnType = getTypeResponseFactory.createDynamicReturnType( psiElement );
 
-                return dynamicReturnType;
+                return dynamicReturnType.toString();
             } catch ( MalformedJsonException e ) {
                 logger.warn( "MalformedJsonException", e );
             } catch ( JsonSyntaxException e ) {
@@ -123,34 +114,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
                 logger.error( "Exception", e );
                 e.printStackTrace();
             }
-        }
-
-        return null;
-    }
-
-
-    private String createDynamicReturnType( PsiElement psiElement ) throws IOException {
-        if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
-            MethodReferenceImpl classMethod = ( MethodReferenceImpl ) psiElement;
-            List<ClassMethodConfig> classMethodConfigs
-                    = configAnalyser.getCurrentConfig().getClassMethodConfigs();
-
-            String typeFromMethodCall
-                    = methodCallReturnTypeScanner.getTypeFromMethodCall( classMethodConfigs, classMethod );
-
-            return typeFromMethodCall;
-        } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {
-            FunctionReferenceImpl functionReference
-                    = ( FunctionReferenceImpl ) psiElement;
-
-            List<FunctionCallConfig> functionCallConfigs
-                    = configAnalyser.getCurrentConfig().getFunctionCallConfigs();
-
-            String typeFromFunctionCall = functionCallReturnTypeScanner
-                    .getTypeFromFunctionCall( functionCallConfigs, functionReference
-                    );
-
-            return typeFromFunctionCall;
         }
 
         return null;

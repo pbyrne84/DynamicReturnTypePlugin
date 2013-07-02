@@ -2,9 +2,12 @@ package com.ptby.dynamicreturntypeplugin.json;
 
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileEvent;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ConfigAnalyser implements JsonConfigurationChangeListener {
     JsonToDynamicReturnTypeConfigConverter jsonToDynamicReturnTypeConfigConverter;
@@ -18,6 +21,16 @@ public class ConfigAnalyser implements JsonConfigurationChangeListener {
 
     public DynamicReturnTypeConfig getCurrentConfig() {
         return currentConfig;
+    }
+
+
+    public List<ClassMethodConfig> getCurrentClassMethodConfigs(){
+        return currentConfig.getClassMethodConfigs();
+    }
+
+
+    public   List<FunctionCallConfig> getCurrentFunctionCallConfigs() {
+        return currentConfig.getFunctionCallConfigs();
     }
 
 

@@ -9,6 +9,7 @@ import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl;
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
@@ -50,12 +51,12 @@ public class CallReturnTypeCalculator {
 
 
 
-    public String calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
+    public GetTypeResponse calculateTypeFromFunctionParameter( FunctionReferenceImpl functionReference, int parameterIndex ) {
         String functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(
                 parameterIndex, functionReference.getParameters()
         );
 
-        return cleanReturnTypeOfPreviousCalls( functionReturnType );
+        return new GetTypeResponse( cleanReturnTypeOfPreviousCalls( functionReturnType ) );
     }
 
 

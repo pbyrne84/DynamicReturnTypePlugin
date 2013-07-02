@@ -2,30 +2,32 @@ package com.ptby.dynamicreturntypeplugin.scanner;
 
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.typecalculation.MethodCallTypeCalculator;
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
+import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
 import java.util.List;
 
 public class MethodCallReturnTypeScanner {
 
-    private final MethodCallTypeCalculator methodCallTypeCalculator;
+    private final CallReturnTypeCalculator callReturnTypeCalculator;
 
 
-    public MethodCallReturnTypeScanner(  MethodCallTypeCalculator methodCallTypeCalculator){
-        this.methodCallTypeCalculator = methodCallTypeCalculator;
+    public MethodCallReturnTypeScanner(   CallReturnTypeCalculator callReturnTypeCalculator ){
+        this.callReturnTypeCalculator = callReturnTypeCalculator;
     }
 
-    public String getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
+    public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList, MethodReferenceImpl methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
             if ( validateMethodName( methodReference, classMethodConfig ) ) {
-                String phpType = methodCallTypeCalculator.calculateFromMethodCall( classMethodConfig, methodReference );
+                String phpType = callReturnTypeCalculator
+                        .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
                 if ( phpType != null ) {
-                    return phpType;
+                    return new GetTypeResponse( phpType );
                 }
             }
         }
 
-        return null;
+        return new GetTypeResponse( null );
     }
 
 
