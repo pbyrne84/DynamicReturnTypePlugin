@@ -33,6 +33,11 @@ public class ParameterTypeCalculator {
                     if ( singleType.substring( 0, 1 ).equals( "\\" ) ) {
                         return new ParameterType( "#C" + singleType );
                     }
+
+                    if ( singleType.length() < 3 ) {
+                        return new ParameterType( null );
+                    }
+
                     return new ParameterType( singleType.substring( 3 ) );
                 }
             }
