@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
@@ -14,14 +15,12 @@ import java.util.List;
 public class JsonToDynamicReturnTypeConfigConverter {
 
     public DynamicReturnTypeConfig convertJson( String json ) {
-        Gson gson = new Gson();
-        JsonElement jsonElement = gson.fromJson( json, JsonElement.class );
-        if( jsonElement == null ){
+        JsonElement jsonElement = createJsonElementFromJson( json );
+        if(  jsonElement == null || !jsonElement.isJsonObject() ){
             return new DynamicReturnTypeConfig();
         }
 
         JsonObject jsonObject = jsonElement.getAsJsonObject();
-
         JsonArray methodCalls = jsonObject.getAsJsonArray( "methodCalls" );
         List<ClassMethodConfig> classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs( methodCalls );
 
@@ -29,6 +28,16 @@ public class JsonToDynamicReturnTypeConfigConverter {
         List<FunctionCallConfig> functionCallConfigs = castJsonMethodCallConfigToFunctionCallConfigs( functionCalls );
 
         return new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
+    }
+
+
+    private JsonElement createJsonElementFromJson( String json ){
+        Gson gson = new Gson();
+        try {
+            return gson.fromJson( json, JsonElement.class );
+        } catch ( JsonSyntaxException e ) {
+            return null;
+        }
     }
 
 
