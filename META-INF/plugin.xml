@@ -80,6 +80,13 @@
          <ul>
             <li>Fix index out of bounds issues when decomposing signatures<br/>
         </ul>
+     <h3>1.0.4 </h3>
+         <ul>
+            <li>Fix exceptions being thrown when putting junk in the json config file<br/>
+            <li>Fix exceptions being thrown when auto completing in parameter<br/>
+            <li>Log internally in unknown signatures<br/>
+        </ul>
+
         ]]>
 
     </change-notes>
