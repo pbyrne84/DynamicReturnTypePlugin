@@ -1,0 +1,14 @@
+Dump of internal parsing
+singleType #A#M#C\JE\Test\Phpunit\JeTestCase.verify.0
+singleType \AdvertServer
+singleType #Dsd2d
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #DAdvert
+singleType \AdvertServer
+singleType #Dsd
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #?#M#C\JE\Match\Solr\Advert\SolrAdvertRetrieverTest:getFullMock:#K#C\ITJB\Entity\Advert.CLASS_NAME|?
+singleType #DAdvert
