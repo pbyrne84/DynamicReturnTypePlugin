@@ -5,6 +5,11 @@ public class GetTypeResponse {
 
 
     public GetTypeResponse( String response ) {
+        if( response != null && response.toString() == "null" ) {
+            throw new RuntimeException("cannot be string null");
+
+        }
+
         this.response = response;
     }
 

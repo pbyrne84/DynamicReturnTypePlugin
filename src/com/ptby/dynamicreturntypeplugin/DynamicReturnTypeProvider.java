@@ -25,6 +25,7 @@ import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
@@ -100,6 +101,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         try {
             try {
                 GetTypeResponse dynamicReturnType = getTypeResponseFactory.createDynamicReturnType( psiElement );
+                if( dynamicReturnType.isNull() ){
+                    return null;
+                }
 
                 return dynamicReturnType.toString();
             } catch ( MalformedJsonException e ) {
@@ -143,6 +147,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             return phpIndex.getAnyByFQN( signature );
         }
 
-        return phpIndex.getBySignature( signature, null, 0 );
+        try {
+            return phpIndex.getBySignature( signature, null, 0 );
+        } catch ( RuntimeException e ) {
+            logger.warn( "Cannot decode " + signature );
+            return Collections.emptySet();
+        }
     }
 }
