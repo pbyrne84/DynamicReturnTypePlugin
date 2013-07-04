@@ -5,7 +5,6 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
@@ -31,7 +30,7 @@ public class MethodCallValidator {
                     return true;
                 }
 
-                if ( classMethodConfig.getMethodName().equals( calledMethod ) ) {
+                if ( classMethodConfig.equalsMethodName( calledMethod ) ) {
                     String actualFqnClassName = cleanedVariableSignature.substring( 2 );
                     String expectedFqnClassName = classMethodConfig.getFqnClassName();
 
@@ -57,7 +56,7 @@ public class MethodCallValidator {
                 return true;
             }
 
-            if ( classMethodConfig.getMethodName().equals( method ) ) {
+            if ( classMethodConfig.equalsMethodName( method ) ) {
                 String expectedFqnClassName = classMethodConfig.getFqnClassName();
 
                 boolean hasSuperClass = PhpType.findSuper( expectedFqnClassName, cleanedClassSignature, phpIndex );

@@ -11,27 +11,30 @@ public class ClassMethodConfig {
 
     public ClassMethodConfig( String fqnClassName, String methodName, int parameterIndex ) {
         this.fqnClassName = fqnClassName;
-        this.methodName = methodName;
+        this.methodName = methodName.toLowerCase();
         this.parameterIndex = parameterIndex;
     }
 
 
     public boolean methodCallMatches( String actualFqnClassName, String actualMethodName ) {
-        return fqnClassName.equals( actualFqnClassName ) && methodName.equals( actualMethodName );
+        return fqnClassName.equals( actualFqnClassName ) && equalsMethodName( actualMethodName );
     }
 
 
-    public boolean equalsMethodReferenceName( MethodReference methodReference ){
-        return methodReference.getName().equals( getMethodName() );
+    public boolean equalsMethodName( String currentMethodName ) {
+        String lowerCaseCurrentMethodName = currentMethodName.toLowerCase();
+        return lowerCaseCurrentMethodName.equals( methodName );
     }
+
+
+    public boolean equalsMethodReferenceName( MethodReference methodReference ) {
+        String methodName = methodReference.getName();
+        return equalsMethodName( methodName );
+    }
+
 
     public String getFqnClassName() {
         return fqnClassName;
-    }
-
-
-    public String getMethodName() {
-        return methodName;
     }
 
 
