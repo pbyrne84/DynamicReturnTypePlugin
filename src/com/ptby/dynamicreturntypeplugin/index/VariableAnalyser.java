@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
@@ -67,8 +68,9 @@ public class VariableAnalyser {
         Collection<? extends PhpNamedElement> fieldElements = phpIndex
                 .getBySignature( cleanedVariableSignature, null, 0 );
 
-        if ( methodCallValidator
-                .validateCallMatchesConfig( phpIndex, calledMethod, cleanedVariableSignature, fieldElements ) ) {
+        ClassMethodConfig matchingConfig = methodCallValidator
+                .getMatchingConfig( phpIndex, calledMethod, cleanedVariableSignature, fieldElements );
+        if ( matchingConfig != null  ) {
             return true;
         }
 

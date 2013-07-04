@@ -16,7 +16,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
 
     public DynamicReturnTypeConfig convertJson( String json ) {
         JsonElement jsonElement = createJsonElementFromJson( json );
-        if(  jsonElement == null || !jsonElement.isJsonObject() ){
+        if ( jsonElement == null || !jsonElement.isJsonObject() ) {
             return new DynamicReturnTypeConfig();
         }
 
@@ -31,7 +31,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
     }
 
 
-    private JsonElement createJsonElementFromJson( String json ){
+    private JsonElement createJsonElementFromJson( String json ) {
         Gson gson = new Gson();
         try {
             return gson.fromJson( json, JsonElement.class );
@@ -52,16 +52,38 @@ public class JsonToDynamicReturnTypeConfigConverter {
             if ( !jsonElement.isJsonNull() ) {
                 JsonObject jsonMethodCall = jsonElement.getAsJsonObject();
                 ClassMethodConfig classMethodConfig = new ClassMethodConfig(
-                        jsonMethodCall.get( "class" ).getAsString(),
-                        jsonMethodCall.get( "method" ).getAsString(),
-                        jsonMethodCall.get( "position" ).getAsInt()
+                        getJsonString( jsonMethodCall, "class" ),
+                        getJsonString( jsonMethodCall, "method" ),
+                        getJsonInt( jsonMethodCall, "position" ),
+                        getJsonString( jsonMethodCall, "mask" )
                 );
 
-                classMethodConfigs.add( classMethodConfig );
+                if( classMethodConfig.isValid() ){
+                    classMethodConfigs.add( classMethodConfig );
+                }
+
             }
         }
 
         return classMethodConfigs;
+    }
+
+
+    private String getJsonString( JsonObject object, String name ) {
+        if ( !object.has( name ) ) {
+            return "";
+        }
+
+        return object.get( name ).getAsString();
+    }
+
+
+    private int getJsonInt( JsonObject object, String name ) {
+        if ( !object.has( name ) ) {
+            return -1;
+        }
+
+        return object.get( name ).getAsInt();
     }
 
 
@@ -71,17 +93,19 @@ public class JsonToDynamicReturnTypeConfigConverter {
             return functionCallConfigs;
         }
 
-
         JsonArray jsonFunctionCalConfigList = functionCalls.getAsJsonArray();
         for ( JsonElement jsonElement : jsonFunctionCalConfigList ) {
             if ( !jsonElement.isJsonNull() ) {
                 JsonObject jsonFunctionCall = jsonElement.getAsJsonObject();
-                FunctionCallConfig classMethodConfig = new FunctionCallConfig(
-                        jsonFunctionCall.get( "function" ).getAsString(),
-                        jsonFunctionCall.get( "position" ).getAsInt()
+                FunctionCallConfig functionCallConfig = new FunctionCallConfig(
+                        getJsonString( jsonFunctionCall, "function" ),
+                        getJsonInt( jsonFunctionCall, "position" ),
+                        getJsonString( jsonFunctionCall, "mask" )
                 );
 
-                functionCallConfigs.add( classMethodConfig );
+                if( functionCallConfig.isValid() ){
+                    functionCallConfigs.add( functionCallConfig );
+                }
             }
         }
 

@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
@@ -47,7 +48,8 @@ public class ClassAnalyzer {
         String calledMethod = split[ 1 ];
         String passedType = split[ split.length - 1 ];
 
-        if ( !methodCallValidator.validateCallMatchesConfig( phpIndex, calledMethod, classSignature ) ) {
+        ClassMethodConfig matchingConfig = methodCallValidator.getMatchingConfig( phpIndex, calledMethod, classSignature );
+        if ( matchingConfig == null ) {
             return originalCallAnalyzer
                     .getMethodCallReturnType( phpIndex, classSignature.substring( 2 ), calledMethod );
         }
@@ -58,6 +60,8 @@ public class ClassAnalyzer {
 
             return phpIndex.getClassesByFQN( classNameFromConstantLookup );
         }
+
+
 
         return phpIndex.getBySignature( passedType, null, 0 );
     }

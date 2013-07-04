@@ -5,6 +5,7 @@ import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 
 import java.util.Collection;
@@ -46,7 +47,7 @@ public class FieldReferenceAnalyzer {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        if( split.length < 3 ) {
+        if ( split.length < 3 ) {
             return Collections.emptySet();
         }
 
@@ -65,22 +66,29 @@ public class FieldReferenceAnalyzer {
         } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type ) ) {
             type = classConstantAnalyzer.getClassNameFromConstantLookup( type, project );
         }
+
         return phpIndex.getAnyByFQN( type );
     }
 
 
     private String locateType( PhpIndex phpIndex, String fieldSignature, String calledMethod, String passedType ) {
-        Collection<? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
-        if( fieldElements.size() == 0 ){
+        Collection <? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
+        if ( fieldElements.size() == 0 ) {
             return null;
         }
 
         PhpNamedElement fieldElement = fieldElements.iterator().next();
         PhpType type = fieldElement.getType();
-        if(!methodCallValidator.validateCallMatchesConfig(  phpIndex, calledMethod, "#C" + type.toString(), fieldElements ) ){
+        ClassMethodConfig matchingConfig = methodCallValidator
+                .getMatchingConfig( phpIndex, calledMethod, "#C" + type.toString(), fieldElements );
+
+        if ( matchingConfig == null ) {
             return null;
         }
 
+        if ( matchingConfig.hasStringClassNameMask()  ) {
+            passedType = String.format( matchingConfig.getStringClassNameMask(), ( passedType ) );
+        }
         return passedType;
     }
 }

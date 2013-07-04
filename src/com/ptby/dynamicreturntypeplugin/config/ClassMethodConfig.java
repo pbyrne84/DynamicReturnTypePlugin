@@ -2,17 +2,28 @@ package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 
-public class ClassMethodConfig {
+public class ClassMethodConfig implements StringClassMaskConfig {
 
     private final String fqnClassName;
     private final String methodName;
+    private final String stringClassNameMask;
     private final int parameterIndex;
+    private final boolean hasStringClassNameMask;
 
 
-    public ClassMethodConfig( String fqnClassName, String methodName, int parameterIndex ) {
+    public ClassMethodConfig( String fqnClassName, String methodName, int parameterIndex, String stringClassNameMask ) {
         this.fqnClassName = fqnClassName;
         this.methodName = methodName.toLowerCase();
+        this.stringClassNameMask = stringClassNameMask;
         this.parameterIndex = parameterIndex;
+        this.hasStringClassNameMask = !stringClassNameMask.equals( "" );
+    }
+
+
+    public boolean isValid() {
+        return !fqnClassName.equals( "" ) &&
+                !methodName.equals( "" ) &&
+                parameterIndex != -1;
     }
 
 
@@ -40,6 +51,15 @@ public class ClassMethodConfig {
 
     public int getParameterIndex() {
         return parameterIndex;
+    }
+
+    public String getStringClassNameMask() {
+        return stringClassNameMask;
+    }
+
+
+    public boolean hasStringClassNameMask() {
+        return hasStringClassNameMask;
     }
 
 

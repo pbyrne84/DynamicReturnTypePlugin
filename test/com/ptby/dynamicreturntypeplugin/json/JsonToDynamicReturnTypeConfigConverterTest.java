@@ -51,14 +51,14 @@ public class JsonToDynamicReturnTypeConfigConverterTest {
         DynamicReturnTypeConfig actualReturnTypeConfig = jsonToDynamicReturnTypeConfigConverter.convertJson( json );
 
         List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
-                new ClassMethodConfig( "\\TaskData", "getObject", 1 ),
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0 ),
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0 )
+                new ClassMethodConfig( "\\TaskData", "getObject", 1, "" ),
+                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0,"" ),
+                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0,"" )
         );
 
         List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
-                new FunctionCallConfig( "\\verify", 0 ),
-                new FunctionCallConfig( "\\mock", 0 )
+                new FunctionCallConfig( "\\verify", 0,"" ),
+                new FunctionCallConfig( "\\mock", 0,"" )
         );
 
         DynamicReturnTypeConfig expectedReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );

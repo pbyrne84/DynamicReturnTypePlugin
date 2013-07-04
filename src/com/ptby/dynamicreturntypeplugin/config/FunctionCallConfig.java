@@ -2,15 +2,24 @@ package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.FunctionReference;
 
-public class FunctionCallConfig {
+public class FunctionCallConfig implements StringClassMaskConfig {
 
     private final String functionName;
     private final int parameterIndex;
+    private final String stringClassNameMask;
+    private final boolean hasStringClassNameMask;
 
 
-    public FunctionCallConfig( String functionName, int parameterIndex ) {
+    public FunctionCallConfig( String functionName, int parameterIndex, String stringClassNameMask ) {
         this.functionName = functionName.toLowerCase();
         this.parameterIndex = parameterIndex;
+        this.stringClassNameMask = stringClassNameMask;
+        this.hasStringClassNameMask = !stringClassNameMask.equals( "" );
+    }
+
+
+    public boolean isValid(){
+        return !functionName.equals( "" ) && parameterIndex != -1;
     }
 
 
@@ -24,13 +33,24 @@ public class FunctionCallConfig {
     }
 
 
+    @Override
+    public String getStringClassNameMask() {
+        return stringClassNameMask;
+    }
+
+
+    @Override
+    public boolean hasStringClassNameMask() {
+        return hasStringClassNameMask;
+    }
+
+
     public boolean equalsFunctionReference( FunctionReference functionReference ) {
         String lowerCaseFullFunctionName
                 = ( functionReference.getNamespaceName() + functionReference.getName() ).toLowerCase();
 
-        boolean isValid = getFunctionName().equals( lowerCaseFullFunctionName ) ||
+        return getFunctionName().equals( lowerCaseFullFunctionName ) ||
                 validateAgainstPossibleGlobalFunction( functionReference );
-        return isValid;
     }
 
 
@@ -38,15 +58,6 @@ public class FunctionCallConfig {
         String functionReferenceText = functionReference.getText();
         return functionReferenceText.trim().indexOf( "\\" ) != 0 &&
                 ( "\\" + functionReference.getName() ).toLowerCase().equals( getFunctionName() );
-    }
-
-
-    @Override
-    public String toString() {
-        return "FunctionCallConfig{" +
-                "\nfunctionName='" + functionName + '\'' +
-                "\n, parameterIndex=" + parameterIndex +
-                '}';
     }
 
 
@@ -61,10 +72,16 @@ public class FunctionCallConfig {
 
         FunctionCallConfig that = ( FunctionCallConfig ) o;
 
+        if ( hasStringClassNameMask != that.hasStringClassNameMask ) {
+            return false;
+        }
         if ( parameterIndex != that.parameterIndex ) {
             return false;
         }
         if ( !functionName.equals( that.functionName ) ) {
+            return false;
+        }
+        if ( !stringClassNameMask.equals( that.stringClassNameMask ) ) {
             return false;
         }
 
@@ -76,6 +93,21 @@ public class FunctionCallConfig {
     public int hashCode() {
         int result = functionName.hashCode();
         result = 31 * result + parameterIndex;
+        result = 31 * result + stringClassNameMask.hashCode();
+        result = 31 * result + ( hasStringClassNameMask ? 1 : 0 );
         return result;
     }
+
+
+    @Override
+    public String toString() {
+        return "FunctionCallConfig{" +
+                "\nfunctionName='" + functionName + '\'' +
+                "\n, parameterIndex=" + parameterIndex +
+                "\n, stringClassNameMask='" + stringClassNameMask + '\'' +
+                "\n, hasStringClassNameMask=" + hasStringClassNameMask +
+                '}';
+    }
+
+
 }

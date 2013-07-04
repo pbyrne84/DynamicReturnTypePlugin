@@ -18,16 +18,16 @@ public class MethodCallValidator {
     }
 
 
-    public boolean validateCallMatchesConfig( PhpIndex phpIndex,
-                                              String calledMethod,
-                                              String cleanedVariableSignature,
-                                              Collection<? extends PhpNamedElement> fieldElements ) {
+    public ClassMethodConfig getMatchingConfig( PhpIndex phpIndex,
+                                      String calledMethod,
+                                      String cleanedVariableSignature,
+                                      Collection<? extends PhpNamedElement> fieldElements ) {
         for ( PhpNamedElement fieldElement : fieldElements ) {
             DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
             PhpType fieldElementType = fieldElement.getType();
             for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
                 if ( classMethodConfig.methodCallMatches( fieldElementType.toString(), calledMethod ) ) {
-                    return true;
+                    return classMethodConfig;
                 }
 
                 boolean hasConfiguredSuperClassForMethod = attemptSuperLookup(
@@ -35,12 +35,12 @@ public class MethodCallValidator {
                 );
 
                 if ( hasConfiguredSuperClassForMethod ) {
-                    return true;
+                    return classMethodConfig;
                 }
             }
         }
 
-        return false;
+        return null;
     }
 
 
@@ -60,13 +60,13 @@ public class MethodCallValidator {
     }
 
 
-    public boolean validateCallMatchesConfig( PhpIndex phpIndex,String method ,String classSignature ) {
+    public ClassMethodConfig getMatchingConfig( PhpIndex phpIndex, String method, String classSignature ) {
         String cleanedClassSignature = classSignature.substring( 2 );
         DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
 
         for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
             if ( classMethodConfig.methodCallMatches( cleanedClassSignature, method ) ) {
-                return true;
+                return classMethodConfig;
             }
 
             if ( classMethodConfig.equalsMethodName( method ) ) {
@@ -74,11 +74,11 @@ public class MethodCallValidator {
 
                 boolean hasSuperClass = PhpType.findSuper( expectedFqnClassName, cleanedClassSignature, phpIndex );
                 if ( hasSuperClass ) {
-                    return true;
+                    return classMethodConfig;
                 }
             }
         }
 
-        return false;
+        return null;
     }
 }
