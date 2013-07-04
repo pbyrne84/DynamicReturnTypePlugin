@@ -9,12 +9,12 @@ public class FunctionCallConfig {
 
 
     public FunctionCallConfig( String functionName, int parameterIndex ) {
-        this.functionName = functionName;
+        this.functionName = functionName.toLowerCase();
         this.parameterIndex = parameterIndex;
     }
 
 
-    public String getFunctionName() {
+    private String getFunctionName() {
         return functionName;
     }
 
@@ -25,17 +25,19 @@ public class FunctionCallConfig {
 
 
     public boolean equalsFunctionReference( FunctionReference functionReference ) {
-        String fullFunctionName = ( functionReference.getNamespaceName() + functionReference.getName() );
-        return getFunctionName().equals( fullFunctionName ) ||
+        String lowerCaseFullFunctionName
+                = ( functionReference.getNamespaceName() + functionReference.getName() ).toLowerCase();
+
+        boolean isValid = getFunctionName().equals( lowerCaseFullFunctionName ) ||
                 validateAgainstPossibleGlobalFunction( functionReference );
+        return isValid;
     }
 
 
     private boolean validateAgainstPossibleGlobalFunction( FunctionReference functionReference ) {
-        String text = functionReference.getText();
-        return !text.contains( "\\" ) &&
-                getFunctionName().lastIndexOf( "\\" ) != -1 &&
-                ( "\\" + functionReference.getName() ).equals( getFunctionName() );
+        String functionReferenceText = functionReference.getText();
+        return functionReferenceText.trim().indexOf( "\\" ) != 0 &&
+                ( "\\" + functionReference.getName() ).toLowerCase().equals( getFunctionName() );
     }
 
 
