@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
+import com.jetbrains.php.lang.psi.elements.FunctionReference;
+
 public class FunctionCallConfig {
 
     private final String functionName;
@@ -19,6 +21,21 @@ public class FunctionCallConfig {
 
     public int getParameterIndex() {
         return parameterIndex;
+    }
+
+
+    public boolean equalsFunctionReference( FunctionReference functionReference ) {
+        String fullFunctionName = ( functionReference.getNamespaceName() + functionReference.getName() );
+        return getFunctionName().equals( fullFunctionName ) ||
+                validateAgainstPossibleGlobalFunction( functionReference );
+    }
+
+
+    private boolean validateAgainstPossibleGlobalFunction( FunctionReference functionReference ) {
+        String text = functionReference.getText();
+        return !text.contains( "\\" ) &&
+                getFunctionName().lastIndexOf( "\\" ) != -1 &&
+                ( "\\" + functionReference.getName() ).equals( getFunctionName() );
     }
 
 

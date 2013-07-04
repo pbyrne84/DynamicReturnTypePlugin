@@ -1,13 +1,11 @@
 package com.ptby.dynamicreturntypeplugin.responsepackaging;
 
 import com.jetbrains.php.lang.psi.elements.FieldReference;
+import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.jetbrains.php.lang.psi.elements.impl.FieldReferenceImpl;
-import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterType;
-import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator;
 
 public class FieldResponsePackager {
 
@@ -15,7 +13,7 @@ public class FieldResponsePackager {
     }
 
 
-    public GetTypeResponse packageFieldReference( MethodReferenceImpl methodReference, ParameterType parameterType) {
+    public GetTypeResponse packageFieldReference( MethodReference methodReference, ParameterType parameterType) {
         FieldReferenceImpl fieldReference = ( FieldReferenceImpl ) methodReference.getClassReference();
 
         String intellijReference;
@@ -32,7 +30,7 @@ public class FieldResponsePackager {
         return new GetTypeResponse( packagedFieldReference );
     }
 
-    private String createLocalScopedFieldReference( MethodReferenceImpl methodReference ) {
+    private String createLocalScopedFieldReference( MethodReference methodReference ) {
         FieldReference fieldReference = ( FieldReference ) methodReference.getClassReference();
         return fieldReference.getSignature();
     }

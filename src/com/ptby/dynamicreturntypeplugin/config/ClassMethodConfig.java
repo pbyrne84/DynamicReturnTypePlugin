@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
+import com.jetbrains.php.lang.psi.elements.MethodReference;
+
 public class ClassMethodConfig {
 
     private final String fqnClassName;
@@ -16,6 +18,11 @@ public class ClassMethodConfig {
 
     public boolean methodCallMatches( String actualFqnClassName, String actualMethodName ) {
         return fqnClassName.equals( actualFqnClassName ) && methodName.equals( actualMethodName );
+    }
+
+
+    public boolean equalsMethodReferenceName( MethodReference methodReference ){
+        return methodReference.getName().equals( getMethodName() );
     }
 
     public String getFqnClassName() {

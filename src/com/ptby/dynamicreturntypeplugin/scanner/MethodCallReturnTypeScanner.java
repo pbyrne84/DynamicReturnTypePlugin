@@ -1,6 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.scanner;
 
-import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
+import com.jetbrains.php.lang.psi.elements.MethodReference;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
@@ -18,9 +18,9 @@ public class MethodCallReturnTypeScanner {
 
 
     public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList,
-                                                  MethodReferenceImpl methodReference ) {
+                                                  MethodReference  methodReference ) {
         for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
-            if ( validateMethodName( methodReference, classMethodConfig ) ) {
+            if ( classMethodConfig.equalsMethodReferenceName( methodReference ) ) {
                 GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );
                 if ( !getTypeResponse.isNull() ) {
@@ -33,7 +33,4 @@ public class MethodCallReturnTypeScanner {
     }
 
 
-    private boolean validateMethodName( MethodReferenceImpl methodReference, ClassMethodConfig classMethodConfig ) {
-        return methodReference.getName().equals( classMethodConfig.getMethodName() );
-    }
 }
