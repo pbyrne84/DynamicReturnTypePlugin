@@ -30,20 +30,33 @@ public class MethodCallValidator {
                     return true;
                 }
 
-                if ( classMethodConfig.equalsMethodName( calledMethod ) ) {
-                    String actualFqnClassName = cleanedVariableSignature.substring( 2 );
-                    String expectedFqnClassName = classMethodConfig.getFqnClassName();
+                boolean hasConfiguredSuperClassForMethod = attemptSuperLookup(
+                        phpIndex, calledMethod, cleanedVariableSignature, classMethodConfig
+                );
 
-                    boolean hasSuperClass = PhpType.findSuper( expectedFqnClassName, actualFqnClassName, phpIndex );
-                    if ( hasSuperClass ) {
-                        return true;
-                    }
+                if ( hasConfiguredSuperClassForMethod ) {
+                    return true;
                 }
             }
-
-
         }
+
         return false;
+    }
+
+
+    private boolean attemptSuperLookup( PhpIndex phpIndex,
+                                        String calledMethod,
+                                        String cleanedVariableSignature,
+                                        ClassMethodConfig classMethodConfig ) {
+
+        if( !classMethodConfig.equalsMethodName( calledMethod ) ){
+            return false;
+        }
+
+        String actualFqnClassName = cleanedVariableSignature.substring( 2 );
+        String expectedFqnClassName = classMethodConfig.getFqnClassName();
+
+        return PhpType.findSuper( expectedFqnClassName, actualFqnClassName, phpIndex );
     }
 
 
