@@ -86,9 +86,6 @@ public class FieldReferenceAnalyzer {
             return null;
         }
 
-        if ( matchingConfig.hasStringClassNameMask()  ) {
-            passedType = String.format( matchingConfig.getStringClassNameMask(), ( passedType ) );
-        }
-        return passedType;
+        return matchingConfig.formatUsingStringMask( passedType );
     }
 }

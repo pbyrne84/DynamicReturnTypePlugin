@@ -36,7 +36,7 @@ public class VariableAnalyser {
     }
 
 
-    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {
+    public Collection<? extends PhpNamedElement> getClassNameFromVariableLookup( String signature, Project project ) {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
@@ -48,7 +48,8 @@ public class VariableAnalyser {
         String calledMethod = split[ 1 ];
         String passedType = split[ split.length - 1 ];
 
-        if ( !validateCall( phpIndex, variableSignature, calledMethod ) ) {
+        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, variableSignature, calledMethod );
+        if ( matchingMethodConfig == null ) {
             return originalCallAnalyzer.getMethodCallReturnType( phpIndex, variableSignature.substring( 4 ), calledMethod );
         }
 
@@ -59,21 +60,16 @@ public class VariableAnalyser {
             return phpIndex.getAnyByFQN( classNameFromConstantLookup );
         }
 
-        return phpIndex.getAnyByFQN( passedType );
+        return phpIndex.getAnyByFQN( matchingMethodConfig.formatUsingStringMask( passedType ) );
     }
 
 
-    private boolean validateCall( PhpIndex phpIndex, String variableSignature, String calledMethod ) {
+    private ClassMethodConfig getMatchingMethodConfig( PhpIndex phpIndex, String variableSignature, String calledMethod ) {
         String cleanedVariableSignature = variableSignature.substring( 2 );
         Collection<? extends PhpNamedElement> fieldElements = phpIndex
                 .getBySignature( cleanedVariableSignature, null, 0 );
 
-        ClassMethodConfig matchingConfig = methodCallValidator
+        return methodCallValidator
                 .getMatchingConfig( phpIndex, calledMethod, cleanedVariableSignature, fieldElements );
-        if ( matchingConfig != null  ) {
-            return true;
-        }
-
-        return false;
     }
 }

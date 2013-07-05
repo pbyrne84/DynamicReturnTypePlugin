@@ -136,7 +136,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( signature ) ) {
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup( signature, project );
         } else if ( variableAnalyser.verifySignatureIsVariableCall( signature ) ) {
-            return variableAnalyser.getClassNameFromFieldLookup( signature, project );
+            return variableAnalyser.getClassNameFromVariableLookup( signature, project );
         }
 
         if ( signature.indexOf( "#" ) != 0 ) {

@@ -61,8 +61,6 @@ public class ClassAnalyzer {
             return phpIndex.getClassesByFQN( classNameFromConstantLookup );
         }
 
-
-
-        return phpIndex.getBySignature( passedType, null, 0 );
+        return phpIndex.getBySignature( matchingConfig.formatUsingStringMask( passedType ), null, 0 );
     }
 }

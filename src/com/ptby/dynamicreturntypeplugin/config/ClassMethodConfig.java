@@ -2,7 +2,7 @@ package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.MethodReference;
 
-public class ClassMethodConfig implements StringClassMaskConfig {
+public class ClassMethodConfig   {
 
     private final String fqnClassName;
     private final String methodName;
@@ -53,13 +53,13 @@ public class ClassMethodConfig implements StringClassMaskConfig {
         return parameterIndex;
     }
 
-    public String getStringClassNameMask() {
-        return stringClassNameMask;
-    }
 
+    public String formatUsingStringMask( String passedType ){
+        if( !hasStringClassNameMask ){
+            return passedType;
+        }
 
-    public boolean hasStringClassNameMask() {
-        return hasStringClassNameMask;
+        return String.format( stringClassNameMask,  passedType  );
     }
 
 
