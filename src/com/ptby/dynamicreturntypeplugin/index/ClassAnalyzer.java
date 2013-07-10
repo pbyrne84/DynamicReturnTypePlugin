@@ -12,17 +12,15 @@ import java.util.Collections;
 
 public class ClassAnalyzer {
     private static final String CLASS_CALL_PATTERN = "(#C.*):(.*):(.*)";
-    private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final MethodCallValidator methodCallValidator;
     private final OriginalCallAnalyzer originalCallAnalyzer;
 
 
     public ClassAnalyzer( ConfigAnalyser configAnalyser ) {
-        this.configAnalyser = configAnalyser;
         classConstantAnalyzer = new ClassConstantAnalyzer();
-        methodCallValidator = new MethodCallValidator( configAnalyser );
-        originalCallAnalyzer = new OriginalCallAnalyzer();
+        methodCallValidator   = new MethodCallValidator( configAnalyser );
+        originalCallAnalyzer  = new OriginalCallAnalyzer();
     }
 
 
@@ -48,7 +46,7 @@ public class ClassAnalyzer {
         String calledMethod = split[ 1 ];
         String passedType = split[ split.length - 1 ];
 
-        ClassMethodConfig matchingConfig = methodCallValidator.getMatchingConfig( phpIndex, calledMethod, classSignature );
+        ClassMethodConfig matchingConfig = methodCallValidator.getMatchingConfig( phpIndex, project, calledMethod, classSignature );
         if ( matchingConfig == null ) {
             return originalCallAnalyzer
                     .getMethodCallReturnType( phpIndex, classSignature.substring( 2 ), calledMethod );

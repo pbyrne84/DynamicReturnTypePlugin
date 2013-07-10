@@ -106,6 +106,9 @@
 
     <project-components>
         <!-- Add your project components here -->
+        <component>
+            <implementation-class>com.ptby.dynamicreturntypeplugin.ProjectOpenListener</implementation-class>
+        </component>
     </project-components>
 
     <actions>

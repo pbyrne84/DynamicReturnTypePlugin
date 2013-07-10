@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileEvent;
 
@@ -9,5 +10,7 @@ public interface JsonConfigurationChangeListener {
 
     public void notifyJsonFileHasChanged( VirtualFile virtualFileEvent ) throws IOException;
 
-    void notifyJsonFileIsDeleted();
+    void notifyJsonFileIsDeleted(  VirtualFileEvent virtualFileEvent );
+
+    void notifyProjectIsClosed( Project project );
 }

@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileCopyEvent;
@@ -7,20 +8,21 @@ import com.intellij.openapi.vfs.VirtualFileEvent;
 import com.intellij.openapi.vfs.VirtualFileListener;
 import com.intellij.openapi.vfs.VirtualFileMoveEvent;
 import com.intellij.openapi.vfs.VirtualFilePropertyEvent;
-import com.intellij.openapi.project.Project;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.intellij.openapi.diagnostic.Logger.getInstance;
+
 public class JsonFileSystemChangeListener implements VirtualFileListener {
 
     private List<JsonConfigurationChangeListener> jsonConfigurationChangeListeners = new ArrayList<JsonConfigurationChangeListener>();
-    private Project currentProject;
+    private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
-    public JsonFileSystemChangeListener(  ) {
+    public JsonFileSystemChangeListener() {
         LocalFileSystem instance = LocalFileSystem.getInstance();
         instance.addVirtualFileListener( this );
     }
@@ -28,22 +30,6 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
 
     public void registerChangeListener( JsonConfigurationChangeListener jsonConfigurationChangeListener ) {
         jsonConfigurationChangeListeners.add( jsonConfigurationChangeListener );
-    }
-
-    public void setCurrentProject( Project currentProject ){
-        if( this.currentProject != null ){
-            return;
-        }
-
-        String basePath = currentProject.getBasePath();
-        String jsonFilePath = basePath + File.separatorChar + "dynamicReturnTypeMeta.json";
-        VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( jsonFilePath  );
-        if( metaFile == null){
-           return;
-        }
-
-        notifyOfConfigUpdate( metaFile );
-        this.currentProject = currentProject;
     }
 
 
@@ -60,25 +46,34 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
 
 
     private void notifyOnUpdateIfCorrectFile( VirtualFileEvent virtualFileEvent ) {
-        if( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
+        if ( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
             notifyOfConfigUpdate( virtualFileEvent.getFile() );
         }
     }
 
 
     private void notifyOfDeletionIfCorrectFile( VirtualFileEvent virtualFileEvent ) {
-        if( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
-            notifyOfConfigDeletion();
+        if ( virtualFileEvent.getFileName().equals( "dynamicReturnTypeMeta.json" ) ) {
+            notifyOfConfigDeletion( virtualFileEvent );
         }
     }
 
 
+    public void notifyProjectOpened( Project currentProject ) {
+        String basePath = currentProject.getBasePath();
+        String jsonFilePath = basePath + File.separatorChar + "dynamicReturnTypeMeta.json";
+        VirtualFile metaFile = LocalFileSystem.getInstance().findFileByPath( jsonFilePath );
+        if ( metaFile == null ) {
+            return;
+        }
+        notifyOfConfigUpdate( metaFile );
+    }
 
 
     private void notifyOfConfigUpdate( VirtualFile virtualFile ) {
         for ( JsonConfigurationChangeListener jsonConfigurationChangeListener : jsonConfigurationChangeListeners ) {
             try {
-                jsonConfigurationChangeListener.notifyJsonFileHasChanged( virtualFile);
+                jsonConfigurationChangeListener.notifyJsonFileHasChanged( virtualFile );
             } catch ( IOException e ) {
                 e.printStackTrace();
             }
@@ -86,13 +81,11 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
     }
 
 
-    private void notifyOfConfigDeletion() {
+    private void notifyOfConfigDeletion( VirtualFileEvent virtualFileEvent ) {
         for ( JsonConfigurationChangeListener jsonConfigurationChangeListener : jsonConfigurationChangeListeners ) {
-            jsonConfigurationChangeListener.notifyJsonFileIsDeleted();
+            jsonConfigurationChangeListener.notifyJsonFileIsDeleted( virtualFileEvent );
         }
     }
-
-
 
 
     @Override
@@ -140,5 +133,12 @@ public class JsonFileSystemChangeListener implements VirtualFileListener {
     @Override
     public void beforeFileMovement( VirtualFileMoveEvent virtualFileMoveEvent ) {
 
+    }
+
+
+    public void notifyProjectClosed( Project project ) {
+        for ( JsonConfigurationChangeListener jsonConfigurationChangeListener : jsonConfigurationChangeListeners ) {
+            jsonConfigurationChangeListener.notifyProjectIsClosed( project );
+        }
     }
 }

@@ -55,7 +55,7 @@ public class FieldReferenceAnalyzer {
         String calledMethod = split[ 1 ];
         String passedType = split[ 2 ];
 
-        String type = locateType( phpIndex, fieldSignature, calledMethod, passedType );
+        String type = locateType( phpIndex, project, fieldSignature, calledMethod, passedType );
         if ( type == null ) {
             return originalCallAnalyzer
                     .getFieldInstanceOriginalReturnType( phpIndex, fieldSignature, calledMethod );
@@ -71,7 +71,7 @@ public class FieldReferenceAnalyzer {
     }
 
 
-    private String locateType( PhpIndex phpIndex, String fieldSignature, String calledMethod, String passedType ) {
+    private String locateType( PhpIndex phpIndex, Project project, String fieldSignature, String calledMethod, String passedType ) {
         Collection <? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
         if ( fieldElements.size() == 0 ) {
             return null;
@@ -80,7 +80,7 @@ public class FieldReferenceAnalyzer {
         PhpNamedElement fieldElement = fieldElements.iterator().next();
         PhpType type = fieldElement.getType();
         ClassMethodConfig matchingConfig = methodCallValidator
-                .getMatchingConfig( phpIndex, calledMethod, "#C" + type.toString(), fieldElements );
+                .getMatchingConfig( phpIndex, project, calledMethod, "#C" + type.toString(), fieldElements );
 
         if ( matchingConfig == null ) {
             return null;

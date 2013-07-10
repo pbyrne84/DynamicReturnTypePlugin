@@ -2,15 +2,14 @@ package com.ptby.dynamicreturntypeplugin;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.MalformedJsonException;
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.DataConstants;
-import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
+import com.ptby.dynamicreturntypeplugin.config.ConfigState;
+import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
 import com.ptby.dynamicreturntypeplugin.index.ClassAnalyzer;
@@ -18,7 +17,6 @@ import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
-import com.ptby.dynamicreturntypeplugin.json.JsonFileSystemChangeListener;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
@@ -32,29 +30,23 @@ import static com.intellij.openapi.diagnostic.Logger.getInstance;
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     private final ClassConstantAnalyzer classConstantAnalyzer;
-    private final JsonFileSystemChangeListener jsonFileSystemChangeListener;
     private final ClassAnalyzer classAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
-    private int currentFileListenerAttempt = 0;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
 
 
     public DynamicReturnTypeProvider() {
-        ConfigAnalyser configAnalyser = new ConfigAnalyser();
+        ConfigState configState = ConfigStateContainer.getConfigState();
 
-        jsonFileSystemChangeListener = new JsonFileSystemChangeListener();
-        jsonFileSystemChangeListener.registerChangeListener( configAnalyser );
-
+        ConfigAnalyser configAnalyser = configState.getConfigAnalyser();
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
-        classConstantAnalyzer = new ClassConstantAnalyzer();
-        variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
-        classAnalyzer = new ClassAnalyzer( configAnalyser );
+        classConstantAnalyzer  = new ClassConstantAnalyzer();
+        variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
+        classAnalyzer          = new ClassAnalyzer( configAnalyser );
 
         getTypeResponseFactory = createGetTyepResponseFactory( configAnalyser );
-
-        attemptToInitialiseFileListener();
     }
 
 
@@ -69,28 +61,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     }
 
 
-    private void attemptToInitialiseFileListener() {
-        int maxFileListenerInitialisationAttempts = 5;
-        if ( ++currentFileListenerAttempt == maxFileListenerInitialisationAttempts ) {
-            return;
-        }
-
-        java.awt.EventQueue.invokeLater( new Runnable() {
-            public void run() {
-                DataContext dataContext = DataManager.getInstance().getDataContext();
-                Project project = ( Project ) dataContext.getData( DataConstants.PROJECT );
-                if ( project == null ) {
-                    attemptToInitialiseFileListener();
-                    return;
-                }
-
-                jsonFileSystemChangeListener.setCurrentProject( project );
-            }
-        }
-        );
-    }
-
-
     @Override
     public char getKey() {
         return 'Ђ';
@@ -101,7 +71,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         try {
             try {
                 GetTypeResponse dynamicReturnType = getTypeResponseFactory.createDynamicReturnType( psiElement );
-                if( dynamicReturnType.isNull() ){
+                if ( dynamicReturnType.isNull() ) {
                     return null;
                 }
 

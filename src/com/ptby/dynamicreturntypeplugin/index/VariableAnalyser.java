@@ -48,7 +48,7 @@ public class VariableAnalyser {
         String calledMethod = split[ 1 ];
         String passedType = split[ split.length - 1 ];
 
-        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, variableSignature, calledMethod );
+        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, variableSignature, calledMethod );
         if ( matchingMethodConfig == null ) {
             return originalCallAnalyzer.getMethodCallReturnType( phpIndex, variableSignature.substring( 4 ), calledMethod );
         }
@@ -64,12 +64,12 @@ public class VariableAnalyser {
     }
 
 
-    private ClassMethodConfig getMatchingMethodConfig( PhpIndex phpIndex, String variableSignature, String calledMethod ) {
+    private ClassMethodConfig getMatchingMethodConfig( PhpIndex phpIndex,Project project, String variableSignature, String calledMethod ) {
         String cleanedVariableSignature = variableSignature.substring( 2 );
         Collection<? extends PhpNamedElement> fieldElements = phpIndex
                 .getBySignature( cleanedVariableSignature, null, 0 );
 
         return methodCallValidator
-                .getMatchingConfig( phpIndex, calledMethod, cleanedVariableSignature, fieldElements );
+                .getMatchingConfig( phpIndex, project, calledMethod, cleanedVariableSignature, fieldElements );
     }
 }

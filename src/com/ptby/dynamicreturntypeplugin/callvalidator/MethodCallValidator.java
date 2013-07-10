@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.callvalidator;
 
+import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
@@ -18,12 +19,14 @@ public class MethodCallValidator {
     }
 
 
-    public ClassMethodConfig getMatchingConfig( PhpIndex phpIndex,
+    public ClassMethodConfig getMatchingConfig(
+                                      PhpIndex phpIndex,
+                                      Project project,
                                       String calledMethod,
                                       String cleanedVariableSignature,
                                       Collection<? extends PhpNamedElement> fieldElements ) {
         for ( PhpNamedElement fieldElement : fieldElements ) {
-            DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
+            DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig( project );
             PhpType fieldElementType = fieldElement.getType();
             for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
                 if ( classMethodConfig.methodCallMatches( fieldElementType.toString(), calledMethod ) ) {
@@ -60,9 +63,9 @@ public class MethodCallValidator {
     }
 
 
-    public ClassMethodConfig getMatchingConfig( PhpIndex phpIndex, String method, String classSignature ) {
+    public ClassMethodConfig getMatchingConfig( PhpIndex phpIndex,  Project project, String method, String classSignature ) {
         String cleanedClassSignature = classSignature.substring( 2 );
-        DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig();
+        DynamicReturnTypeConfig currentConfig = configAnalyser.getCurrentConfig( project );
 
         for ( ClassMethodConfig classMethodConfig : currentConfig.getClassMethodConfigs() ) {
             if ( classMethodConfig.methodCallMatches( cleanedClassSignature, method ) ) {

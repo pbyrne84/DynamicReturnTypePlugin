@@ -40,14 +40,14 @@ public class GetTypeResponseFactory {
 
     private GetTypeResponse createMethodResponse( MethodReferenceImpl classMethod ) {
         return methodCallReturnTypeScanner.getTypeFromMethodCall(
-                configAnalyser.getCurrentClassMethodConfigs(), classMethod
+                configAnalyser.getCurrentClassMethodConfigs( classMethod.getProject() ), classMethod
         );
     }
 
 
     private GetTypeResponse createFunctionResponse( FunctionReferenceImpl functionReference ) {
         return functionCallReturnTypeScanner.getTypeFromFunctionCall(
-                configAnalyser.getCurrentFunctionCallConfigs(), functionReference
+                configAnalyser.getCurrentFunctionCallConfigs( functionReference.getProject() ), functionReference
         );
     }
 }
