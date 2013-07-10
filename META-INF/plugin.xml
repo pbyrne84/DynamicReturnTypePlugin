@@ -86,7 +86,12 @@
             <li>Fix exceptions being thrown when auto completing in parameter<br/>
             <li>Log internally in unknown signatures<br/>
         </ul>
-
+    <h3>1.0.5 </h3>
+         <ul>
+            <li>Make configuration multi simultaneous project safe<br/>
+            <li>Fix case sensitivity on methods/functions<br/>
+            <li>Add masking for function/method string parameters<br/>
+        </ul>
         ]]>
 
     </change-notes>
