@@ -17,7 +17,6 @@ import java.util.Collections;
  */
 public class FieldReferenceAnalyzer {
     //#P#C\AdvertsOfDirectEmployersView.oTaskData|?
-    public static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
     private final ConfigAnalyser configAnalyser;
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final OriginalCallAnalyzer originalCallAnalyzer;
@@ -36,11 +35,6 @@ public class FieldReferenceAnalyzer {
         return intellijReference + ":" + methodName + ":" + returnType;
     }
 
-
-    public boolean verifySignatureIsFieldCall( String signature ) {
-        boolean matches = signature.matches( FIELD_CALL_PATTERN );
-        return matches;
-    }
 
 
     public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {

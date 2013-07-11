@@ -19,6 +19,7 @@ import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
+    public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final ClassAnalyzer classAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
@@ -46,11 +48,11 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
         classAnalyzer          = new ClassAnalyzer( configAnalyser );
 
-        getTypeResponseFactory = createGetTyepResponseFactory( configAnalyser );
+        getTypeResponseFactory = createGetTypeResponseFactory( configAnalyser );
     }
 
 
-    private GetTypeResponseFactory createGetTyepResponseFactory( ConfigAnalyser configAnalyser ) {
+    private GetTypeResponseFactory createGetTypeResponseFactory( ConfigAnalyser configAnalyser ) {
         CallReturnTypeCalculator callReturnTypeCalculator = new CallReturnTypeCalculator();
         FunctionCallReturnTypeScanner functionCallReturnTypeScanner = new FunctionCallReturnTypeScanner( callReturnTypeCalculator );
         MethodCallReturnTypeScanner methodCallReturnTypeScanner = new MethodCallReturnTypeScanner( callReturnTypeCalculator );
@@ -63,7 +65,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public char getKey() {
-        return 'Ђ';
+        return PLUGIN_IDENTIFIER_KEY;
     }
 
 
@@ -96,16 +98,16 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
+        SignatureMatcher signatureMatcher = new SignatureMatcher();
+
         PhpIndex phpIndex = PhpIndex.getInstance( project );
-        if ( classAnalyzer.verifySignatureIsFieldCall( signature ) ) {
-            return classAnalyzer.getClassNameFromClassLookup( signature, project );
-        } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( signature ) ) {
+        if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( signature ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( signature, project )
             );
-        } else if ( fieldReferenceAnalyzer.verifySignatureIsFieldCall( signature ) ) {
+        } else if ( signatureMatcher.verifySignatureIsFieldCall( signature ) ) {
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup( signature, project );
-        } else if ( variableAnalyser.verifySignatureIsVariableCall( signature ) ) {
+        } else if ( signatureMatcher.verifySignatureIsMethodCall( signature ) ) {
             return variableAnalyser.getClassNameFromVariableLookup( signature, project );
         }
 
@@ -113,9 +115,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             if ( signature.indexOf( "\\" ) != 0 ) {
                 signature = "\\" + signature;
             }
-
             return phpIndex.getAnyByFQN( signature );
         }
+
 
         try {
             return phpIndex.getBySignature( signature, null, 0 );

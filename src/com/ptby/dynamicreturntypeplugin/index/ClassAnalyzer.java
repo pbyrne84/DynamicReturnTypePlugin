@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class ClassAnalyzer {
-    private static final String CLASS_CALL_PATTERN = "(#C.*):(.*):(.*)";
+    // done  SignatureMatcher   public static final String FIELD_CALL_PATTERN = "(#C.*):(.*):(.*)";
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final MethodCallValidator methodCallValidator;
     private final OriginalCallAnalyzer originalCallAnalyzer;
@@ -27,12 +27,6 @@ public class ClassAnalyzer {
     static public String packageForGetTypeResponse( String intellijReference, String methodName, String returnType ) {
         return intellijReference + ":" + methodName + ":" + returnType;
     }
-
-
-    public boolean verifySignatureIsFieldCall( String signature ) {
-        return signature.matches( CLASS_CALL_PATTERN );
-    }
-
 
     public Collection<? extends PhpNamedElement> getClassNameFromClassLookup( String signature, Project project ) {
         String[] split = signature.split( ":" );

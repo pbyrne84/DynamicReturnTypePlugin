@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class VariableAnalyser {
-    public static final String VARIABLE_PATTERN = "(#M#C.*):(.*):(.*)";
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final MethodCallValidator methodCallValidator;
     private final OriginalCallAnalyzer originalCallAnalyzer;
@@ -27,12 +26,6 @@ public class VariableAnalyser {
 
     static public String packageForGetTypeResponse( String intellijReference, String methodName, String returnType ) {
         return intellijReference + ":" + methodName + ":" + returnType;
-    }
-
-
-    public boolean verifySignatureIsVariableCall( String signature ) {
-        boolean matches = signature.matches( VARIABLE_PATTERN );
-        return matches;
     }
 
 
@@ -60,7 +53,13 @@ public class VariableAnalyser {
             return phpIndex.getAnyByFQN( classNameFromConstantLookup );
         }
 
-        return phpIndex.getAnyByFQN( matchingMethodConfig.formatUsingStringMask( passedType ) );
+        //TODO:fix whether it sends a fqn or signature
+        if( passedType.substring(  0, 2 ).equals( "#C" ) ) {
+            passedType = passedType.substring(2);
+        }
+
+        return phpIndex
+                .getAnyByFQN( matchingMethodConfig.formatUsingStringMask( passedType ) );
     }
 
 
