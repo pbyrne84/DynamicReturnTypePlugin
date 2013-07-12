@@ -39,16 +39,12 @@ public class ParameterTypeCalculator {
                     return new ParameterType( "#C" + singleType );
                 }
 
-                if ( singleType.substring( 0, 5 ).equals( "#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY + "#C\\" ) ) {
-                    return new ParameterType( singleType.substring( 2 ) );
-                }
-
-                if ( singleType.substring( 0, 7 ).equals( "#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY + "#P#C\\" ) ) {
-                    return new ParameterType( singleType.substring( 2 ) );
-                }
-
                 if ( singleType.length() < 3 ) {
                     return new ParameterType( null );
+                }
+
+                if ( typeContains( singleType, "#C\\" ) || typeContains( singleType, "#P#C\\" )  ) {
+                    return new ParameterType( singleType.substring( 2 ) );
                 }
 
                 String calculatedType = singleType.substring( 3 );
@@ -57,6 +53,17 @@ public class ParameterTypeCalculator {
         }
 
         return new ParameterType( null );
+    }
+
+
+    private boolean typeContains( String singleType, String comparison ){
+        String projectIdentifiedComparison = "#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY + comparison;
+        if( singleType.length() < projectIdentifiedComparison.length() ){
+            return false;
+        }
+
+        return singleType.substring( 0, projectIdentifiedComparison.length() )
+                         .equals( projectIdentifiedComparison );
     }
 
 
