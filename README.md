@@ -5,6 +5,9 @@ DynamicReturnTypePlugin
 Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. It can use either the instance type of the passed parameter or a string lookup.
 Note: Use fully qualified names.
 
+Example project
+https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment
+
 Uses
 ----
 1. Generic like calls to simulate Phockito ( PHP Mockito) verify calls that return the object passed in.
