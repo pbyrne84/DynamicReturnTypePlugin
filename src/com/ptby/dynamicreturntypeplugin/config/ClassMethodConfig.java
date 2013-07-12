@@ -19,7 +19,7 @@ public class ClassMethodConfig {
         this.parameterIndex = parameterIndex;
         this.hasValidStringClassNameMask
                 = !stringClassNameMask.equals( "" )
-                && StringUtils.countMatches( stringClassNameMask, "%s" ) == 1;
+                && StringUtils.countMatches( stringClassNameMask, "%" ) == 1;
     }
 
 

@@ -17,7 +17,7 @@ public class FunctionCallConfig implements StringClassMaskConfig {
         this.stringClassNameMask = stringClassNameMask;
         this.hasValidClassNameMask
                 = !stringClassNameMask.equals( "" )
-                && StringUtils.countMatches( stringClassNameMask, "%s" ) == 1;
+                && StringUtils.countMatches( stringClassNameMask, "%" ) == 1;
     }
 
 
