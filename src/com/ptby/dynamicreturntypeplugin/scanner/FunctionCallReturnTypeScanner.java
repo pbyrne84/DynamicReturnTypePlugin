@@ -25,7 +25,7 @@ public class FunctionCallReturnTypeScanner {
                 GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
                         );
-                if ( !getTypeResponse.isNull() && functionCallConfig.hasStringClassNameMask() ) {
+                if ( !getTypeResponse.isNull() && functionCallConfig.hasValidStringClassNameMask() ) {
                     String maskReplacedType = String.format(
                             functionCallConfig.getStringClassNameMask(), getTypeResponse.toString()
                     );

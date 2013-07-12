@@ -1,14 +1,15 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.MethodReference;
+import org.apache.commons.lang.StringUtils;
 
-public class ClassMethodConfig   {
+public class ClassMethodConfig {
 
     private final String fqnClassName;
     private final String methodName;
     private final String stringClassNameMask;
     private final int parameterIndex;
-    private final boolean hasStringClassNameMask;
+    private final boolean hasValidStringClassNameMask;
 
 
     public ClassMethodConfig( String fqnClassName, String methodName, int parameterIndex, String stringClassNameMask ) {
@@ -16,7 +17,9 @@ public class ClassMethodConfig   {
         this.methodName = methodName.toLowerCase();
         this.stringClassNameMask = stringClassNameMask;
         this.parameterIndex = parameterIndex;
-        this.hasStringClassNameMask = !stringClassNameMask.equals( "" );
+        this.hasValidStringClassNameMask
+                = !stringClassNameMask.equals( "" )
+                && StringUtils.countMatches( stringClassNameMask, "%s" ) == 1;
     }
 
 
@@ -54,12 +57,12 @@ public class ClassMethodConfig   {
     }
 
 
-    public String formatUsingStringMask( String passedType ){
-        if( !hasStringClassNameMask ){
+    public String formatUsingStringMask( String passedType ) {
+        if ( !hasValidStringClassNameMask ) {
             return passedType;
         }
 
-        return String.format( stringClassNameMask,  passedType  );
+        return String.format( stringClassNameMask, passedType );
     }
 
 

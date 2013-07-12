@@ -1,24 +1,27 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.FunctionReference;
+import org.apache.commons.lang.StringUtils;
 
 public class FunctionCallConfig implements StringClassMaskConfig {
 
     private final String functionName;
     private final int parameterIndex;
     private final String stringClassNameMask;
-    private final boolean hasStringClassNameMask;
+    private final boolean hasValidClassNameMask;
 
 
     public FunctionCallConfig( String functionName, int parameterIndex, String stringClassNameMask ) {
         this.functionName = functionName.toLowerCase();
         this.parameterIndex = parameterIndex;
         this.stringClassNameMask = stringClassNameMask;
-        this.hasStringClassNameMask = !stringClassNameMask.equals( "" );
+        this.hasValidClassNameMask
+                = !stringClassNameMask.equals( "" )
+                && StringUtils.countMatches( stringClassNameMask, "%s" ) == 1;
     }
 
 
-    public boolean isValid(){
+    public boolean isValid() {
         return !functionName.equals( "" ) && parameterIndex != -1;
     }
 
@@ -40,8 +43,8 @@ public class FunctionCallConfig implements StringClassMaskConfig {
 
 
     @Override
-    public boolean hasStringClassNameMask() {
-        return hasStringClassNameMask;
+    public boolean hasValidStringClassNameMask() {
+        return hasValidClassNameMask;
     }
 
 
@@ -72,7 +75,7 @@ public class FunctionCallConfig implements StringClassMaskConfig {
 
         FunctionCallConfig that = ( FunctionCallConfig ) o;
 
-        if ( hasStringClassNameMask != that.hasStringClassNameMask ) {
+        if ( hasValidClassNameMask != that.hasValidClassNameMask ) {
             return false;
         }
         if ( parameterIndex != that.parameterIndex ) {
@@ -94,7 +97,7 @@ public class FunctionCallConfig implements StringClassMaskConfig {
         int result = functionName.hashCode();
         result = 31 * result + parameterIndex;
         result = 31 * result + stringClassNameMask.hashCode();
-        result = 31 * result + ( hasStringClassNameMask ? 1 : 0 );
+        result = 31 * result + ( hasValidClassNameMask ? 1 : 0 );
         return result;
     }
 
@@ -105,7 +108,7 @@ public class FunctionCallConfig implements StringClassMaskConfig {
                 "\nfunctionName='" + functionName + '\'' +
                 "\n, parameterIndex=" + parameterIndex +
                 "\n, stringClassNameMask='" + stringClassNameMask + '\'' +
-                "\n, hasStringClassNameMask=" + hasStringClassNameMask +
+                "\n, hasValidStringClassNameMask=" + hasValidClassNameMask +
                 '}';
     }
 
