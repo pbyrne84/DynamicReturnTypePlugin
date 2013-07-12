@@ -22,9 +22,18 @@ public class FunctionCallReturnTypeScanner {
                                                     FunctionReferenceImpl functionReference ) {
         for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
             if ( functionCallConfig.equalsFunctionReference( functionReference ) ) {
-                return callReturnTypeCalculator
+                GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()
                         );
+                if ( !getTypeResponse.isNull() && functionCallConfig.hasStringClassNameMask() ) {
+                    String maskReplacedType = String.format(
+                            functionCallConfig.getStringClassNameMask(), getTypeResponse.toString()
+                    );
+
+                    return new GetTypeResponse( maskReplacedType );
+                }
+
+                return getTypeResponse;
             }
         }
 

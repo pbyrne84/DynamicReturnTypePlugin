@@ -12,7 +12,6 @@ import com.ptby.dynamicreturntypeplugin.config.ConfigState;
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
-import com.ptby.dynamicreturntypeplugin.index.ClassAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
@@ -32,7 +31,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
     private final ClassConstantAnalyzer classConstantAnalyzer;
-    private final ClassAnalyzer classAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
@@ -46,8 +44,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
         classConstantAnalyzer  = new ClassConstantAnalyzer();
         variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
-        classAnalyzer          = new ClassAnalyzer( configAnalyser );
-
         getTypeResponseFactory = createGetTypeResponseFactory( configAnalyser );
     }
 

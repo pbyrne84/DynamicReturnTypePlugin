@@ -79,7 +79,7 @@ public class ParameterTypeCalculator {
 
     private String cleanClassText( PsiElement element ) {
         String potentialClassName = element.getText().trim();
-        if ( potentialClassName.equals( "" ) ) {
+        if ( potentialClassName.equals( "" ) || potentialClassName.equals( "''") ) {
             return null;
         }
 
