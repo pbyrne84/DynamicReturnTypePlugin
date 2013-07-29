@@ -12,6 +12,49 @@ public class ClassMethodConfig {
     private final boolean hasValidStringClassNameMask;
 
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+
+        ClassMethodConfig that = ( ClassMethodConfig ) o;
+
+        if ( hasValidStringClassNameMask != that.hasValidStringClassNameMask ) {
+            return false;
+        }
+        if ( parameterIndex != that.parameterIndex ) {
+            return false;
+        }
+        if ( fqnClassName != null ? !fqnClassName.equals( that.fqnClassName ) : that.fqnClassName != null ) {
+            return false;
+        }
+        if ( methodName != null ? !methodName.equals( that.methodName ) : that.methodName != null ) {
+            return false;
+        }
+        if ( stringClassNameMask != null ? !stringClassNameMask
+                .equals( that.stringClassNameMask ) : that.stringClassNameMask != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = fqnClassName != null ? fqnClassName.hashCode() : 0;
+        result = 31 * result + ( methodName != null ? methodName.hashCode() : 0 );
+        result = 31 * result + ( stringClassNameMask != null ? stringClassNameMask.hashCode() : 0 );
+        result = 31 * result + parameterIndex;
+        result = 31 * result + ( hasValidStringClassNameMask ? 1 : 0 );
+        return result;
+    }
+
+
     public ClassMethodConfig( String fqnClassName, String methodName, int parameterIndex, String stringClassNameMask ) {
         this.fqnClassName = fqnClassName;
         this.methodName = methodName.toLowerCase();
@@ -67,45 +110,13 @@ public class ClassMethodConfig {
 
 
     @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        ClassMethodConfig that = ( ClassMethodConfig ) o;
-
-        if ( parameterIndex != that.parameterIndex ) {
-            return false;
-        }
-        if ( !fqnClassName.equals( that.fqnClassName ) ) {
-            return false;
-        }
-        if ( !methodName.equals( that.methodName ) ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public int hashCode() {
-        int result = fqnClassName.hashCode();
-        result = 31 * result + methodName.hashCode();
-        result = 31 * result + parameterIndex;
-        return result;
-    }
-
-
-    @Override
     public String toString() {
         return "ClassMethodConfig{" +
                 "\nfqnClassName='" + fqnClassName + '\'' +
                 "\n, methodName='" + methodName + '\'' +
+                "\n, stringClassNameMask='" + stringClassNameMask + '\'' +
                 "\n, parameterIndex=" + parameterIndex +
+                "\n, hasValidStringClassNameMask=" + hasValidStringClassNameMask +
                 '}';
     }
 }

@@ -53,13 +53,9 @@ public class VariableAnalyser {
             return phpIndex.getAnyByFQN( classNameFromConstantLookup );
         }
 
-        //TODO:fix whether it sends a fqn or signature
-        if( passedType.substring(  0, 2 ).equals( "#C" ) ) {
-            passedType = passedType.substring(2);
-        }
-
+        String createdType = "#C" + matchingMethodConfig.formatUsingStringMask( passedType );
         return phpIndex
-                .getAnyByFQN( matchingMethodConfig.formatUsingStringMask( passedType ) );
+                .getBySignature( createdType );
     }
 
 

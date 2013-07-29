@@ -6,23 +6,8 @@ public class ParameterType {
 
     public ParameterType( String parameterType ) {
         this.parameterType = parameterType;
-    }
 
-    public String getClassReferenceString(){
-        if( this.parameterType == null ){
-            return null;
 
-        }
-
-        String returnType = parameterType;
-        if( returnType.indexOf( "#" ) == -1 ){
-            if( returnType.indexOf( "\\" ) == -1 ){
-                returnType = "\\" + returnType;
-            }
-            returnType = "#C" + returnType;
-        }
-
-        return returnType;
     }
 
 
@@ -37,6 +22,11 @@ public class ParameterType {
         }
 
         String[] returnTypeParts = parameterType.split( ":" );
-        return returnTypeParts[ returnTypeParts.length - 1 ];
+        String returnTypePart = returnTypeParts[ returnTypeParts.length - 1 ];
+        if ( returnTypePart.length() > 2 && returnTypePart.substring( 0, 2 ).equals( "#C" ) ) {
+            return returnTypePart.substring( 2 );
+        }
+
+        return returnTypePart;
     }
 }

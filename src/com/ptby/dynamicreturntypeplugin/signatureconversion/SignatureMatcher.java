@@ -18,6 +18,4 @@ public class SignatureMatcher {
     public boolean verifySignatureIsMethodCall( String signature ) {
         return signature.matches( METHOD_CALL_PATTERN );
     }
-
-
 }

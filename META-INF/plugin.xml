@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -109,6 +109,12 @@
             method/function call is not available at the moment and will still require the masked variable to be have phpdoc.
             eg. a masked variable then going into a configured verify call will not return the type anymore<br/>
         </ul>
+     <h3>1.0.6 </h3>
+         <ul>
+            <li>Fix static methods<br/>
+        </ul>
+
+
         ]]>
 
     </change-notes>
