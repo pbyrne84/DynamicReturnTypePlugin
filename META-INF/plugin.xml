@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -113,6 +113,13 @@
          <ul>
             <li>Fix static methods<br/>
         </ul>
+
+        <h3>1.0.7 </h3>
+         <ul>
+            <li>Fix ::class for php 5.5<br/>
+        </ul>
+
+
 
 
         ]]>
