@@ -20,8 +20,13 @@ public class ClassConstantAnalyzer {
 
     public String getClassNameFromConstantLookup( String classConstant, Project project ) {
         String[] constantParts = classConstant.split( "((#*)K#C|\\.|\\|\\?)" );
-        if ( constantParts.length < 3 ) {
+
+        if ( constantParts.length < 2 ) {
             return null;
+        }
+
+        if ( constantParts.length == 2  ) {
+            return constantParts[ 1 ];
         }
 
         String className = constantParts[ 1 ];
