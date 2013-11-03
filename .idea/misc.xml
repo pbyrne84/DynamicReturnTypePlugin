@@ -173,7 +173,7 @@
     <option name="INTEGRATE_REVERT_UNCHANGED" value="true" />
     <option name="SERVER_TIMEOUT" value="20000" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA PS-129.814" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA PS-131.374" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="RegexUtilComponent" text="#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\Phockito:mock:#C\DomDocument" flags="0" regex="((#M)?#C.*):(.*):(.*)" mode="0" />
