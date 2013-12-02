@@ -4,6 +4,7 @@ public class SignatureMatcher {
     private static final String CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)\\|\\?";
     private static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
     private static final String METHOD_CALL_PATTERN = "(#M#C.*):(.*):(.*)";
+    private static final String DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN = "(#M#F.*):(.*):(.*)";
 
     public boolean verifySignatureIsClassConstantFunctionCall( String signature ) {
         return signature.matches( CLASS_CONSTANT_CALL_PATTERN );
@@ -17,5 +18,15 @@ public class SignatureMatcher {
 
     public boolean verifySignatureIsMethodCall( String signature ) {
         return signature.matches( METHOD_CALL_PATTERN );
+    }
+
+
+    /**
+     * deferred in the sense that there is no \, this causes signatures to change and have to be further processed
+     * @param signature
+     * @return
+     */
+    public boolean verifySignatureIsDeferredGlobalFunctionCall(  String signature  ) {
+        return signature.matches( DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN );
     }
 }

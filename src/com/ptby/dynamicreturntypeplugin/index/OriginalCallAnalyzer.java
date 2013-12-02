@@ -19,7 +19,9 @@ import com.intellij.psi.search.SearchScope;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.stubs.NamedStub;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.ui.EmptyIcon;
 import com.jetbrains.php.PhpIndex;
+import com.jetbrains.php.lang.PhpLanguage;
 import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment;
 import com.jetbrains.php.lang.psi.elements.ExtendsList;
 import com.jetbrains.php.lang.psi.elements.Field;
@@ -51,7 +53,8 @@ public class OriginalCallAnalyzer {
 
     public Collection<? extends PhpNamedElement> getFieldInstanceOriginalReturnType( PhpIndex phpIndex,
                                                                                      String originalCallSignature,
-                                                                                     String calledMethod ) {
+                                                                                     String calledMethod,
+                                                                                     Project project) {
         Collection<? extends PhpNamedElement> methodSignatures = phpIndex
                 .getBySignature( originalCallSignature, null, 0 );
 
@@ -62,7 +65,7 @@ public class OriginalCallAnalyzer {
         FieldImpl field = ( FieldImpl ) methodSignatures.iterator().next();
         String classToFindOrigalTurnTypeOf = field.getType().toString();
         Collection<? extends PhpNamedElement> type;
-        if ( null != ( type = getMethodCallReturnType( phpIndex, classToFindOrigalTurnTypeOf, calledMethod ) ) ) {
+        if ( null != ( type = getMethodCallReturnType( phpIndex, classToFindOrigalTurnTypeOf, calledMethod, project ) ) ) {
             return type;
         }
 
@@ -73,7 +76,8 @@ public class OriginalCallAnalyzer {
 
     public Collection<? extends PhpNamedElement> getMethodCallReturnType( PhpIndex phpIndex,
                                                                           String className,
-                                                                          String calledMethod ) {
+                                                                          String calledMethod,
+                                                                          Project project ) {
 
         Method method;
         Collection<PhpClass> anyByFQN = phpIndex.getAnyByFQN( className );
@@ -87,7 +91,7 @@ public class OriginalCallAnalyzer {
                 }
 
                 Collection<PhpClass> primitiveList = new ArrayList<PhpClass>( );
-                primitiveList.add( new PrimitiveClass( method.getType() ) );
+                primitiveList.add( new PrimitiveClass( method.getType(), project ) );
                 return primitiveList;
             }
         }
@@ -113,11 +117,12 @@ public class OriginalCallAnalyzer {
     class PrimitiveClass implements PhpClass{
 
         private final PhpType type;
+        private final Project project;
 
 
-        PrimitiveClass( PhpType type ) {
-
+        PrimitiveClass( PhpType type, Project project ) {
             this.type = type;
+            this.project = project;
         }
 
 
@@ -131,7 +136,7 @@ public class OriginalCallAnalyzer {
         @NotNull
         @Override
         public String getName() {
-            return null;
+            return "";
         }
 
 
@@ -151,7 +156,7 @@ public class OriginalCallAnalyzer {
         @NotNull
         @Override
         public CharSequence getNameCS() {
-            return null;
+            return "";
         }
 
 
@@ -255,6 +260,18 @@ public class OriginalCallAnalyzer {
 
 
         @Override
+        public String[] getMixinNames() {
+            return new String[ 0 ];
+        }
+
+
+        @Override
+        public PhpClass[] getMixins() {
+            return new PhpClass[ 0 ];
+        }
+
+
+        @Override
         public PhpClass[] getSupers() {
             return new PhpClass[ 0 ];
         }
@@ -331,9 +348,10 @@ public class OriginalCallAnalyzer {
         }
 
 
+        @NotNull
         @Override
         public Icon getIcon() {
-            return null;
+            return new EmptyIcon( 0,0 );
         }
 
 
@@ -398,7 +416,7 @@ public class OriginalCallAnalyzer {
         @NotNull
         @Override
         public String getNamespaceName() {
-            return null;
+            return "";
         }
 
 
@@ -464,14 +482,14 @@ public class OriginalCallAnalyzer {
         @NotNull
         @Override
         public Project getProject() throws PsiInvalidElementAccessException {
-            return null;
+            return project;
         }
 
 
         @NotNull
         @Override
         public Language getLanguage() {
-            return null;
+            return PhpLanguage.INSTANCE;
         }
 
 

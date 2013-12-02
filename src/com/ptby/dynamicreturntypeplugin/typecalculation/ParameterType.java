@@ -6,8 +6,6 @@ public class ParameterType {
 
     public ParameterType( String parameterType ) {
         this.parameterType = parameterType;
-
-
     }
 
 

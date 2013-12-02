@@ -52,7 +52,7 @@ public class FieldReferenceAnalyzer {
         String type = locateType( phpIndex, project, fieldSignature, calledMethod, passedType );
         if ( type == null ) {
             return originalCallAnalyzer
-                    .getFieldInstanceOriginalReturnType( phpIndex, fieldSignature, calledMethod );
+                    .getFieldInstanceOriginalReturnType( phpIndex, fieldSignature, calledMethod, project );
         }
 
         if ( type.indexOf( "#C" ) == 0 ) {

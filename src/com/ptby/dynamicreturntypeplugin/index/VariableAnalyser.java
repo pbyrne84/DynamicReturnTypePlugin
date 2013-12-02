@@ -43,7 +43,9 @@ public class VariableAnalyser {
 
         ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, variableSignature, calledMethod );
         if ( matchingMethodConfig == null ) {
-            return originalCallAnalyzer.getMethodCallReturnType( phpIndex, variableSignature.substring( 4 ), calledMethod );
+            return originalCallAnalyzer.getMethodCallReturnType(
+                    phpIndex, variableSignature.substring( 4 ), calledMethod, project
+            );
         }
 
         if ( classConstantAnalyzer.verifySignatureIsClassConstant( passedType ) ) {
@@ -51,6 +53,7 @@ public class VariableAnalyser {
                     .getClassNameFromConstantLookup( passedType, project );
 
             return phpIndex.getAnyByFQN( classNameFromConstantLookup );
+
         }
 
         String createdType = "#C" + matchingMethodConfig.formatUsingStringMask( passedType );
