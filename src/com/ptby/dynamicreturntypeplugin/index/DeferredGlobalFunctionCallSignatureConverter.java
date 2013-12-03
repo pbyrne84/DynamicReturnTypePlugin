@@ -18,13 +18,19 @@ public class DeferredGlobalFunctionCallSignatureConverter {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        if( split.length < 3 ) {
+
+        if( split.length < 2 ) {
             return signature;
         }
 
+        String passedType = "";
+        if ( split.length >= 2  ) {
+            passedType = split[ split.length - 1];
+        }
+
+
         String variableSignature = split[ 0 ];
         String calledMethod = split[ 1 ];
-        String passedType = split[ split.length - 1 ];
 
         String cleanedVariableSignature = variableSignature.substring( 2 );
         Collection<? extends PhpNamedElement> bySignature = phpIndex.getBySignature( cleanedVariableSignature );

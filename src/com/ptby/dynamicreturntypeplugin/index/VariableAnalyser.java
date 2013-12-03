@@ -33,13 +33,13 @@ public class VariableAnalyser {
         String[] split = signature.split( ":" );
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        if( split.length < 3 ) {
-            return Collections.emptySet();
+        String passedType = "";
+        if( split.length == 3 ) {
+            passedType = split[ split.length - 1 ];
         }
 
         String variableSignature = split[ 0 ];
         String calledMethod = split[ 1 ];
-        String passedType = split[ split.length - 1 ];
 
         ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, variableSignature, calledMethod );
         if ( matchingMethodConfig == null ) {
