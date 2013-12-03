@@ -34,6 +34,7 @@ import com.jetbrains.php.lang.psi.elements.PhpPsiElement;
 import com.jetbrains.php.lang.psi.elements.PhpTraitUseRule;
 import com.jetbrains.php.lang.psi.elements.impl.FieldImpl;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,11 +53,10 @@ import java.util.List;
 public class OriginalCallAnalyzer {
 
     public Collection<? extends PhpNamedElement> getFieldInstanceOriginalReturnType( PhpIndex phpIndex,
-                                                                                     String originalCallSignature,
-                                                                                     String calledMethod,
+                                                                                     CustomMethodCallSignature customMethodCallSignature,
                                                                                      Project project) {
         Collection<? extends PhpNamedElement> methodSignatures = phpIndex
-                .getBySignature( originalCallSignature, null, 0 );
+                .getBySignature( customMethodCallSignature.getClassName(), null, 0 );
 
         if ( methodSignatures.size() == 0 ) {
             return Collections.emptySet();
@@ -65,7 +65,7 @@ public class OriginalCallAnalyzer {
         FieldImpl field = ( FieldImpl ) methodSignatures.iterator().next();
         String classToFindOrigalTurnTypeOf = field.getType().toString();
         Collection<? extends PhpNamedElement> type;
-        if ( null != ( type = getMethodCallReturnType( phpIndex, classToFindOrigalTurnTypeOf, calledMethod, project ) ) ) {
+        if ( null != ( type = getMethodCallReturnType( phpIndex, classToFindOrigalTurnTypeOf, customMethodCallSignature.getMethod(), project ) ) ) {
             return type;
         }
 

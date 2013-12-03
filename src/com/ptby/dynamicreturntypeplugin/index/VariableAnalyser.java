@@ -6,9 +6,9 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class VariableAnalyser {
     private final ClassConstantAnalyzer classConstantAnalyzer;
@@ -29,34 +29,26 @@ public class VariableAnalyser {
     }
 
 
-    public Collection<? extends PhpNamedElement> getClassNameFromVariableLookup( String signature, Project project ) {
-        String[] split = signature.split( ":" );
+    public Collection<? extends PhpNamedElement> getClassNameFromVariableLookup( CustomMethodCallSignature signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        String passedType = "";
-        if( split.length == 3 ) {
-            passedType = split[ split.length - 1 ];
-        }
 
-        String variableSignature = split[ 0 ];
-        String calledMethod = split[ 1 ];
-
-        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, variableSignature, calledMethod );
+        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, signature.getClassName(), signature.getMethod() );
         if ( matchingMethodConfig == null ) {
             return originalCallAnalyzer.getMethodCallReturnType(
-                    phpIndex, variableSignature.substring( 4 ), calledMethod, project
+                    phpIndex, signature.getClassName().substring( 4 ), signature.getMethod(), project
             );
         }
 
-        if ( classConstantAnalyzer.verifySignatureIsClassConstant( passedType ) ) {
+        if ( classConstantAnalyzer.verifySignatureIsClassConstant( signature.getParameter() ) ) {
             String classNameFromConstantLookup = classConstantAnalyzer
-                    .getClassNameFromConstantLookup( passedType, project );
+                    .getClassNameFromConstantLookup( signature.getParameter(), project );
 
             return phpIndex.getAnyByFQN( classNameFromConstantLookup );
 
         }
 
-        String createdType = "#C" + matchingMethodConfig.formatUsingStringMask( passedType );
+        String createdType = "#C" + matchingMethodConfig.formatUsingStringMask( signature.getParameter() );
         return phpIndex
                 .getBySignature( createdType );
     }

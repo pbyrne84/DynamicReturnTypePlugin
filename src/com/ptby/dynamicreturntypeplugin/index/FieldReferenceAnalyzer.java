@@ -7,9 +7,9 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -37,22 +37,13 @@ public class FieldReferenceAnalyzer {
 
 
 
-    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( String signature, Project project ) {
-        String[] split = signature.split( ":" );
+    public Collection<? extends PhpNamedElement> getClassNameFromFieldLookup( CustomMethodCallSignature customMethodCallSignature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        if ( split.length < 3 ) {
-            return Collections.emptySet();
-        }
-
-        String fieldSignature = split[ 0 ];
-        String calledMethod = split[ 1 ];
-        String passedType = split[ 2 ];
-
-        String type = locateType( phpIndex, project, fieldSignature, calledMethod, passedType );
+        String type = locateType( phpIndex, project, customMethodCallSignature );
         if ( type == null ) {
             return originalCallAnalyzer
-                    .getFieldInstanceOriginalReturnType( phpIndex, fieldSignature, calledMethod, project );
+                    .getFieldInstanceOriginalReturnType( phpIndex, customMethodCallSignature, project );
         }
 
         if ( type.indexOf( "#C" ) == 0 ) {
@@ -65,8 +56,8 @@ public class FieldReferenceAnalyzer {
     }
 
 
-    private String locateType( PhpIndex phpIndex, Project project, String fieldSignature, String calledMethod, String passedType ) {
-        Collection <? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( fieldSignature, null, 0 );
+    private String locateType( PhpIndex phpIndex, Project project,  CustomMethodCallSignature customMethodCallSignature ) {
+        Collection <? extends PhpNamedElement> fieldElements = phpIndex.getBySignature( customMethodCallSignature.getClassName(), null, 0 );
         if ( fieldElements.size() == 0 ) {
             return null;
         }
@@ -74,12 +65,12 @@ public class FieldReferenceAnalyzer {
         PhpNamedElement fieldElement = fieldElements.iterator().next();
         PhpType type = fieldElement.getType();
         ClassMethodConfig matchingConfig = methodCallValidator
-                .getMatchingConfig( phpIndex, project, calledMethod, "#C" + type.toString(), fieldElements );
+                .getMatchingConfig( phpIndex, project, customMethodCallSignature.getMethod(), "#C" + type.toString(), fieldElements );
 
         if ( matchingConfig == null ) {
             return null;
         }
 
-        return matchingConfig.formatUsingStringMask( passedType );
+        return matchingConfig.formatUsingStringMask( customMethodCallSignature.getParameter()  );
     }
 }
