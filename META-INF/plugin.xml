@@ -119,7 +119,11 @@
             <li>Fix ::class for php 5.5<br/>
         </ul>
 
-
+         <h3>1.0.8 </h3>
+         <ul>
+            <li>Compiled with java 1.6 for compatibility<br/>
+            <li>Fixed issues with global functions called with no leading backslash in namespaces playing with signatures and breaking completion <br/>
+        </ul>
 
 
         ]]>
