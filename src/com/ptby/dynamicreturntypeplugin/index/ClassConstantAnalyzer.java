@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.Field;
 import com.jetbrains.php.lang.psi.elements.PhpClass;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 
 import java.util.Collection;
@@ -25,7 +26,7 @@ public class ClassConstantAnalyzer {
             return null;
         }
 
-        if ( constantParts.length == 2  ) {
+        if ( constantParts.length == 2 ) {
             return constantParts[ 1 ];
         }
 

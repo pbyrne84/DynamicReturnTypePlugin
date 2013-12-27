@@ -19,6 +19,7 @@ import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
@@ -47,6 +48,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         classConstantAnalyzer = new ClassConstantAnalyzer();
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
         deferredGlobalFunctionCallSignatureConverter = new ReturnInitialisedSignatureConverter();
+        variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
         getTypeResponseFactory = createGetTypeResponseFactory( configAnalyser );
     }
 
@@ -97,25 +99,48 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
+        PhpIndex phpIndex = PhpIndex.getInstance( project );
+        CustomMethodCallSignature customMethodCallSignature = CustomMethodCallSignature.createFromString( signature );
+        if ( customMethodCallSignature == null ) {
+            return tryFunctionCall( signature, phpIndex, project );
+        }
+
         SignatureMatcher signatureMatcher = new SignatureMatcher();
         if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( signature ) ||
                 signatureMatcher.verifySignatureIsFromReturnInitialiasedLocalObject( signature ) ) {
-            signature = deferredGlobalFunctionCallSignatureConverter.convertSignatureToClassSignature(
-                    signature, project
+            customMethodCallSignature = deferredGlobalFunctionCallSignatureConverter.convertSignatureToClassSignature(
+                    customMethodCallSignature, project
             );
         }
 
-        PhpIndex phpIndex = PhpIndex.getInstance( project );
+        if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( customMethodCallSignature ) ) {
+            return phpIndex.getAnyByFQN(
+                    classConstantAnalyzer
+                            .getClassNameFromConstantLookup( customMethodCallSignature.getRawStringSignature(), project )
+            );
+        } else if ( signatureMatcher.verifySignatureIsFieldCall( customMethodCallSignature ) ) {
+            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( customMethodCallSignature, project );
+        } else if ( signatureMatcher.verifySignatureIsMethodCall( customMethodCallSignature ) ) {
+            return variableAnalyser.getClassNameFromVariableLookup( customMethodCallSignature, project );
+        }
+
+        return tryToDeferToDefaultType( signature, phpIndex );
+    }
+
+
+    private Collection<? extends PhpNamedElement> tryFunctionCall( String signature, PhpIndex phpIndex, Project project ) {
+        SignatureMatcher signatureMatcher = new SignatureMatcher();
         if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( signature ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer.getClassNameFromConstantLookup( signature, project )
             );
-        } else if ( signatureMatcher.verifySignatureIsFieldCall( signature ) ) {
-            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( signature, project );
-        } else if ( signatureMatcher.verifySignatureIsMethodCall( signature ) ) {
-            return variableAnalyser.getClassNameFromVariableLookup( signature, project );
         }
 
+        return tryToDeferToDefaultType( signature, phpIndex );
+    }
+
+
+    private Collection<? extends PhpNamedElement> tryToDeferToDefaultType( String signature, PhpIndex phpIndex ) {
         if ( signature.indexOf( "#" ) != 0 ) {
             if ( signature.indexOf( "\\" ) != 0 ) {
                 signature = "\\" + signature;
@@ -123,12 +148,6 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
             return phpIndex.getAnyByFQN( signature );
         }
 
-
-        return tryToDeferToDefaultType( signature, phpIndex );
-    }
-
-
-    private Collection<? extends PhpNamedElement> tryToDeferToDefaultType( String signature, PhpIndex phpIndex ) {
         try {
             return phpIndex.getBySignature( signature, null, 0 );
         } catch ( RuntimeException e ) {
