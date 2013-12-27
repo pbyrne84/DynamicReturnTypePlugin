@@ -7,10 +7,10 @@ import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl;
 
 import java.util.Collection;
 
-public class DeferredGlobalFunctionCallSignatureConverter {
+public class ReturnInitialisedSignatureConverter {
 
 
-    public DeferredGlobalFunctionCallSignatureConverter( ) {
+    public ReturnInitialisedSignatureConverter() {
     }
 
 

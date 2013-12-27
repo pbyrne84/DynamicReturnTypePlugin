@@ -13,7 +13,7 @@ import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
-import com.ptby.dynamicreturntypeplugin.index.DeferredGlobalFunctionCallSignatureConverter;
+import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
@@ -33,7 +33,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
-    private final DeferredGlobalFunctionCallSignatureConverter deferredGlobalFunctionCallSignatureConverter;
+    private final ReturnInitialisedSignatureConverter deferredGlobalFunctionCallSignatureConverter;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
@@ -44,9 +44,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
         ConfigAnalyser configAnalyser = configState.getConfigAnalyser();
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
-        classConstantAnalyzer  = new ClassConstantAnalyzer();
-        variableAnalyser       = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
-        deferredGlobalFunctionCallSignatureConverter = new DeferredGlobalFunctionCallSignatureConverter();
+        classConstantAnalyzer = new ClassConstantAnalyzer();
+        variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
+        deferredGlobalFunctionCallSignatureConverter = new ReturnInitialisedSignatureConverter();
         getTypeResponseFactory = createGetTypeResponseFactory( configAnalyser );
     }
 
@@ -98,7 +98,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
         SignatureMatcher signatureMatcher = new SignatureMatcher();
-        if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( signature) ) {
+        if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( signature ) ||
+                signatureMatcher.verifySignatureIsFromReturnInitialiasedLocalObject( signature ) ) {
             signature = deferredGlobalFunctionCallSignatureConverter.convertSignatureToClassSignature(
                     signature, project
             );
