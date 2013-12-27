@@ -34,7 +34,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
-    private final ReturnInitialisedSignatureConverter deferredGlobalFunctionCallSignatureConverter;
+    private final ReturnInitialisedSignatureConverter returnInitialisedSignatureConverter;
     private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
@@ -47,7 +47,7 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         fieldReferenceAnalyzer = new FieldReferenceAnalyzer( configAnalyser );
         classConstantAnalyzer = new ClassConstantAnalyzer();
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
-        deferredGlobalFunctionCallSignatureConverter = new ReturnInitialisedSignatureConverter();
+        returnInitialisedSignatureConverter = new ReturnInitialisedSignatureConverter();
         variableAnalyser = new VariableAnalyser( configAnalyser, classConstantAnalyzer );
         getTypeResponseFactory = createGetTypeResponseFactory( configAnalyser );
     }
@@ -106,9 +106,9 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
         }
 
         SignatureMatcher signatureMatcher = new SignatureMatcher();
-        if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( signature ) ||
-                signatureMatcher.verifySignatureIsFromReturnInitialiasedLocalObject( signature ) ) {
-            customMethodCallSignature = deferredGlobalFunctionCallSignatureConverter.convertSignatureToClassSignature(
+        if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( customMethodCallSignature ) ||
+                signatureMatcher.verifySignatureIsFromReturnInitialiasedLocalObject( customMethodCallSignature ) ) {
+            customMethodCallSignature = returnInitialisedSignatureConverter.convertSignatureToClassSignature(
                     customMethodCallSignature, project
             );
         }
