@@ -14,11 +14,9 @@ public class DynamicReturnTypeConfig {
         this.functionCallConfigs = functionCallConfigs;
     }
 
-    public DynamicReturnTypeConfig( ) {
+    public DynamicReturnTypeConfig() {
         this( new ArrayList<ClassMethodConfig>(), new ArrayList<FunctionCallConfig>() );
     }
-
-
 
 
     public List<ClassMethodConfig> getClassMethodConfigs() {
@@ -49,7 +47,7 @@ public class DynamicReturnTypeConfig {
             return false;
         }
 
-        DynamicReturnTypeConfig that = ( DynamicReturnTypeConfig ) o;
+        DynamicReturnTypeConfig that = (DynamicReturnTypeConfig) o;
 
         if ( !classMethodConfigs.equals( that.classMethodConfigs ) ) {
             return false;
@@ -67,5 +65,20 @@ public class DynamicReturnTypeConfig {
         int result = classMethodConfigs.hashCode();
         result = 31 * result + functionCallConfigs.hashCode();
         return result;
+    }
+
+
+    public void merge( DynamicReturnTypeConfig newConfig ) {
+        for ( ClassMethodConfig possibleNewMethodConfig : newConfig.getClassMethodConfigs() ) {
+            if ( !classMethodConfigs.contains( possibleNewMethodConfig ) ) {
+                classMethodConfigs.add( possibleNewMethodConfig );
+            }
+        }
+
+        for ( FunctionCallConfig possibleNewFunctionCallConfig : newConfig.getFunctionCallConfigs() ) {
+            if ( !functionCallConfigs.contains( possibleNewFunctionCallConfig ) ) {
+                functionCallConfigs.add( possibleNewFunctionCallConfig );
+            }
+        }
     }
 }

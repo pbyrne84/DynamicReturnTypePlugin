@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
+@Deprecated
 public class JsonFileSystemChangeListener implements VirtualFileListener {
 
     private List<JsonConfigurationChangeListener> jsonConfigurationChangeListeners = new ArrayList<JsonConfigurationChangeListener>();

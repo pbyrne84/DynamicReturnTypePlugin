@@ -6,6 +6,7 @@ import com.intellij.openapi.vfs.VirtualFileEvent;
 
 import java.io.IOException;
 
+@Deprecated
 public interface JsonConfigurationChangeListener {
 
     public void notifyJsonFileHasChanged( VirtualFile virtualFileEvent ) throws IOException;
