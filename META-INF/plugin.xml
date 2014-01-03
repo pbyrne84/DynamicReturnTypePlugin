@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -124,7 +124,11 @@
             <li>Compiled with java 1.6 for compatibility<br/>
             <li>Fixed issues with global functions called with no leading backslash in namespaces playing with signatures and breaking completion <br/>
         </ul>
-
+        <h3>1.0.9</h3>
+           <ul>
+            <li>Fixed local variables that are returned from factories not having the ability to have dynamic return types<br/>
+            https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/16
+          </ul>
 
         ]]>
 
