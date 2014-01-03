@@ -32,7 +32,7 @@ public class ClassMethodConfig {
         if ( fqnClassName != null ? !fqnClassName.equals( that.fqnClassName ) : that.fqnClassName != null ) {
             return false;
         }
-        if ( methodName != null ? !methodName.equals( that.methodName ) : that.methodName != null ) {
+        if ( !methodName.equals( that.methodName ) ) {
             return false;
         }
         if ( stringClassNameMask != null ? !stringClassNameMask

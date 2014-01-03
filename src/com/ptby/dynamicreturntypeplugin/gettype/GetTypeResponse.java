@@ -5,7 +5,7 @@ public class GetTypeResponse {
 
 
     public GetTypeResponse( String response ) {
-        if( response != null && response.toString() == "null" ) {
+        if( response != null && response.equals( "null" ) ) {
             throw new RuntimeException("cannot be string null");
 
         }

@@ -9,12 +9,12 @@ import com.ptby.dynamicreturntypeplugin.file.FilenameSearcher;
 import java.io.IOException;
 import java.util.Collection;
 
-public class OpenProjectsRefresher {
+public class ProjectsConfigRefresher {
 
     private final FilenameSearcher filenameSearcher;
     private final ProjectConfigBuilder projectConfigBuilder;
 
-    public OpenProjectsRefresher() {
+    public ProjectsConfigRefresher() {
         filenameSearcher = new FilenameSearcher();
         projectConfigBuilder = new ProjectConfigBuilder();
     }

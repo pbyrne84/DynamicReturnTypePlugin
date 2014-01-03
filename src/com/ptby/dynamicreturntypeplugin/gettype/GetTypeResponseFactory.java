@@ -9,8 +9,6 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 
-import java.io.IOException;
-
 public class GetTypeResponseFactory {
 
     private final ConfigAnalyser configAnalyser;
@@ -27,7 +25,7 @@ public class GetTypeResponseFactory {
     }
 
 
-    public GetTypeResponse createDynamicReturnType( PsiElement psiElement ) throws IOException {
+    public GetTypeResponse createDynamicReturnType( PsiElement psiElement ) {
         if ( PlatformPatterns.psiElement( PhpElementTypes.METHOD_REFERENCE ).accepts( psiElement ) ) {
             return createMethodResponse( ( MethodReferenceImpl ) psiElement );
         } else if ( PlatformPatterns.psiElement( PhpElementTypes.FUNCTION_CALL ).accepts( psiElement ) ) {

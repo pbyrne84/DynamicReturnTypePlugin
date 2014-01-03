@@ -1,14 +1,11 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
 import com.intellij.openapi.project.Project;
-import com.ptby.dynamicreturntypeplugin.config.multi.OpenProjectsRefresher;
 
 public class ConfigStateContainer {
-    static ConfigState configState = new ConfigState();
-    static  OpenProjectsRefresher openProjectsRefresher  = new OpenProjectsRefresher();
+    static private final ConfigState configState = new ConfigState();
 
     public ConfigStateContainer() {
-        openProjectsRefresher = new OpenProjectsRefresher();
     }
 
     public static ConfigState getConfigState() {

@@ -1,8 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileEvent;
 
 import java.util.concurrent.ConcurrentHashMap;
 

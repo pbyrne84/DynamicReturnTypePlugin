@@ -8,7 +8,7 @@ public class CustomMethodCallSignature {
     private final String rawStringSignature;
 
 
-    public CustomMethodCallSignature( String className, String method, String parameter, String rawStringSignature ) {
+    private CustomMethodCallSignature( String className, String method, String parameter, String rawStringSignature ) {
         this.className = className;
         this.method = method;
         this.parameter = parameter;

@@ -1,7 +1,5 @@
 package com.ptby.dynamicreturntypeplugin;
 
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -13,8 +11,8 @@ import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
-import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
+import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
@@ -23,7 +21,6 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -35,8 +32,8 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
     private final ReturnInitialisedSignatureConverter returnInitialisedSignatureConverter;
-    private com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
-    private FieldReferenceAnalyzer fieldReferenceAnalyzer;
+    private final com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
+    private final FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
 
 
@@ -72,20 +69,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     public String getType( PsiElement psiElement ) {
         try {
-            try {
-                GetTypeResponse dynamicReturnType = getTypeResponseFactory.createDynamicReturnType( psiElement );
-                if ( dynamicReturnType.isNull() ) {
-                    return null;
-                }
-
-                return dynamicReturnType.toString();
-            } catch ( MalformedJsonException e ) {
-                logger.warn( "MalformedJsonException", e );
-            } catch ( JsonSyntaxException e ) {
-                logger.warn( "JsonSyntaxException", e );
-            } catch ( IOException e ) {
-                logger.warn( "IOException", e );
+            GetTypeResponse dynamicReturnType = getTypeResponseFactory.createDynamicReturnType( psiElement );
+            if ( dynamicReturnType.isNull() ) {
+                return null;
             }
+
+            return dynamicReturnType.toString();
         } catch ( Exception e ) {
             if ( !( e instanceof ProcessCanceledException ) ) {
                 logger.error( "Exception", e );

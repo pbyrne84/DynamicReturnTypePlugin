@@ -7,7 +7,7 @@ import java.util.List;
 
 public class OpenProjects {
 
-    private List<Project> projects = new ArrayList<Project>();
+    private final List<Project> projects = new ArrayList<Project>();
 
     private boolean isAccessing = false;
 

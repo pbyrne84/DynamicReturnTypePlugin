@@ -10,7 +10,7 @@ public class ClassResponsePackager {
     public GetTypeResponse packageClassReference( MethodReference methodReference, ParameterType parameterType ) {
         ClassReference classReference = ( ClassReference ) methodReference.getClassReference();
         String returnType = parameterType.toString();
-        if ( returnType == null ) {
+        if ( returnType == null || classReference == null) {
             return new GetTypeResponse( null );
         }
 

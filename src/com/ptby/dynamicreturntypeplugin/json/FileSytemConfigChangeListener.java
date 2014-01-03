@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FileSytemConfigChangeListener implements VirtualFileListener {
     private static final String expectedConfigFileName = "dynamicReturnTypeMeta.json";
-    private List<ProjectConfigChangeListener> projectConfigChangeListeners = new ArrayList<ProjectConfigChangeListener>();
+    private final List<ProjectConfigChangeListener> projectConfigChangeListeners = new ArrayList<ProjectConfigChangeListener>();
 
     public FileSytemConfigChangeListener(){
         LocalFileSystem instance = LocalFileSystem.getInstance();
