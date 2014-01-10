@@ -45,6 +45,12 @@ public class ClassConstantAnalyzer {
                     String constantText = defaultValue.getText();
                     if ( constantText.equals( "__CLASS__" ) ) {
                         return className;
+                    }else{
+                        String stringClassName = constantText.
+                                replace( "'", "" ).
+                                replace( "\"", "" );
+
+                        return stringClassName;
                     }
                 }
             }
