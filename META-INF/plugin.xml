@@ -124,10 +124,18 @@
             <li>Compiled with java 1.6 for compatibility<br/>
             <li>Fixed issues with global functions called with no leading backslash in namespaces playing with signatures and breaking completion <br/>
         </ul>
+
         <h3>1.0.9</h3>
            <ul>
             <li>Fixed local variables that are returned from factories not having the ability to have dynamic return types<br/>
             https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/16
+          </ul>
+
+         <h3>1.1.0</h3>
+           <ul>
+            <li>Removed limitation that the config file have to be in the root, multiple configs are now allowed and merged<br/>
+            https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/15
+            <li>String class constants will now be analyzed<br/>
           </ul>
 
         ]]>
