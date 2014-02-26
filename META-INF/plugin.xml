@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -136,6 +136,10 @@
             <li>Removed limitation that the config file have to be in the root, multiple configs are now allowed and merged<br/>
             https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/15
             <li>String class constants will now be analyzed<br/>
+          </ul>
+         <h3>1.1.1</h3>
+           <ul>
+            <li>Fixed static method calls</li>
           </ul>
 
         ]]>

@@ -5,9 +5,13 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.parser.PhpElementTypes;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
+
+import java.util.List;
 
 public class GetTypeResponseFactory {
 
@@ -37,15 +41,23 @@ public class GetTypeResponseFactory {
 
 
     private GetTypeResponse createMethodResponse( MethodReferenceImpl classMethod ) {
+        List<ClassMethodConfig> currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(
+                classMethod.getProject()
+        );
+
         return methodCallReturnTypeScanner.getTypeFromMethodCall(
-                configAnalyser.getCurrentClassMethodConfigs( classMethod.getProject() ), classMethod
+                currentClassMethodConfigs, classMethod
         );
     }
 
 
     private GetTypeResponse createFunctionResponse( FunctionReferenceImpl functionReference ) {
+        List<FunctionCallConfig> currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(
+                functionReference.getProject()
+        );
+
         return functionCallReturnTypeScanner.getTypeFromFunctionCall(
-                configAnalyser.getCurrentFunctionCallConfigs( functionReference.getProject() ), functionReference
+                currentFunctionCallConfigs, functionReference
         );
     }
 }

@@ -20,7 +20,6 @@ public class CallReturnTypeCalculator {
         fieldResponsePackager = new FieldResponsePackager();
         variableResponsePackager = new VariableResponsePackager();
         classResponsePackager = new ClassResponsePackager();
-
     }
 
 
@@ -30,14 +29,14 @@ public class CallReturnTypeCalculator {
             return fieldResponsePackager.packageFieldReference(
                     methodReference, createParameterType( methodReference, parameterIndex )
             );
-        }else if ( classReference instanceof Variable ) {
+        } else if ( classReference instanceof Variable ) {
             return variableResponsePackager.packageVariableReference(
                     methodReference, createParameterType( methodReference, parameterIndex )
             );
-        }else if( classReference instanceof ClassReference ){
+        } else if ( classReference instanceof ClassReference || classReference instanceof MethodReference ) {
             return classResponsePackager.packageClassReference(
-                    methodReference, createParameterType( methodReference, parameterIndex
-            ) );
+                    methodReference, createParameterType( methodReference, parameterIndex )
+            );
         }
 
         ParameterType parameterType = parameterTypeCalculator
@@ -49,7 +48,7 @@ public class CallReturnTypeCalculator {
 
     private ParameterType createParameterType( MethodReference methodReference, int parameterIndex ) {
         return parameterTypeCalculator
-                        .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
+                .calculateTypeFromParameter( parameterIndex, methodReference.getParameters() );
     }
 
 
@@ -58,9 +57,8 @@ public class CallReturnTypeCalculator {
                 parameterIndex, functionReference.getParameters()
         );
 
-        return new GetTypeResponse( functionReturnType.toString()  );
+        return new GetTypeResponse( functionReturnType.toString() );
     }
-
 
 
 }

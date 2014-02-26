@@ -3,7 +3,7 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion;
 public class SignatureMatcher {
     private static final String CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)\\|\\?";
     private static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
-    private static final String RETURN_INITIALISED_LOCAL_METHOD_CALL_PATTERN = "(#M#M#C.*):(.*):(.*)";
+    private static final String RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*):(.*)";
     private static final String METHOD_CALL_PATTERN = "(#M#C.*):(.*):(.*)";
     private static final String DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN = "(#M#F.*):(.*):(.*)";
 
@@ -41,7 +41,7 @@ public class SignatureMatcher {
      * called on it
      */
     public boolean verifySignatureIsFromReturnInitialiasedLocalObject( CustomMethodCallSignature signature ) {
-        return signature.getRawStringSignature().matches( RETURN_INITIALISED_LOCAL_METHOD_CALL_PATTERN );
+        return signature.getRawStringSignature().matches( RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN );
 
     }
 }
