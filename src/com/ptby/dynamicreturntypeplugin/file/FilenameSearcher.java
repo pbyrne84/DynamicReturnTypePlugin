@@ -17,33 +17,39 @@ public class FilenameSearcher {
     public void findByFileName( final Project project, final String filename, final FilenameSearchResultsListener resultsListener ) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
-        executorService.execute( new Runnable() {
-            @Override
-            public void run() {
-                while ( !project.isInitialized() ) {
-                    try {
-                        Thread.sleep( 10 );
-                    } catch ( InterruptedException e ) {
-                        //e.printStackTrace();
-                    }
-                }
-                final Collection<VirtualFile> files = ApplicationManager.getApplication().runReadAction(new Computable<Collection<VirtualFile>>() {
-                    @Nullable
+        executorService.execute(
+                new Runnable() {
                     @Override
-                    public Collection<VirtualFile> compute() {
-                        if (  project.isDisposed()) {
-                            return null;
+                    public void run() {
+                        while ( !project.isInitialized() ) {
+                            try {
+                                Thread.sleep( 1000 );
+                            } catch ( InterruptedException e ) {
+                                //e.printStackTrace();
+                            }
                         }
+                        final Collection<VirtualFile> files = ApplicationManager.getApplication().runReadAction(
+                                new Computable<Collection<VirtualFile>>() {
+                                    @Nullable
+                                    @Override
+                                    public Collection<VirtualFile> compute() {
+                                        if ( project.isDisposed() ) {
+                                            return null;
+                                        }
 
+                                        Collection<VirtualFile> virtualFilesByName = FilenameIndex.getVirtualFilesByName(
+                                                project,
+                                                filename,
+                                                new ProjectAndLibrariesScope( project, true )
+                                        );
+                                        return virtualFilesByName;
+                                    }
+                                }
+                        );
 
-                        return FilenameIndex.getVirtualFilesByName( project, filename, new ProjectAndLibrariesScope( project, true ) );
+                        resultsListener.respondToResults( files );
                     }
                 }
-                );
-
-                resultsListener.respondToResults( files );
-            }
-        }
         );
 
 
