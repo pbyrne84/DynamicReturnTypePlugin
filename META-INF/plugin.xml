@@ -140,6 +140,7 @@
          <h3>1.1.1</h3>
            <ul>
             <li>Fixed static method calls</li>
+            <li>Fix race condition with project reinitialisation</li>
           </ul>
 
         ]]>
