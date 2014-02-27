@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin;
 
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.startup.StartupManager;
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,15 @@ public class ProjectOpenListener implements ProjectComponent {
 
 
     public void projectOpened() {
-        ConfigStateContainer.notifyProjectOpened( this.project );
+        final StartupManager startupManager = StartupManager.getInstance( project );
+        Runnable postInitialisationCallBack = new Runnable() {
+            @Override
+            public void run() {
+                ConfigStateContainer.notifyProjectOpened( project );
+            }
+        };
+
+        startupManager.runWhenProjectIsInitialized( postInitialisationCallBack );
     }
 
 
