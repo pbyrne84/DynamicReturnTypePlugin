@@ -41,12 +41,9 @@ public class FilenameSearcher {
                                 }
                         );
 
-                        System.out.println( files.size() );
                         resultsListener.respondToResults( files );
                     }
                 }
         );
-        executorService.shutdown();
-
     }
 }

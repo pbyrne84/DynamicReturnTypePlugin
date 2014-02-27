@@ -18,17 +18,24 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import org.apache.commons.lang.StringUtils;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
+    public static final String PLUGIN_IDENTIFIER_KEY_STRING = new String( new char[] {PLUGIN_IDENTIFIER_KEY } );
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;
     private final ReturnInitialisedSignatureConverter returnInitialisedSignatureConverter;
@@ -88,60 +95,73 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
-        PhpIndex phpIndex = PhpIndex.getInstance( project );
-        CustomMethodCallSignature customMethodCallSignature = CustomMethodCallSignature.createFromString( signature );
-        if ( customMethodCallSignature == null ) {
-            return tryFunctionCall( signature, phpIndex, project );
-        }
 
-        SignatureMatcher signatureMatcher = new SignatureMatcher();
-        if ( signatureMatcher.verifySignatureIsDeferredGlobalFunctionCall( customMethodCallSignature ) ||
-                signatureMatcher.verifySignatureIsFromReturnInitialiasedLocalObject( customMethodCallSignature ) ) {
-            customMethodCallSignature = returnInitialisedSignatureConverter.convertSignatureToClassSignature(
-                    customMethodCallSignature, project
-            );
-        }
+        Collection<? extends PhpNamedElement> bySignature = null;
+        String lastFqnName = "";
+        for ( String chainedSignature : createChainedSignatureList( signature ) ) {
+            String newSignature = lastFqnName + chainedSignature;
+            bySignature = processSingleSignature( newSignature, project );
 
-        if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( customMethodCallSignature ) ) {
-            return phpIndex.getAnyByFQN(
-                    classConstantAnalyzer
-                            .getClassNameFromConstantLookup( customMethodCallSignature.getRawStringSignature(), project )
-            );
-        } else if ( signatureMatcher.verifySignatureIsFieldCall( customMethodCallSignature ) ) {
-            return fieldReferenceAnalyzer.getClassNameFromFieldLookup( customMethodCallSignature, project );
-        } else if ( signatureMatcher.verifySignatureIsMethodCall( customMethodCallSignature ) ) {
-            return variableAnalyser.getClassNameFromVariableLookup( customMethodCallSignature, project );
-        }
-
-        return tryToDeferToDefaultType( signature, phpIndex );
-    }
-
-
-    private Collection<? extends PhpNamedElement> tryFunctionCall( String signature, PhpIndex phpIndex, Project project ) {
-        SignatureMatcher signatureMatcher = new SignatureMatcher();
-        if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( signature ) ) {
-            return phpIndex.getAnyByFQN(
-                    classConstantAnalyzer.getClassNameFromConstantLookup( signature, project )
-            );
-        }
-
-        return tryToDeferToDefaultType( signature, phpIndex );
-    }
-
-
-    private Collection<? extends PhpNamedElement> tryToDeferToDefaultType( String signature, PhpIndex phpIndex ) {
-        if ( signature.indexOf( "#" ) != 0 ) {
-            if ( signature.indexOf( "\\" ) != 0 ) {
-                signature = "\\" + signature;
+            if ( bySignature.iterator().hasNext()  ) {
+                lastFqnName = "#M#C" + bySignature.iterator().next().getFQN();
             }
-            return phpIndex.getAnyByFQN( signature );
         }
 
-        try {
-            return phpIndex.getBySignature( signature, null, 0 );
-        } catch ( RuntimeException e ) {
-            logger.warn( "Cannot decode " + signature );
-            return Collections.emptySet();
-        }
+        return bySignature;
     }
+
+
+    public List<String> createChainedSignatureList( String signature ) {
+        int chainedSignatureCount = StringUtils.countMatches( signature, PLUGIN_IDENTIFIER_KEY_STRING ) + 1 ;
+
+        List<String> chainedSignatureList = new ArrayList<String>();
+        if ( chainedSignatureCount < 2 ) {
+            chainedSignatureList.add( signature );
+            return chainedSignatureList;
+        }
+
+        int beginIndex = signature.lastIndexOf( PLUGIN_IDENTIFIER_KEY_STRING );
+        String cleanedSignature = signature.substring( beginIndex + 1 );
+
+        int currentStringPos = 0;
+        int currentOrdinalIncrement = 3;
+        for ( int i = 0; i < chainedSignatureCount; i++ ) {
+            int nextSignatureStart = StringUtils.ordinalIndexOf( cleanedSignature, ":", currentOrdinalIncrement );
+            String subSignature;
+            if ( nextSignatureStart != -1  ) {
+                subSignature = cleanedSignature.substring( currentStringPos, nextSignatureStart );
+            }else{
+                subSignature = cleanedSignature.substring( currentStringPos );
+            }
+
+            chainedSignatureList.add( subSignature );
+            currentStringPos = nextSignatureStart;
+            currentOrdinalIncrement = currentOrdinalIncrement + 2;
+            if ( nextSignatureStart == -1  ) {
+                return chainedSignatureList;
+            }
+
+
+        }
+
+        return chainedSignatureList;
+    }
+
+
+    private Collection<? extends PhpNamedElement> processSingleSignature( String signature, Project project ) {
+        Collection<? extends PhpNamedElement> bySignature;CustomSignatureProcessor customSignatureProcessor = new CustomSignatureProcessor(
+                returnInitialisedSignatureConverter,
+                classConstantAnalyzer,
+                fieldReferenceAnalyzer,
+                variableAnalyser
+        );
+
+        bySignature = customSignatureProcessor
+                .getBySignature( signature, project );
+
+
+        return bySignature;
+    }
+
+
 }
