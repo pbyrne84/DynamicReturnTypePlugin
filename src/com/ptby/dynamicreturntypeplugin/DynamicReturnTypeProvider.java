@@ -17,6 +17,7 @@ import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
+import com.ptby.dynamicreturntypeplugin.signatureconversion.BySignatureSignatureSplitter;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
@@ -95,55 +96,19 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
+        BySignatureSignatureSplitter bySignatureSignatureSplitter = new BySignatureSignatureSplitter();
         Collection<? extends PhpNamedElement> bySignature = null;
         String lastFqnName = "";
-        for ( String chainedSignature : createChainedSignatureList( signature ) ) {
+        for ( String chainedSignature : bySignatureSignatureSplitter.createChainedSignatureList( signature ) ) {
             String newSignature = lastFqnName + chainedSignature;
             bySignature = processSingleSignature( newSignature, project );
 
-            if ( bySignature != null && bySignature.iterator().hasNext()  ) {
+            if ( bySignature != null && bySignature.iterator().hasNext() ) {
                 lastFqnName = "#M#C" + bySignature.iterator().next().getFQN();
             }
         }
 
         return bySignature;
-    }
-
-
-    public List<String> createChainedSignatureList( String signature ) {
-        int chainedSignatureCount = StringUtils.countMatches( signature, PLUGIN_IDENTIFIER_KEY_STRING ) + 1 ;
-
-        List<String> chainedSignatureList = new ArrayList<String>();
-        if ( chainedSignatureCount < 2 ) {
-            chainedSignatureList.add( signature );
-            return chainedSignatureList;
-        }
-
-        int beginIndex = signature.lastIndexOf( PLUGIN_IDENTIFIER_KEY_STRING );
-        String cleanedSignature = signature.substring( beginIndex + 1 );
-
-        int currentStringPos = 0;
-        int currentOrdinalIncrement = 3;
-        for ( int i = 0; i < chainedSignatureCount; i++ ) {
-            int nextSignatureStart = StringUtils.ordinalIndexOf( cleanedSignature, ":", currentOrdinalIncrement );
-            String subSignature;
-            if ( nextSignatureStart != -1  ) {
-                subSignature = cleanedSignature.substring( currentStringPos, nextSignatureStart );
-            }else{
-                subSignature = cleanedSignature.substring( currentStringPos );
-            }
-
-            chainedSignatureList.add( subSignature );
-            currentStringPos = nextSignatureStart;
-            currentOrdinalIncrement = currentOrdinalIncrement + 2;
-            if ( nextSignatureStart == -1  ) {
-                return chainedSignatureList;
-            }
-
-
-        }
-
-        return chainedSignatureList;
     }
 
 
