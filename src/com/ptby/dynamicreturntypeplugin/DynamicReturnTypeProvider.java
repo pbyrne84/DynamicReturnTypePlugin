@@ -95,14 +95,13 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
-
         Collection<? extends PhpNamedElement> bySignature = null;
         String lastFqnName = "";
         for ( String chainedSignature : createChainedSignatureList( signature ) ) {
             String newSignature = lastFqnName + chainedSignature;
             bySignature = processSingleSignature( newSignature, project );
 
-            if ( bySignature.iterator().hasNext()  ) {
+            if ( bySignature != null && bySignature.iterator().hasNext()  ) {
                 lastFqnName = "#M#C" + bySignature.iterator().next().getFQN();
             }
         }
