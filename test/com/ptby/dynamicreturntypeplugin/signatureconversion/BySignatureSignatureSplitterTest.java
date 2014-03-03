@@ -41,7 +41,7 @@ public class BySignatureSignatureSplitterTest {
 
     @Test
     public void test_createChainedSignatureList_multiOverriddenMethodCall_returnsOriginalCall() {
-        String methodCallSignature = "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?:getServiceWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?\n";
+        String methodCallSignature = "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?:getServiceWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?";
         List<String> actualChainedSignatureList = bySignatureSignatureSplitter
                 .createChainedSignatureList( methodCallSignature );
         assertEquals(
@@ -52,6 +52,23 @@ public class BySignatureSignatureSplitterTest {
                 actualChainedSignatureList
         );
     }
+
+
+    @Test
+    public void test_createChainedSignatureList_multiOverriddenMethodCall_moo() {
+        String methodCallSignature = "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker";
+        List<String> actualChainedSignatureList = bySignatureSignatureSplitter
+                .createChainedSignatureList( methodCallSignature );
+        assertEquals(
+                new StringList(
+                        "#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker"
+                ),
+                actualChainedSignatureList
+        );
+    }
+
+
+
 
 
 }
