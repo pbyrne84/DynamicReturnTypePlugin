@@ -139,8 +139,10 @@
           </ul>
          <h3>1.1.1</h3>
            <ul>
-            <li>Fixed static method calls</li>
+            <li>Fixed static method calls returning the configured container (https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/19#issuecomment-36117500)</li>
             <li>Fix race condition with project reinitialisation</li>
+            <li>Allow chaining of one container to another configured container(not fluent)
+            side part of https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/19</li>
           </ul>
 
         ]]>
