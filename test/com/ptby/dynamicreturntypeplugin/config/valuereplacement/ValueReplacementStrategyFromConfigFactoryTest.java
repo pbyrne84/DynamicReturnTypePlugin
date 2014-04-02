@@ -1,0 +1,60 @@
+package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+
+public class ValueReplacementStrategyFromConfigFactoryTest {
+
+
+    private ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory;
+
+
+    @Before
+    public void setup() {
+        valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
+    }
+
+
+    @Test
+    public void createFromJson_defaultPassthruConstruction() {
+        JsonObject jsonObject = createJsonObject( "" );
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( jsonObject )
+                        instanceof PassthruValueReplacementStrategy
+        );
+    }
+
+
+    private JsonObject createJsonObject( String mask ) {
+        String jsonString =
+                "{\n" +
+                        "\"position\": 0,\n" +
+                        "\"mask\"    : \"" + mask + "\"" +
+                        "}";
+
+        Gson gson = new Gson();
+        return gson.fromJson( jsonString, JsonObject.class );
+    }
+
+
+    @Test
+    public void createFromJson_maskConstruction() {
+        JsonObject customMaskJsonObject = createJsonObject( "custom%Mask" );
+        MaskValueReplacementStrategy expected = new MaskValueReplacementStrategy( "custom%Mask" );
+        assertEquals( expected, valueReplacementStrategyFromConfigFactory.createFromJson( customMaskJsonObject ) );
+    }
+
+
+    @Test
+    public void createFromJson_defaultsAsMaskHasNoPercentageSymbol() {
+        JsonObject jsonObject = createJsonObject( "customMask" );
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( jsonObject )
+                        instanceof PassthruValueReplacementStrategy
+        );
+    }
+}

@@ -48,7 +48,7 @@ public class VariableAnalyser {
 
         }
 
-        String createdType = "#C" + matchingMethodConfig.formatUsingStringMask( signature.getParameter() );
+        String createdType = "#C" + matchingMethodConfig.formatBeforeLookup( signature.getParameter() );
         return phpIndex
                 .getBySignature( createdType );
     }

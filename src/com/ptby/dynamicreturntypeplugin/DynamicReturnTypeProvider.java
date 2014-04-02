@@ -113,17 +113,15 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
 
     private Collection<? extends PhpNamedElement> processSingleSignature( String signature, Project project ) {
-        Collection<? extends PhpNamedElement> bySignature;CustomSignatureProcessor customSignatureProcessor = new CustomSignatureProcessor(
+        Collection<? extends PhpNamedElement> bySignature;
+        CustomSignatureProcessor customSignatureProcessor = new CustomSignatureProcessor(
                 returnInitialisedSignatureConverter,
                 classConstantAnalyzer,
                 fieldReferenceAnalyzer,
                 variableAnalyser
         );
 
-        bySignature = customSignatureProcessor
-                .getBySignature( signature, project );
-
-
+        bySignature = customSignatureProcessor.getBySignature( signature, project );
         return bySignature;
     }
 

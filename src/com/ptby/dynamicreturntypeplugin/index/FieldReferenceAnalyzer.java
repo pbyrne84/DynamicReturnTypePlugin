@@ -71,6 +71,6 @@ public class FieldReferenceAnalyzer {
             return null;
         }
 
-        return matchingConfig.formatUsingStringMask( customMethodCallSignature.getParameter()  );
+        return matchingConfig.formatBeforeLookup( customMethodCallSignature.getParameter() );
     }
 }

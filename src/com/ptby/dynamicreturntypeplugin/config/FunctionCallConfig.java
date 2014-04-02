@@ -1,23 +1,22 @@
 package com.ptby.dynamicreturntypeplugin.config;
 
 import com.jetbrains.php.lang.psi.elements.FunctionReference;
+import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy;
 import org.apache.commons.lang.StringUtils;
 
-public class FunctionCallConfig implements StringClassMaskConfig {
+public class FunctionCallConfig {
 
     private final String functionName;
     private final int parameterIndex;
-    private final String stringClassNameMask;
-    private final boolean hasValidClassNameMask;
+    private final ValueReplacementStrategy valueReplacementStrategy;
 
 
-    public FunctionCallConfig( String functionName, int parameterIndex, String stringClassNameMask ) {
+    public FunctionCallConfig( String functionName,
+                               int parameterIndex,
+                               ValueReplacementStrategy valueReplacementStrategy ) {
+        this.valueReplacementStrategy = valueReplacementStrategy;
         this.functionName = functionName.toLowerCase();
         this.parameterIndex = parameterIndex;
-        this.stringClassNameMask = stringClassNameMask;
-        this.hasValidClassNameMask
-                = !stringClassNameMask.equals( "" )
-                && StringUtils.countMatches( stringClassNameMask, "%" ) == 1;
     }
 
 
@@ -36,15 +35,53 @@ public class FunctionCallConfig implements StringClassMaskConfig {
     }
 
 
-    @Override
-    public String getStringClassNameMask() {
-        return stringClassNameMask;
+    public String formatBeforeLookup( String passedType ) {
+        return valueReplacementStrategy.replaceCalculatedValue( passedType );
     }
 
 
     @Override
-    public boolean hasValidStringClassNameMask() {
-        return hasValidClassNameMask;
+    public String toString() {
+        return "FunctionCallConfig{" +
+                "\nfunctionName='" + functionName + '\'' +
+                "\n, parameterIndex=" + parameterIndex +
+                "\n, valueReplacementStrategy=" + valueReplacementStrategy +
+                '}';
+    }
+
+
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof FunctionCallConfig ) ) {
+            return false;
+        }
+
+        FunctionCallConfig that = ( FunctionCallConfig ) o;
+
+        if ( parameterIndex != that.parameterIndex ) {
+            return false;
+        }
+        if ( functionName != null ? !functionName.equals( that.functionName ) : that.functionName != null ) {
+            return false;
+        }
+        if ( valueReplacementStrategy != null ? !valueReplacementStrategy
+                .equals( that.valueReplacementStrategy ) : that.valueReplacementStrategy != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = functionName != null ? functionName.hashCode() : 0;
+        result = 31 * result + parameterIndex;
+        result = 31 * result + ( valueReplacementStrategy != null ? valueReplacementStrategy.hashCode() : 0 );
+        return result;
     }
 
 
@@ -61,55 +98,6 @@ public class FunctionCallConfig implements StringClassMaskConfig {
         String functionReferenceText = functionReference.getText();
         return functionReferenceText.trim().indexOf( "\\" ) != 0 &&
                 ( "\\" + functionReference.getName() ).toLowerCase().equals( getFunctionName() );
-    }
-
-
-    @Override
-    public boolean equals( Object o ) {
-        if ( this == o ) {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() ) {
-            return false;
-        }
-
-        FunctionCallConfig that = ( FunctionCallConfig ) o;
-
-        if ( hasValidClassNameMask != that.hasValidClassNameMask ) {
-            return false;
-        }
-        if ( parameterIndex != that.parameterIndex ) {
-            return false;
-        }
-        if ( !functionName.equals( that.functionName ) ) {
-            return false;
-        }
-        if ( !stringClassNameMask.equals( that.stringClassNameMask ) ) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    @Override
-    public int hashCode() {
-        int result = functionName.hashCode();
-        result = 31 * result + parameterIndex;
-        result = 31 * result + stringClassNameMask.hashCode();
-        result = 31 * result + ( hasValidClassNameMask ? 1 : 0 );
-        return result;
-    }
-
-
-    @Override
-    public String toString() {
-        return "FunctionCallConfig{" +
-                "\nfunctionName='" + functionName + '\'' +
-                "\n, parameterIndex=" + parameterIndex +
-                "\n, stringClassNameMask='" + stringClassNameMask + '\'' +
-                "\n, hasValidStringClassNameMask=" + hasValidClassNameMask +
-                '}';
     }
 
 

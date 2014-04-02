@@ -4,11 +4,14 @@ import com.google.gson.*;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategyFromConfigFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonToDynamicReturnTypeConfigConverter {
+    ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
+
 
     public DynamicReturnTypeConfig convertJson( String json ) {
         JsonElement jsonElement = createJsonElementFromJson( json );
@@ -51,7 +54,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
                         getJsonString( jsonMethodCall, "class" ),
                         getJsonString( jsonMethodCall, "method" ),
                         getJsonInt( jsonMethodCall, "position" ),
-                        getJsonString( jsonMethodCall, "mask" )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( jsonMethodCall )
                 );
 
                 if( classMethodConfig.isValid() ){
@@ -96,7 +99,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
                 FunctionCallConfig functionCallConfig = new FunctionCallConfig(
                         getJsonString( jsonFunctionCall, "function" ),
                         getJsonInt( jsonFunctionCall, "position" ),
-                        getJsonString( jsonFunctionCall, "mask" )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( jsonFunctionCall )
                 );
 
                 if( functionCallConfig.isValid() ){
