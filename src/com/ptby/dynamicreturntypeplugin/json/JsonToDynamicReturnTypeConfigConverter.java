@@ -1,20 +1,24 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
 import com.google.gson.*;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategyFromConfigFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JsonToDynamicReturnTypeConfigConverter {
     ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
+    private VirtualFile configFile;
 
 
-    public DynamicReturnTypeConfig convertJson( String json ) {
-        JsonElement jsonElement = createJsonElementFromJson( json );
+    public DynamicReturnTypeConfig convertJson( VirtualFile configFile ) throws IOException {
+        this.configFile = configFile;
+        JsonElement jsonElement = createJsonElementFromJson(  new String( configFile.contentsToByteArray() ) );
         if ( jsonElement == null || !jsonElement.isJsonObject() ) {
             return new DynamicReturnTypeConfig();
         }
@@ -54,7 +58,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
                         getJsonString( jsonMethodCall, "class" ),
                         getJsonString( jsonMethodCall, "method" ),
                         getJsonInt( jsonMethodCall, "position" ),
-                        valueReplacementStrategyFromConfigFactory.createFromJson( jsonMethodCall )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( configFile, jsonMethodCall )
                 );
 
                 if( classMethodConfig.isValid() ){
@@ -99,7 +103,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
                 FunctionCallConfig functionCallConfig = new FunctionCallConfig(
                         getJsonString( jsonFunctionCall, "function" ),
                         getJsonInt( jsonFunctionCall, "position" ),
-                        valueReplacementStrategyFromConfigFactory.createFromJson( jsonFunctionCall )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( configFile, jsonFunctionCall )
                 );
 
                 if( functionCallConfig.isValid() ){

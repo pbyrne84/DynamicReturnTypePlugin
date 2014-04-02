@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.ptby.dynamicreturntypeplugin.TestVirtualFile;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,18 +14,20 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
 
 
     private ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory;
+    private TestVirtualFile testConfigFile;
 
 
     @Before
     public void setup() {
         valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
+        testConfigFile = new TestVirtualFile();
     }
 
 
     @Test
     public void createFromJson_defaultPassthruConstruction() {
         JsonObject jsonObject = createJsonObject( "" );
-        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( jsonObject )
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( testConfigFile, jsonObject )
                         instanceof PassthruValueReplacementStrategy
         );
     }
@@ -46,14 +49,19 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
     public void createFromJson_maskConstruction() {
         JsonObject customMaskJsonObject = createJsonObject( "custom%Mask" );
         MaskValueReplacementStrategy expected = new MaskValueReplacementStrategy( "custom%Mask" );
-        assertEquals( expected, valueReplacementStrategyFromConfigFactory.createFromJson( customMaskJsonObject ) );
+        ValueReplacementStrategy actual = valueReplacementStrategyFromConfigFactory.createFromJson(
+                testConfigFile,
+                customMaskJsonObject
+        );
+
+        assertEquals( expected, actual );
     }
 
 
     @Test
     public void createFromJson_defaultsAsMaskHasNoPercentageSymbol() {
         JsonObject jsonObject = createJsonObject( "customMask" );
-        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( jsonObject )
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( testConfigFile, jsonObject )
                         instanceof PassthruValueReplacementStrategy
         );
     }

@@ -20,7 +20,7 @@ public class ProjectConfigBuilder {
 
         for ( VirtualFile configFile : configFiles ) {
             DynamicReturnTypeConfig currentConfig = jsonToDynamicReturnTypeConfigConverter.convertJson(
-                    new String( configFile.contentsToByteArray() )
+                    configFile
             );
 
             dynamicReturnTypeConfig.merge( currentConfig );

@@ -1,5 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.ptby.dynamicreturntypeplugin.TestVirtualFile;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigList;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
@@ -10,7 +13,8 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+
 
 public class JsonToDynamicReturnTypeConfigConverterTest {
     @Test
@@ -49,7 +53,9 @@ public class JsonToDynamicReturnTypeConfigConverterTest {
                 "\n";
 
         JsonToDynamicReturnTypeConfigConverter jsonToDynamicReturnTypeConfigConverter = new JsonToDynamicReturnTypeConfigConverter();
-        DynamicReturnTypeConfig actualReturnTypeConfig = jsonToDynamicReturnTypeConfigConverter.convertJson( json );
+        DynamicReturnTypeConfig actualReturnTypeConfig = jsonToDynamicReturnTypeConfigConverter.convertJson(
+                new TestVirtualFile( json )
+        );
 
         PassthruValueReplacementStrategy replacementStrategy = new PassthruValueReplacementStrategy();
         List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
@@ -66,6 +72,8 @@ public class JsonToDynamicReturnTypeConfigConverterTest {
         DynamicReturnTypeConfig expectedReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
 
         assertEquals( expectedReturnTypeConfig, actualReturnTypeConfig );
-
     }
+
+
+
 }
