@@ -7,7 +7,7 @@ import com.ptby.dynamicreturntypeplugin.config.valuereplacement.replacementexecu
 
 import java.io.IOException;
 
-public class JavascriptFileCallbackReplaceStrategy implements ValueReplacementStrategy {
+public class JavascriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
     private final String className;
     private final String methodName;
     private final String javascriptFunctionCall;
@@ -15,11 +15,11 @@ public class JavascriptFileCallbackReplaceStrategy implements ValueReplacementSt
     private JavascriptReplacementExecutor javascriptReplacementExecutor;
 
 
-    public JavascriptFileCallbackReplaceStrategy( VirtualFile configFile,
-                                                  String className,
-                                                  String methodName,
-                                                  String fileName,
-                                                  String javascriptFunctionCall ) {
+    public JavascriptFileCallbackReplacementStrategy( VirtualFile configFile,
+                                                      String className,
+                                                      String methodName,
+                                                      String fileName,
+                                                      String javascriptFunctionCall ) {
         this.className = className;
         this.methodName = methodName;
         this.javascriptFunctionCall = javascriptFunctionCall;

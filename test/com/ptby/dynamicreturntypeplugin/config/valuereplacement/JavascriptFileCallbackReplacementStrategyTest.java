@@ -5,12 +5,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class JavascriptFileCallbackReplaceStrategyTest {
+public class JavascriptFileCallbackReplacementStrategyTest {
 
     @Test
     public void replaceCalculatedValue_methodDoesNotMatch_returnsSameValue() {
-        JavascriptFileCallbackReplaceStrategy javascriptFileCallbackReplaceStrategy
-                = new JavascriptFileCallbackReplaceStrategy(
+        JavascriptFileCallbackReplacementStrategy javascriptFileCallbackReplacementStrategy
+                = new JavascriptFileCallbackReplacementStrategy(
                 createConfigFile(),
                 "",
                 "",
@@ -18,7 +18,7 @@ public class JavascriptFileCallbackReplaceStrategyTest {
                 "replaceReturnType"
         );
 
-        String actual = javascriptFileCallbackReplaceStrategy.replaceCalculatedValue( "test value" );
+        String actual = javascriptFileCallbackReplacementStrategy.replaceCalculatedValue( "test value" );
         assertEquals( "test value", actual );
     }
     

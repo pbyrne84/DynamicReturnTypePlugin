@@ -13,6 +13,7 @@ public class JavascriptReplacementExecutor {
     private final String methodName;
     private JavascriptExecutor javascriptExecutor;
 
+
     public JavascriptReplacementExecutor( String className,
                                           String methodName,
                                           String javascript,
@@ -49,11 +50,34 @@ public class JavascriptReplacementExecutor {
 
 
         public String executeJavascript( String currentValue ) {
+            int prefixEndIndex = calculatePrefixEnd( currentValue );
+            String prefix = "";
+            String namespace = "";
+            String returnClassName = currentValue;
+            if ( prefixEndIndex != -1 ) {
+                if ( prefixEndIndex != 0  ) {
+                    prefix = currentValue.substring( 0, prefixEndIndex ) + "\\";
+                }
+                int namesSpaceEndIndex = currentValue.lastIndexOf( "\\" );
+                namespace = currentValue.substring( prefixEndIndex, namesSpaceEndIndex );
+
+                returnClassName = currentValue.substring( namesSpaceEndIndex + 1 );
+            }
+
             Object result = fct.call(
-                    context, scope, scope, new Object[]{ className, methodName, currentValue }
+                    context, scope, scope, new Object[]{ className, methodName, namespace, returnClassName }
             );
 
-            return String.valueOf( Context.jsToJava( result, String.class ) );
+            return prefix + String.valueOf( Context.jsToJava( result, String.class ) );
         }
+    }
+
+
+    private int calculatePrefixEnd( String currentValue ) {
+        if ( !currentValue.contains( "#" ) && currentValue.contains( "\\" ) ) {
+            return 0;
+        }
+
+        return currentValue.indexOf( "\\" );
     }
 }
