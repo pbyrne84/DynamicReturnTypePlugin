@@ -10,7 +10,6 @@ public class BySignatureSignatureSplitter {
 
     public List<String> createChainedSignatureList( String signature ) {
         List<String> chainedSignatureList = new StringList();
-        signature = signature.trim();
         if ( signature.equals( "" ) ) {
             return chainedSignatureList;
         }
@@ -30,24 +29,26 @@ public class BySignatureSignatureSplitter {
         int currentOrdinalIncrement = 3;
         for ( int i = 0; i < chainedSignatureCount; i++ ) {
             int nextSignatureStart = StringUtils.ordinalIndexOf( cleanedSignature, ":", currentOrdinalIncrement );
-            String subSignature;
-            if ( nextSignatureStart != -1 ) {
-                subSignature = cleanedSignature.substring( currentStringPos, nextSignatureStart );
-            } else {
-                subSignature = cleanedSignature.substring( currentStringPos );
-            }
-
+            String subSignature = getSubSignature( cleanedSignature, currentStringPos, nextSignatureStart );
             chainedSignatureList.add( subSignature );
-            currentStringPos = nextSignatureStart;
-            currentOrdinalIncrement = currentOrdinalIncrement + 2;
             if ( nextSignatureStart == -1 ) {
                 return chainedSignatureList;
             }
 
-
+            currentStringPos = nextSignatureStart;
+            currentOrdinalIncrement = currentOrdinalIncrement + 2;
         }
 
         return chainedSignatureList;
+    }
+
+
+    private String getSubSignature( String cleanedSignature, int currentStringPos, int nextSignatureStart ) {
+        if ( nextSignatureStart != -1 ) {
+            return cleanedSignature.substring( currentStringPos, nextSignatureStart );
+        }
+
+        return cleanedSignature.substring( currentStringPos );
     }
 
 }
