@@ -33,6 +33,12 @@ public class ScriptReplacementExecutor {
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName( scriptLanguage );
+        if ( engine == null ) {
+            throw new ScriptException(
+                    "Script engine '" + scriptLanguage + "' was not created. Relevant jar may not be in classpath."
+            );
+        }
+
         engine.eval( this.script );
         invocable = ( Invocable ) engine;
         scriptSignatureParser = new ScriptSignatureParser();
