@@ -47,10 +47,6 @@ public class ScriptReplacementExecutor {
 
 
     public String executeAndReplace( String currentValue ) {
-        if ( invocable == null ) {
-            return "";
-        }
-
         ParsedSignature parsedSignature = scriptSignatureParser.parseSignature( currentValue );
         if ( parsedSignature == null ) {
             return "";
