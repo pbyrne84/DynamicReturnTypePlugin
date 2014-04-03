@@ -1,75 +1,42 @@
 package com.ptby.dynamicreturntypeplugin.config.valuereplacement.replacementexecutors;
 
-import sun.org.mozilla.javascript.internal.Context;
-import sun.org.mozilla.javascript.internal.ErrorReporter;
-import sun.org.mozilla.javascript.internal.EvaluatorException;
-import sun.org.mozilla.javascript.internal.Function;
-import sun.org.mozilla.javascript.internal.ScriptableObject;
+import com.intellij.openapi.diagnostic.Logger;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 public class JavascriptReplacementExecutor {
 
-    private final String javaScript;
+    private final String javascript;
     private final String className;
     private final String methodName;
-    private JavascriptExecutor javascriptExecutor;
+    private JavaScriptExecutor javaScriptExecutor;
 
 
     public JavascriptReplacementExecutor( String className,
                                           String methodName,
                                           String javascript,
-                                          String javascriptFunctionCall ) {
-        this.javaScript = javascript;
+                                          String javascriptFunctionCall ) throws ScriptException {
+        this.javascript = javascript;
         this.className = className;
         this.methodName = methodName;
 
-        Context context = Context.enter();
-        ScriptableObject scope = context.initStandardObjects();
-        context.evaluateString( scope, javaScript, "script", 1, null );
-        Function fct = ( Function ) scope.get( javascriptFunctionCall, scope );
-
-        javascriptExecutor = new JavascriptExecutor( fct, context, scope );
+        ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName( "JavaScript" );
+        engine.eval( this.javascript );
+        Invocable inv = ( Invocable ) engine;
+        javaScriptExecutor = new JavaScriptExecutor( inv, javascriptFunctionCall );
     }
 
 
     public String executeAndReplace( String currentValue ) {
-        return javascriptExecutor.executeJavascript( currentValue );
-    }
-
-
-    private class JavascriptExecutor {
-        private final Function fct;
-        private final Context context;
-        private final ScriptableObject scope;
-
-
-        private JavascriptExecutor( Function fct, Context context, ScriptableObject scope ) {
-            this.fct = fct;
-            this.context = context;
-            this.scope = scope;
+        if ( javaScriptExecutor == null ) {
+            return "";
         }
 
-
-        public String executeJavascript( String currentValue ) {
-            int prefixEndIndex = calculatePrefixEnd( currentValue );
-            String prefix = "";
-            String namespace = "";
-            String returnClassName = currentValue;
-            if ( prefixEndIndex != -1 ) {
-                if ( prefixEndIndex != 0  ) {
-                    prefix = currentValue.substring( 0, prefixEndIndex ) + "\\";
-                }
-                int namesSpaceEndIndex = currentValue.lastIndexOf( "\\" );
-                namespace = currentValue.substring( prefixEndIndex, namesSpaceEndIndex );
-
-                returnClassName = currentValue.substring( namesSpaceEndIndex + 1 );
-            }
-
-            Object result = fct.call(
-                    context, scope, scope, new Object[]{ className, methodName, namespace, returnClassName }
-            );
-
-            return prefix + String.valueOf( Context.jsToJava( result, String.class ) );
-        }
+        return javaScriptExecutor.executeJavascript( currentValue );
     }
 
 
@@ -79,5 +46,61 @@ public class JavascriptReplacementExecutor {
         }
 
         return currentValue.indexOf( "\\" );
+    }
+
+
+    private class JavaScriptExecutor {
+
+        private final Invocable invocable;
+        private final String javascriptFunctionCall;
+
+
+        private JavaScriptExecutor( Invocable invocable, String javascriptFunctionCall ) {
+            this.invocable = invocable;
+            this.javascriptFunctionCall = javascriptFunctionCall;
+        }
+
+
+        public String executeJavascript( String currentValue ) {
+            final Logger log = Logger.getInstance( "DynamicReturnTypePlugin" );
+
+            int prefixEndIndex = calculatePrefixEnd( currentValue );
+            String prefix = "";
+            String namespace = "";
+            String returnClassName = currentValue;
+            if ( prefixEndIndex != -1 ) {
+                if ( prefixEndIndex != 0 ) {
+                    prefix = currentValue.substring( 0, prefixEndIndex ) + "\\";
+                }
+                int namesSpaceEndIndex = currentValue.lastIndexOf( "\\" );
+                namespace = currentValue.substring( prefixEndIndex, namesSpaceEndIndex );
+
+                returnClassName = currentValue.substring( namesSpaceEndIndex + 1 );
+            }
+
+            try {
+                Object result = invocable.invokeFunction(
+                        javascriptFunctionCall,
+                        namespace,
+                        returnClassName,
+                        className,
+                        methodName
+                );
+
+                return prefix + String.valueOf( result );
+            } catch ( ScriptException e ) {
+                log.warn(
+                        "Error executing " + javascriptFunctionCall + "\n" +  e.getMessage(),
+                        e
+                );
+            } catch ( NoSuchMethodException e ) {
+                log.warn(
+                        "No such method " + javascriptFunctionCall + "\n" +  e.getMessage(),
+                        e
+                );
+            }
+
+            return "";
+        }
     }
 }

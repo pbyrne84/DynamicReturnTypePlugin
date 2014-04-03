@@ -5,7 +5,10 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.replacementexecutors.JavascriptReplacementExecutor;
 
+import javax.script.ScriptException;
 import java.io.IOException;
+
+import com.intellij.openapi.diagnostic.Logger;
 
 public class JavascriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
     private final String className;
@@ -31,6 +34,7 @@ public class JavascriptFileCallbackReplacementStrategy implements ValueReplaceme
 
 
     private void loadJavascript() {
+        final Logger log = Logger.getInstance( "DynamicReturnTypePlugin" );
         ApplicationManager.getApplication().invokeLater(
                 new Runnable() {
                     @Override
@@ -51,7 +55,17 @@ public class JavascriptFileCallbackReplacementStrategy implements ValueReplaceme
                             );
 
                         } catch ( IOException e ) {
-                            e.printStackTrace();
+                            log.warn(
+                                    "Could not read javascript call back file " + absoluteJavaScriptFileLocationPath +
+                                            "\n" + e.getMessage(),
+                                    e
+                            );
+                        } catch ( ScriptException e ) {
+                            log.warn(
+                                    "Could not evaluate javascript call back file " + absoluteJavaScriptFileLocationPath +
+                                            "\n" + e.getMessage(),
+                                    e
+                            );
                         }
                     }
                 }
@@ -67,7 +81,6 @@ public class JavascriptFileCallbackReplacementStrategy implements ValueReplaceme
 
         return javascriptReplacementExecutor.executeAndReplace( currentValue );
     }
-
 
 
 }

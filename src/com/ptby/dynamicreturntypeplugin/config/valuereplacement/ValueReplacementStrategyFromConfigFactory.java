@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.intellij.openapi.vfs.VirtualFile;
 
 public class ValueReplacementStrategyFromConfigFactory {
+    public static final String FILE_FUNCTION_CALL_KEY = "fileFunctionCall";
 
     public ValueReplacementStrategyFromConfigFactory() {
     }
@@ -18,8 +19,8 @@ public class ValueReplacementStrategyFromConfigFactory {
             }
         }
 
-        if ( configObject.has( "javascriptCall" ) && configObject.get( "javascriptCall" ).isJsonArray() ) {
-            JsonArray javascriptCallOptions = configObject.get( "javascriptCall" ).getAsJsonArray();
+        if ( configObject.has( FILE_FUNCTION_CALL_KEY ) && configObject.get( FILE_FUNCTION_CALL_KEY ).isJsonArray() ) {
+            JsonArray javascriptCallOptions = configObject.get( FILE_FUNCTION_CALL_KEY ).getAsJsonArray();
             if ( javascriptCallOptions.size() == 2 ) {
                 String fileName = javascriptCallOptions.get( 0 ).getAsString();
                 String javascriptFunctionCall = javascriptCallOptions.get( 1 ).getAsString();
