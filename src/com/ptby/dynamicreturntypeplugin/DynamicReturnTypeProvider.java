@@ -3,7 +3,6 @@ package com.ptby.dynamicreturntypeplugin;
 import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
 import com.ptby.dynamicreturntypeplugin.config.ConfigState;
@@ -18,18 +17,10 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.BySignatureSignatureSplitter;
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor;
-import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import org.apache.commons.lang.StringUtils;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 

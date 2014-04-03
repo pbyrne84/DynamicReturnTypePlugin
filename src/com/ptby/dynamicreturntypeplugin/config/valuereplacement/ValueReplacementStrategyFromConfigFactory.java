@@ -25,7 +25,7 @@ public class ValueReplacementStrategyFromConfigFactory {
                 String fileName = javascriptCallOptions.get( 0 ).getAsString();
                 String javascriptFunctionCall = javascriptCallOptions.get( 1 ).getAsString();
 
-                return createJavascriptFileCallbackReplacementStrategy( configFile, configObject, fileName, javascriptFunctionCall );
+                return createScriptFileCallbackReplacementStrategy( configFile, configObject, fileName, javascriptFunctionCall );
             }
         }
 
@@ -33,10 +33,10 @@ public class ValueReplacementStrategyFromConfigFactory {
     }
 
 
-    private ValueReplacementStrategy createJavascriptFileCallbackReplacementStrategy( VirtualFile configFile,
-                                                                                      JsonObject configObject,
-                                                                                      String fileName,
-                                                                                      String javascriptFunctionCall ) {
+    private ValueReplacementStrategy createScriptFileCallbackReplacementStrategy( VirtualFile configFile,
+                                                                                  JsonObject configObject,
+                                                                                  String fileName,
+                                                                                  String javascriptFunctionCall ) {
         String className = getJsonString( configObject, "class" );
 
         String method;
@@ -46,7 +46,7 @@ public class ValueReplacementStrategyFromConfigFactory {
             method = getJsonString( configObject, "method" );
         }
 
-        return new JavascriptFileCallbackReplacementStrategy(
+        return new ScriptFileCallbackReplacementStrategy(
                 configFile,
                 className,
                 method,

@@ -1,4 +1,4 @@
-package com.ptby.dynamicreturntypeplugin.config.valuereplacement.replacementexecutors;
+package com.ptby.dynamicreturntypeplugin.scripting;
 
 import org.intellij.lang.annotations.Language;
 import org.junit.Test;
@@ -7,14 +7,15 @@ import javax.script.ScriptException;
 
 import static org.junit.Assert.assertEquals;
 
-public class JavascriptReplacementExecutorTest {
+public class ScriptReplacementExecutorTest {
 
     @Test
-    public void executeAndReplace_validJavascript_hasSignatureAtStart() throws ScriptException {
+    public void executeAndReplace_validJavascript() throws ScriptException {
         @Language("JavaScript")
         String javascript = "function abc( returnTypeNameSpace, returnTypeClass, className,methodName ) {return className + \"_\" + methodName + \"_\" +  returnTypeNameSpace + \"_\" + returnTypeClass ;}";
 
-        JavascriptReplacementExecutor replacementExecutor = new JavascriptReplacementExecutor(
+        ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
+                ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
                 "class1",
                 "method1",
                 javascript,
@@ -28,19 +29,21 @@ public class JavascriptReplacementExecutorTest {
 
 
     @Test
-    public void executeAndReplace_validJavascript_doesNotHaveSignatureAtStart() throws ScriptException {
-        @Language("JavaScript")
-        String javascript = "function abc( returnTypeNameSpace, returnTypeClass, className, methodName ) {return className + \"_\" + methodName + \"_\" +  returnTypeNameSpace + \"_\" + returnTypeClass ;}";
+    public void executeAndReplace_validGroovy() throws ScriptException {
+        @Language("Groovy")
+        String groovy = "def abc( returnTypeNameSpace, returnTypeClass, className,methodName ) {return className + \"_\" + methodName + \"_\" +  returnTypeNameSpace + \"_\" + returnTypeClass ;}";
 
-        JavascriptReplacementExecutor replacementExecutor = new JavascriptReplacementExecutor(
+        ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
+                ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY,
                 "class1",
                 "method1",
-                javascript,
+                groovy,
                 "abc"
         );
 
-        String actual = replacementExecutor.executeAndReplace( "Entity\\User" );
-        assertEquals( "class1_method1_Entity_User", actual );
+        String actual = replacementExecutor
+                .executeAndReplace( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
+        assertEquals( "#K#C\\class1_method1_\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
     }
 
 
@@ -48,7 +51,8 @@ public class JavascriptReplacementExecutorTest {
     public void executeAndReplace_invalidJavascript() throws ScriptException {
         String javascript = "function abc(";
 
-        JavascriptReplacementExecutor replacementExecutor = new JavascriptReplacementExecutor(
+        ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
+                ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
                 "class1",
                 "method1",
                 javascript,

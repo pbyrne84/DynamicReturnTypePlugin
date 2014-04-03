@@ -3,31 +3,34 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.ptby.dynamicreturntypeplugin.config.valuereplacement.replacementexecutors.JavascriptReplacementExecutor;
+import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor;
 
 import javax.script.ScriptException;
+import java.io.File;
 import java.io.IOException;
 
 import com.intellij.openapi.diagnostic.Logger;
 
-public class JavascriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
+public class ScriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
     private final String className;
     private final String methodName;
+    private final String scriptFileName;
     private final String javascriptFunctionCall;
     private final String absoluteJavaScriptFileLocationPath;
-    private JavascriptReplacementExecutor javascriptReplacementExecutor;
+    private ScriptReplacementExecutor scriptReplacementExecutor;
 
 
-    public JavascriptFileCallbackReplacementStrategy( VirtualFile configFile,
-                                                      String className,
-                                                      String methodName,
-                                                      String fileName,
-                                                      String javascriptFunctionCall ) {
+    public ScriptFileCallbackReplacementStrategy( VirtualFile configFile,
+                                                  String className,
+                                                  String methodName,
+                                                  String scriptFileName,
+                                                  String javascriptFunctionCall ) {
         this.className = className;
         this.methodName = methodName;
+        this.scriptFileName = scriptFileName;
         this.javascriptFunctionCall = javascriptFunctionCall;
 
-        this.absoluteJavaScriptFileLocationPath = configFile.getParent().getCanonicalPath() + "/" + fileName;
+        this.absoluteJavaScriptFileLocationPath = configFile.getParent().getCanonicalPath() + "/" + scriptFileName;
 
         loadJavascript();
     }
@@ -47,7 +50,8 @@ public class JavascriptFileCallbackReplacementStrategy implements ValueReplaceme
 
                         try {
                             String script = new String( fileByPath.contentsToByteArray() );
-                            javascriptReplacementExecutor = new JavascriptReplacementExecutor(
+                            scriptReplacementExecutor = new ScriptReplacementExecutor(
+                                    calculateScriptType(),
                                     className,
                                     methodName,
                                     script,
@@ -73,13 +77,27 @@ public class JavascriptFileCallbackReplacementStrategy implements ValueReplaceme
     }
 
 
+    private String calculateScriptType() {
+        String scriptExtension = "";
+        int i = scriptFileName.lastIndexOf('.');
+        if (i > 0) {
+             scriptExtension = scriptFileName.substring(i+1).toLowerCase();
+        }
+        if ( scriptExtension.equals( "groovy" ) ) {
+            return ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY;
+        }
+
+        return ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT;
+    }
+
+
     @Override
     public String replaceCalculatedValue( String currentValue ) {
-        if ( javascriptReplacementExecutor == null ) {
+        if ( scriptReplacementExecutor == null ) {
             return currentValue;
         }
 
-        return javascriptReplacementExecutor.executeAndReplace( currentValue );
+        return scriptReplacementExecutor.executeAndReplace( currentValue );
     }
 
 
