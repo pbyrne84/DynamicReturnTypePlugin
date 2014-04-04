@@ -173,7 +173,7 @@ function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass, cl
 }
 ```
 
-returnTypeNameSpace and returnTypeClass are separated before hand to ease manipulation within the function call. The returnTypeNameSpace does not trim the leading slash of the start and runs as is.
+returnTypeNameSpace and returnTypeClass are separated before hand to ease manipulation within the function call. The returnTypeNameSpace trims the leading slash so \DomDocument is DomDocument.
 
 #### Replacement callback file handling/compilation.
 The only restriction is the script file must be in the the same folder as its related dynamicReturnTypeMeta.json. This restriction may be lifted at some point but it adds complexity.

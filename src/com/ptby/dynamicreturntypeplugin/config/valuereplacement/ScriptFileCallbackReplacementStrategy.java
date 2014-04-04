@@ -6,13 +6,12 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.ptby.dynamicreturntypeplugin.scripting.PhpCallReferenceInfo;
+import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration;
 import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor;
 
 import javax.script.ScriptException;
-import java.io.File;
 import java.io.IOException;
-
-import com.intellij.openapi.diagnostic.Logger;
 
 public class ScriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
     private final String className;
@@ -52,13 +51,16 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
                         try {
                             String script = new String( fileByPath.contentsToByteArray() );
-                            scriptReplacementExecutor = new ScriptReplacementExecutor(
-                                    calculateScriptType(),
-                                    className,
-                                    methodName,
+                            CallableScriptConfiguration callableScriptConfiguration = new CallableScriptConfiguration(
                                     absoluteJavaScriptFileLocationPath,
                                     script,
                                     javascriptFunctionCall
+                            );
+
+                            scriptReplacementExecutor = new ScriptReplacementExecutor(
+                                    calculateScriptType(),
+                                    new PhpCallReferenceInfo( className, methodName ),
+                                    callableScriptConfiguration
                             );
 
                         } catch ( IOException e ) {

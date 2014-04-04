@@ -16,28 +16,19 @@ public class ScriptReplacementExecutor {
     public static final String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
     public static final String SCRIPT_LANGUAGE_GROOVY = "groovy";
 
-    private final String fileLocation;
-    private final String script;
-    private final String className;
-    private final String methodName;
-    private final String javascriptFunctionCall;
+    private final PhpCallReferenceInfo phpCallReferenceInfo;
+    private final CallableScriptConfiguration callableScriptConfiguration;
     private final Invocable invocable;
     private ScriptSignatureParser scriptSignatureParser;
 
 
     public ScriptReplacementExecutor( String scriptLanguage,
-                                      String className,
-                                      String methodName,
-                                      String fileLocation,
-                                      String script,
-                                      String scriptFunctionCall ) throws ScriptException {
-        this.fileLocation = fileLocation;
-        this.script = script;
-        this.className = className;
-        this.methodName = methodName;
-        this.javascriptFunctionCall = scriptFunctionCall;
+                                      PhpCallReferenceInfo phpCallReferenceInfo,
+                                      CallableScriptConfiguration callableScriptConfiguration ) throws ScriptException {
+        this.phpCallReferenceInfo = phpCallReferenceInfo;
+        this.callableScriptConfiguration = callableScriptConfiguration;
 
-        ExecutingScriptApi executingScriptApi = new ExecutingScriptApi( fileLocation );
+        ExecutingScriptApi executingScriptApi = new ExecutingScriptApi( callableScriptConfiguration.getScriptFileLocation() );
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName( scriptLanguage );
@@ -49,7 +40,7 @@ public class ScriptReplacementExecutor {
 
         engine.put( "api", executingScriptApi );
 
-        engine.eval( this.script );
+        engine.eval( callableScriptConfiguration.getScriptCode() );
         invocable = ( Invocable ) engine;
         scriptSignatureParser = new ScriptSignatureParser();
     }
@@ -63,20 +54,20 @@ public class ScriptReplacementExecutor {
 
         try {
             Object result = invocable.invokeFunction(
-                    javascriptFunctionCall,
+                    callableScriptConfiguration.getScriptCall(),
                     parsedSignature.getNamespace(),
-                    parsedSignature.getReturnClassName(),
-                    className,
-                    methodName
+                    parsedSignature.getReturnClassName()
             );
 
             return parsedSignature.getPrefix() + String.valueOf( result );
         } catch ( ScriptException e ) {
-            String message = "Error executing " + javascriptFunctionCall + " in " + fileLocation + "\n" + e
-                    .getMessage();
+            String message = "Error executing " + callableScriptConfiguration.getScriptCall() + " in " + callableScriptConfiguration
+                    .getScriptFileLocation() + "\n" + e.getMessage();
             Notifications.Bus.notify( createWarningNotification( message ) );
         } catch ( NoSuchMethodException e ) {
-            String message = "No such method " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage();
+            String message = "No such method " + callableScriptConfiguration.getScriptCall() + " in " + callableScriptConfiguration
+                    .getScriptFileLocation() + "\n" + e.getMessage();
+
             Notifications.Bus.notify( createWarningNotification( message ) );
         }
 

@@ -14,12 +14,16 @@ public class ScriptSignatureParser {
         String returnClassName = currentParameterSignature;
         if ( prefixEndIndex != -1 ) {
             if ( prefixEndIndex != 0 ) {
-                prefix = currentParameterSignature.substring( 0, prefixEndIndex ) + "\\";
+                prefix = currentParameterSignature.substring( 0, prefixEndIndex );
             }
             int namesSpaceEndIndex = currentParameterSignature.lastIndexOf( "\\" );
-            namespace = currentParameterSignature.substring( prefixEndIndex, namesSpaceEndIndex );
 
-            returnClassName = currentParameterSignature.substring( namesSpaceEndIndex + 1 );
+            if ( namesSpaceEndIndex != -1 && prefixEndIndex < namesSpaceEndIndex ) {
+                namespace = currentParameterSignature.substring( prefixEndIndex, namesSpaceEndIndex );
+                returnClassName = currentParameterSignature.substring( namesSpaceEndIndex + 1 );
+            }else {
+                returnClassName = currentParameterSignature.substring( prefixEndIndex );
+            }
         }
 
         return new ParsedSignature( prefix, namespace, returnClassName );
@@ -31,6 +35,6 @@ public class ScriptSignatureParser {
             return 0;
         }
 
-        return currentValue.indexOf( "\\" );
+        return currentValue.indexOf( "\\" ) + 1;
     }
 }

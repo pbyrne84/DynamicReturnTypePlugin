@@ -12,40 +12,36 @@ public class ScriptReplacementExecutorTest {
     @Test
     public void executeAndReplace_validJavascript() throws ScriptException {
         @Language("JavaScript")
-        String javascript = "function abc( returnTypeNameSpace, returnTypeClass, className,methodName ) {return className + \"_\" + methodName + \"_\" +  returnTypeNameSpace + \"_\" + returnTypeClass ;}";
+        String javascript = "function abc( returnTypeNameSpace, returnTypeClass ) {" +
+                "print(returnTypeNameSpace);return returnTypeNameSpace + \"_\" + returnTypeClass ;" +
+                "}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
-                "class1",
-                "method1",
-                "file location",
-                javascript,
-                "abc"
+                new PhpCallReferenceInfo(  "class1", "method1" ),
+                new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
         String actual = replacementExecutor
                 .executeAndReplace( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
-        assertEquals( "#K#C\\class1_method1_\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
+        assertEquals( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
     }
 
 
     @Test
     public void executeAndReplace_validGroovy() throws ScriptException {
         @Language("Groovy")
-        String groovy = "def abc( returnTypeNameSpace, returnTypeClass, className,methodName ) {return className + \"_\" + methodName + \"_\" +  returnTypeNameSpace + \"_\" + returnTypeClass ;}";
+        String groovy = "def abc( returnTypeNameSpace, returnTypeClass ) {return returnTypeNameSpace + \"_\" + returnTypeClass  ;}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY,
-                "class1",
-                "method1",
-                "file location",
-                groovy,
-                "abc"
+                new PhpCallReferenceInfo( "class1", "method1" ),
+                new CallableScriptConfiguration("file location", groovy, "abc" )
         );
 
         String actual = replacementExecutor
                 .executeAndReplace( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
-        assertEquals( "#K#C\\class1_method1_\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
+        assertEquals( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
     }
 
 
@@ -55,11 +51,8 @@ public class ScriptReplacementExecutorTest {
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
-                "class1",
-                "method1",
-                "file location",
-                javascript,
-                "abc"
+                new PhpCallReferenceInfo( "class1", "method1" ),
+                new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
         replacementExecutor.executeAndReplace( "calculatedvalue" );

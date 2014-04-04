@@ -20,12 +20,29 @@ public class ScriptSignatureParserTest {
     public void parseSignature_withSignatureIdentifier_multipleLevelsOfSeparator() {
         ParsedSignature expectedParsedSignature = new ParsedSignature(
                 "#K#C\\",
-                "\\DynamicReturnTypePluginTestEnvironment\\TestClasses",
+                "DynamicReturnTypePluginTestEnvironment\\TestClasses",
                 "ServiceBroker"
         );
 
         ParsedSignature actualParsedSignature = scriptSignatureParser.parseSignature(
                 "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker"
+        );
+
+        assertEquals( expectedParsedSignature, actualParsedSignature );
+    }
+
+
+
+    @Test
+    public void parseSignature_withSignatureIdentifier_noNameSpace() {
+        ParsedSignature expectedParsedSignature = new ParsedSignature(
+                "#K#C\\",
+                "",
+                "ServiceBroker"
+        );
+
+        ParsedSignature actualParsedSignature = scriptSignatureParser.parseSignature(
+                "#K#C\\ServiceBroker"
         );
 
         assertEquals( expectedParsedSignature, actualParsedSignature );

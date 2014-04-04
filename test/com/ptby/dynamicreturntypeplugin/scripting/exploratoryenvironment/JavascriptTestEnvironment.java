@@ -1,18 +1,16 @@
-package com.ptby.dynamicreturntypeplugin.scripting;
+package com.ptby.dynamicreturntypeplugin.scripting.exploratoryenvironment;
 
-import com.intellij.openapi.diagnostic.Logger;
+import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class JavascriptTestEnvironment {
+public class JavascriptTestEnvironment   {
 
     public static void main( String[] args ) throws ScriptException, IOException, NoSuchMethodException {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -40,7 +38,7 @@ public class JavascriptTestEnvironment {
         String script;
         BufferedReader br = new BufferedReader(
                 new FileReader(
-                        "C:\\development\\DynamicReturnTypePlugin\\test\\com\\ptby\\dynamicreturntypeplugin\\scripting\\Test.js"
+                        "C:\\development\\DynamicReturnTypePlugin\\test\\com\\ptby\\dynamicreturntypeplugin\\scripting\\exploratoryenvironment\\Test.js"
                 )
         );
         try {
@@ -63,5 +61,10 @@ public class JavascriptTestEnvironment {
     public void testCallBack( Runnable testObject ) {
         System.out.println( testObject );
         testObject.run();
+    }
+
+
+    public void runByInterface( JavascriptTestInterface value ) {
+        value.runByInterface("banana");
     }
 }
