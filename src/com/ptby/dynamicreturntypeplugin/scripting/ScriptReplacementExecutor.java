@@ -11,8 +11,9 @@ import javax.script.ScriptException;
 public class ScriptReplacementExecutor {
 
     public static final String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
-    public static final String SCRIPT_LANGUAGE_GROOVY     = "groovy";
+    public static final String SCRIPT_LANGUAGE_GROOVY = "groovy";
 
+    private final String fileLocation;
     private final String script;
     private final String className;
     private final String methodName;
@@ -21,11 +22,14 @@ public class ScriptReplacementExecutor {
     private ScriptSignatureParser scriptSignatureParser;
     private Logger log;
 
+
     public ScriptReplacementExecutor( String scriptLanguage,
                                       String className,
                                       String methodName,
+                                      String fileLocation,
                                       String script,
                                       String scriptFunctionCall ) throws ScriptException {
+        this.fileLocation = fileLocation;
         this.script = script;
         this.className = className;
         this.methodName = methodName;
@@ -64,12 +68,12 @@ public class ScriptReplacementExecutor {
             return parsedSignature.getPrefix() + String.valueOf( result );
         } catch ( ScriptException e ) {
             log.warn(
-                    "Error executing " + javascriptFunctionCall + "\n" + e.getMessage(),
+                    "Error executing " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage(),
                     e
             );
         } catch ( NoSuchMethodException e ) {
             log.warn(
-                    "No such method " + javascriptFunctionCall + "\n" + e.getMessage(),
+                    "No such method " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage(),
                     e
             );
         }

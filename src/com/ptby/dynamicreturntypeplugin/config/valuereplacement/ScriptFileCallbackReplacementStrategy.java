@@ -54,6 +54,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
                                     calculateScriptType(),
                                     className,
                                     methodName,
+                                    absoluteJavaScriptFileLocationPath,
                                     script,
                                     javascriptFunctionCall
                             );

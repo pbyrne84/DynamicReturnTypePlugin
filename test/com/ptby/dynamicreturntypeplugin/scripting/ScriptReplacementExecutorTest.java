@@ -18,6 +18,7 @@ public class ScriptReplacementExecutorTest {
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
                 "class1",
                 "method1",
+                "file location",
                 javascript,
                 "abc"
         );
@@ -37,6 +38,7 @@ public class ScriptReplacementExecutorTest {
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY,
                 "class1",
                 "method1",
+                "file location",
                 groovy,
                 "abc"
         );
@@ -55,6 +57,7 @@ public class ScriptReplacementExecutorTest {
                 ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
                 "class1",
                 "method1",
+                "file location",
                 javascript,
                 "abc"
         );
