@@ -138,11 +138,11 @@ An example configuration
 
 ```json
 {
-            "class"                        : "\\Phockito",
-            "method"                       : "javascriptMaskMock",
-            "position"                     : 0,
-            "fileReturnTypeReplacementCall": ["JavaScriptReplacementCallback.js", "replaceWithJavaScriptAliasing"]
-        }
+    "class"                        : "\\Phockito",
+    "method"                       : "javascriptMaskMock",
+    "position"                     : 0,
+    "fileReturnTypeReplacementCall": ["JavaScriptReplacementCallback.js", "replaceWithJavaScriptAliasing"]
+ }
 ```
 
 Would cause the following to return TestUserModel
