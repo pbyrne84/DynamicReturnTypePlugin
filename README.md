@@ -67,7 +67,8 @@ class DynamicReturnTypeTest extends PHPUnit_Framework_TestCase
 
 Configuration
 -------------
-Currently it looks for a file called dynamicReturnTypeMeta.json in the root of the project. An example json file for the above test is
+Currently it looks for a files called dynamicReturnTypeMeta.json anywhere in the project. It also internally combines them to make a single project config. An example json file for the above test is
+
 ```json
 {
     "methodCalls": [
@@ -95,5 +96,105 @@ Currently it looks for a file called dynamicReturnTypeMeta.json in the root of t
 }
 ```
 
-
 Position is the parameter index that decides what will be the return type.
+
+
+Optional Configuration
+----------------------
+There are currently 2 return type manipulation strategies.
+
+### 1.Masks
+These were the original replacement strategy but it has been found to be a rather limiting approach to the problem of frameworks containers expecting strings as parameters that do not easily match the final result without some string reduction/manipulation.
+
+It simply works by using String.format on the the result.
+
+For example the following configuration.
+```json
+{
+"class": "\\Phockito",
+"method": "maskExample",
+"position": 0
+"mask": "Test%sModel"
+}
+```
+
+Would cause the following to return TestUserModel
+```php
+Phockito::maskExample('User');
+```
+
+There was no easy way to solve changing 'Entity\User' into 'MyNameSpace\User' without going down the path of writing a strategy for each custom user/framework request due to design I have no knowledge of so cannot preempt. I would view this method as deprecated due to the serious limitations. But it will not be removed.
+
+### 2.Script engine calls
+This allows custom code to be executed within the vm designed per user/framework. The 2 languages on offer are javascript via rhino and groovy if the groovy-all-2.2.1.jar is present in the ides lib folder. For interoperability between rhino and java the following reading is quite useful.
+
+https://developer.mozilla.org/en-US/docs/Rhino/Scripting_Java
+
+The benefit of using groovy is intellij idea(either edition) has better editing capabilities, though at the cost of having to manage the groovy-all-2.2.1.jar (I copied mine to phpstorm from my intellij ultimate).
+
+To use groovy instead of javascript just use the .groovy extension (rhino is the default behaviour).
+
+An example configuration
+
+```json
+{
+            "class"                        : "\\Phockito",
+            "method"                       : "javascriptMaskMock",
+            "position"                     : 0,
+            "fileReturnTypeReplacementCall": ["JavaScriptReplacementCallback.js", "replaceWithJavaScriptAliasing"]
+        }
+```
+
+Would cause the following to return TestUserModel
+```php
+\\Phockito::javascriptMaskMock('User');
+```
+
+to call the function 'replaceWithJavaScriptAliasing' to be called in JavaScriptReplacementCallback.js. The function needs to return a string and is formatted like the following example.
+
+```js
+function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass, className, methodName  ){
+    if( returnTypeNameSpace == 'Entity' ) {
+        if( returnTypeClass == 'User' ) {
+            return 'Test_Foo_Model';
+        }else if( returnTypeClass == 'Test' ){
+            return 'DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestEntity';
+        }
+    }
+
+
+    if( returnTypeNameSpace == '' ) {
+        return returnTypeClass;
+
+    }
+
+    return returnTypeNameSpace + "\\" + returnTypeClass;
+
+
+}
+```
+
+returnTypeNameSpace and returnTypeClass are separated before hand to ease manipulation within the function call. The returnTypeNameSpace does not trim the leading slash of the start and runs as is.
+
+#### Replacement callback file handling/compilation.
+The only restriction is the script file must be in the the same folder as its related dynamicReturnTypeMeta.json. This restriction may be lifted at some point but it adds complexity.
+
+Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
