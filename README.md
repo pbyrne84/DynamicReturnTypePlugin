@@ -153,7 +153,7 @@ Would cause the following to return Test_Foo_Model
 This manipulation causes the function 'replaceWithJavaScriptAliasing' to be called in JavaScriptReplacementCallback.js. The function needs to return a string and is formatted like the following example.
 
 ```js
-function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass, className, methodName  ){
+function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass ){
     if( returnTypeNameSpace == 'Entity' ) {
         if( returnTypeClass == 'User' ) {
             return 'Test_Foo_Model';
