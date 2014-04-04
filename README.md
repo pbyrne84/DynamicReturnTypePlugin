@@ -182,6 +182,11 @@ Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say add
 
 #### Api
 A variable call api is injected into the script which allows communication back to the ide. This can be expanded on request.
+A javascript file that will offer completion can be found here :
+https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/local_config/ExecutingScriptApi.js
+
+Example initialisation can be seen here at the top :
+https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/local_config/JavaScriptReplacementCallback.js
 
 
 #### Debugging

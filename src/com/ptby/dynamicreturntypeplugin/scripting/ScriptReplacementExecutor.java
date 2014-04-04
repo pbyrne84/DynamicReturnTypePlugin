@@ -15,7 +15,6 @@ public class ScriptReplacementExecutor {
 
     public static final String SCRIPT_LANGUAGE_JAVASCRIPT = "JavaScript";
     public static final String SCRIPT_LANGUAGE_GROOVY = "groovy";
-
     private final PhpCallReferenceInfo phpCallReferenceInfo;
     private final CallableScriptConfiguration callableScriptConfiguration;
     private final Invocable invocable;
@@ -28,7 +27,7 @@ public class ScriptReplacementExecutor {
         this.phpCallReferenceInfo = phpCallReferenceInfo;
         this.callableScriptConfiguration = callableScriptConfiguration;
 
-        ExecutingScriptApi executingScriptApi = new ExecutingScriptApi( callableScriptConfiguration.getScriptFileLocation() );
+        ExecutingScriptApi executingScriptApi = new ExecutingScriptApi( this );
 
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName( scriptLanguage );
@@ -40,9 +39,19 @@ public class ScriptReplacementExecutor {
 
         engine.put( "api", executingScriptApi );
 
-        engine.eval( callableScriptConfiguration.getScriptCode() );
+        engine.eval( callableScriptConfiguration.getCode() );
         invocable = ( Invocable ) engine;
         scriptSignatureParser = new ScriptSignatureParser();
+    }
+
+
+    public CallableScriptConfiguration getCallableScriptConfiguration() {
+        return callableScriptConfiguration;
+    }
+
+
+    public PhpCallReferenceInfo getPhpCallReferenceInfo() {
+        return phpCallReferenceInfo;
     }
 
 
@@ -54,19 +63,21 @@ public class ScriptReplacementExecutor {
 
         try {
             Object result = invocable.invokeFunction(
-                    callableScriptConfiguration.getScriptCall(),
+                    callableScriptConfiguration.getCall(),
                     parsedSignature.getNamespace(),
                     parsedSignature.getReturnClassName()
             );
 
             return parsedSignature.getPrefix() + String.valueOf( result );
         } catch ( ScriptException e ) {
-            String message = "Error executing " + callableScriptConfiguration.getScriptCall() + " in " + callableScriptConfiguration
-                    .getScriptFileLocation() + "\n" + e.getMessage();
+            String message = "Error executing " + callableScriptConfiguration
+                    .getCall() + " in " + callableScriptConfiguration
+                    .getFileLocation() + "\n" + e.getMessage();
             Notifications.Bus.notify( createWarningNotification( message ) );
         } catch ( NoSuchMethodException e ) {
-            String message = "No such method " + callableScriptConfiguration.getScriptCall() + " in " + callableScriptConfiguration
-                    .getScriptFileLocation() + "\n" + e.getMessage();
+            String message = "No such method " + callableScriptConfiguration
+                    .getCall() + " in " + callableScriptConfiguration
+                    .getFileLocation() + "\n" + e.getMessage();
 
             Notifications.Bus.notify( createWarningNotification( message ) );
         }

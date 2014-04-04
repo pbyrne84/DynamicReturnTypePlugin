@@ -14,17 +14,17 @@ public class CallableScriptConfiguration {
     }
 
 
-    public String getScriptFileLocation() {
+    public String getFileLocation() {
         return scriptFileLocation;
     }
 
 
-    public String getScriptCode() {
+    public String getCode() {
         return scriptCode;
     }
 
 
-    public String getScriptCall() {
+    public String getCall() {
         return scriptCall;
     }
 }
