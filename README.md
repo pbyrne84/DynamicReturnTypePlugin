@@ -142,15 +142,15 @@ An example configuration
     "method"                       : "javascriptMaskMock",
     "position"                     : 0,
     "fileReturnTypeReplacementCall": ["JavaScriptReplacementCallback.js", "replaceWithJavaScriptAliasing"]
- }
+}
 ```
 
-Would cause the following to return TestUserModel
+Would cause the following to return Test_Foo_Model
 ```php
-\\Phockito::javascriptMaskMock('User');
+\\Phockito::javascriptMaskMock('Entity\User');
 ```
 
-to call the function 'replaceWithJavaScriptAliasing' to be called in JavaScriptReplacementCallback.js. The function needs to return a string and is formatted like the following example.
+This manipulation causes the function 'replaceWithJavaScriptAliasing' to be called in JavaScriptReplacementCallback.js. The function needs to return a string and is formatted like the following example.
 
 ```js
 function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass, className, methodName  ){
