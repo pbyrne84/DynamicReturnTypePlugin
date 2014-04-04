@@ -162,7 +162,6 @@ function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass, cl
         }
     }
 
-
     if( returnTypeNameSpace == '' ) {
         return returnTypeClass;
 
@@ -181,7 +180,16 @@ The only restriction is the script file must be in the the same folder as its re
 
 Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed.
 
+#### Api
+A variable call api is injected into the script which allows communication back to the ide. This can be expanded on request.
 
+
+#### Debugging
+```js
+api.writeToEventLog("your message")
+````
+
+Will write a message to the event log in the ide. Errors in your script will also appear here.
 
 
 

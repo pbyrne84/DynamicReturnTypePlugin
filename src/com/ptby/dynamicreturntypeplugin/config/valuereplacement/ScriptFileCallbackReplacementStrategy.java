@@ -1,5 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -37,7 +40,6 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
 
     private void loadJavascript() {
-        final Logger log = Logger.getInstance( "DynamicReturnTypePlugin" );
         ApplicationManager.getApplication().invokeLater(
                 new Runnable() {
                     @Override
@@ -60,18 +62,26 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
                             );
 
                         } catch ( IOException e ) {
-                            log.warn(
-                                    "Could not read javascript call back file " + absoluteJavaScriptFileLocationPath +
-                                            "\n" + e.getMessage(),
-                                    e
-                            );
+                            String message = "Could not read javascript call back file " + absoluteJavaScriptFileLocationPath +
+                                    "\n" + e.getMessage();
+
+                            Notifications.Bus.notify( createWarningNotification( message ) );
                         } catch ( ScriptException e ) {
-                            log.warn(
-                                    "Could not evaluate javascript call back file " + absoluteJavaScriptFileLocationPath +
-                                            "\n" + e.getMessage(),
-                                    e
-                            );
+                            String message = "Could not evaluate javascript call back file " + absoluteJavaScriptFileLocationPath +
+                                    "\n" + e.getMessage();
+
+                            Notifications.Bus.notify( createWarningNotification( message ) );
                         }
+                    }
+
+
+                    private Notification createWarningNotification( String message ) {
+                        return new Notification(
+                                "DynamicReturnTypePlugin",
+                                "Script file error",
+                                message,
+                                NotificationType.WARNING
+                        );
                     }
                 }
         );
@@ -80,9 +90,9 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
     private String calculateScriptType() {
         String scriptExtension = "";
-        int i = scriptFileName.lastIndexOf('.');
-        if (i > 0) {
-             scriptExtension = scriptFileName.substring(i+1).toLowerCase();
+        int i = scriptFileName.lastIndexOf( '.' );
+        if ( i > 0 ) {
+            scriptExtension = scriptFileName.substring( i + 1 ).toLowerCase();
         }
         if ( scriptExtension.equals( "groovy" ) ) {
             return ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY;

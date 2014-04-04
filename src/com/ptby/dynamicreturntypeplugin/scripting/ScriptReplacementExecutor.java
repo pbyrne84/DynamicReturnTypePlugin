@@ -1,7 +1,10 @@
 // require(url:'https://scripting.dev.java.net', jar:'groovy-engine.jar')
 package com.ptby.dynamicreturntypeplugin.scripting;
 
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -20,7 +23,6 @@ public class ScriptReplacementExecutor {
     private final String javascriptFunctionCall;
     private final Invocable invocable;
     private ScriptSignatureParser scriptSignatureParser;
-    private Logger log;
 
 
     public ScriptReplacementExecutor( String scriptLanguage,
@@ -35,6 +37,8 @@ public class ScriptReplacementExecutor {
         this.methodName = methodName;
         this.javascriptFunctionCall = scriptFunctionCall;
 
+        ExecutingScriptApi executingScriptApi = new ExecutingScriptApi( fileLocation );
+
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName( scriptLanguage );
         if ( engine == null ) {
@@ -43,10 +47,11 @@ public class ScriptReplacementExecutor {
             );
         }
 
+        engine.put( "api", executingScriptApi );
+
         engine.eval( this.script );
         invocable = ( Invocable ) engine;
         scriptSignatureParser = new ScriptSignatureParser();
-        log = Logger.getInstance( "DynamicReturnTypePlugin" );
     }
 
 
@@ -67,17 +72,24 @@ public class ScriptReplacementExecutor {
 
             return parsedSignature.getPrefix() + String.valueOf( result );
         } catch ( ScriptException e ) {
-            log.warn(
-                    "Error executing " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage(),
-                    e
-            );
+            String message = "Error executing " + javascriptFunctionCall + " in " + fileLocation + "\n" + e
+                    .getMessage();
+            Notifications.Bus.notify( createWarningNotification( message ) );
         } catch ( NoSuchMethodException e ) {
-            log.warn(
-                    "No such method " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage(),
-                    e
-            );
+            String message = "No such method " + javascriptFunctionCall + " in " + fileLocation + "\n" + e.getMessage();
+            Notifications.Bus.notify( createWarningNotification( message ) );
         }
 
         return "";
+    }
+
+
+    private Notification createWarningNotification( String message ) {
+        return new Notification(
+                "DynamicReturnTypePlugin",
+                "Script file error",
+                message,
+                NotificationType.WARNING
+        );
     }
 }
