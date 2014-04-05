@@ -14,17 +14,17 @@ import java.util.Collections;
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class CustomSignatureProcessor {
+    private final com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
     private ReturnInitialisedSignatureConverter returnInitialisedSignatureConverter;
     private ClassConstantAnalyzer classConstantAnalyzer;
     private FieldReferenceAnalyzer fieldReferenceAnalyzer;
     private VariableAnalyser variableAnalyser;
-    private final com.intellij.openapi.diagnostic.Logger logger = getInstance( "DynamicReturnTypePlugin" );
 
 
     public CustomSignatureProcessor( ReturnInitialisedSignatureConverter returnInitialisedSignatureConverter,
-                                     ClassConstantAnalyzer              classConstantAnalyzer,
-                                     FieldReferenceAnalyzer             fieldReferenceAnalyzer,
-                                     VariableAnalyser                   variableAnalyser                                 ) {
+                                     ClassConstantAnalyzer classConstantAnalyzer,
+                                     FieldReferenceAnalyzer fieldReferenceAnalyzer,
+                                     VariableAnalyser variableAnalyser ) {
         this.returnInitialisedSignatureConverter = returnInitialisedSignatureConverter;
         this.classConstantAnalyzer = classConstantAnalyzer;
         this.fieldReferenceAnalyzer = fieldReferenceAnalyzer;
@@ -36,7 +36,7 @@ public class CustomSignatureProcessor {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
         CustomMethodCallSignature customMethodCallSignature = CustomMethodCallSignature.createFromString( signature );
         if ( customMethodCallSignature == null ) {
-            return tryFunctionCall( signature, phpIndex, project );
+            return tryFunctionCall( null, signature, phpIndex, project );
         }
 
         SignatureMatcher signatureMatcher = new SignatureMatcher();
@@ -50,7 +50,9 @@ public class CustomSignatureProcessor {
         if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( customMethodCallSignature ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer
-                            .getClassNameFromConstantLookup( customMethodCallSignature.getRawStringSignature(), project )
+                            .getClassNameFromConstantLookup( customMethodCallSignature
+                                    .getRawStringSignature(), project
+                            )
             );
         } else if ( signatureMatcher.verifySignatureIsFieldCall( customMethodCallSignature ) ) {
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup( customMethodCallSignature, project );
@@ -58,11 +60,14 @@ public class CustomSignatureProcessor {
             return variableAnalyser.getClassNameFromVariableLookup( customMethodCallSignature, project );
         }
 
-        return tryToDeferToDefaultType( signature, phpIndex );
+        return tryToDeferToDefaultType( customMethodCallSignature, signature, phpIndex );
     }
 
 
-    private Collection<? extends PhpNamedElement> tryFunctionCall( String signature, PhpIndex phpIndex, Project project ) {
+    private Collection<? extends PhpNamedElement> tryFunctionCall( CustomMethodCallSignature customMethodCallSignature,
+                                                                   String signature,
+                                                                   PhpIndex phpIndex,
+                                                                   Project project ) {
         SignatureMatcher signatureMatcher = new SignatureMatcher();
         if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( signature ) ) {
             return phpIndex.getAnyByFQN(
@@ -70,11 +75,13 @@ public class CustomSignatureProcessor {
             );
         }
 
-        return tryToDeferToDefaultType( signature, phpIndex );
+        return tryToDeferToDefaultType( customMethodCallSignature, signature, phpIndex );
     }
 
 
-    private Collection<? extends PhpNamedElement> tryToDeferToDefaultType( String signature, PhpIndex phpIndex ) {
+    private Collection<? extends PhpNamedElement> tryToDeferToDefaultType( CustomMethodCallSignature customMethodCallSignature,
+                                                                           String signature,
+                                                                           PhpIndex phpIndex ) {
         if ( signature.indexOf( "#" ) != 0 ) {
             if ( signature.indexOf( "\\" ) != 0 ) {
                 signature = "\\" + signature;
@@ -82,11 +89,37 @@ public class CustomSignatureProcessor {
             return phpIndex.getAnyByFQN( signature );
         }
 
+        signature = cleanConstant( signature );
+
         try {
             return phpIndex.getBySignature( signature, null, 0 );
         } catch ( RuntimeException e ) {
-            logger.warn( "Cannot decode " + signature );
+            String signatureMessage = "function call";
+            if ( customMethodCallSignature != null ) {
+                signatureMessage = customMethodCallSignature.toString();
+            }
+
+            logger.warn(
+                    "CustomSignatureProcessor.tryToDeferToDefaultType cannot decode " + signature + "\n" +
+                            signatureMessage
+            );
+
             return Collections.emptySet();
         }
+    }
+
+
+    /**
+     * Indicates something is wrong from one of the tests in the test environment but no inspections are raised.
+     * Just a warning in idea. Will need further looking into.
+     *
+     * @param signature
+     * @return
+     */
+    private String cleanConstant( String signature ) {
+        if ( signature.indexOf( "#K#C" ) == 0 && !signature.contains( "|?" ) ) {
+            signature = signature + ".|?";
+        }
+        return signature;
     }
 }
