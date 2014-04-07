@@ -123,10 +123,10 @@ Would cause the following to return TestUserModel
 Phockito::maskExample('User');
 ```
 
-There was no easy way to solve changing 'Entity\User' into 'MyNameSpace\User' without going down the path of writing a strategy for each custom user/framework request due to design I have no knowledge of so cannot preempt. I would view this method as deprecated due to the serious limitations. But it will not be removed.
+There was no easy way to solve changing 'Entity\User' into 'MyNameSpace\User' without going down the path of writing a strategy for each custom user/framework request due to designs I have no knowledge of so cannot preempt. I would view this method as deprecated due to the limitations. But it will not be removed.
 
 ### 2.Script engine calls
-This allows custom code to be executed within the vm designed per user/framework. The 2 languages on offer are javascript via rhino and groovy if the groovy-all-2.2.1.jar is present in the ides lib folder. For interoperability between rhino and java the following reading is quite useful.
+This allows custom code to be executed within the vm designed per consumer/framework. The 2 languages on offer are javascript via rhino and groovy if the groovy-all-2.2.1.jar is present in the ides lib folder. For interoperability between rhino and java the following reading is quite useful.
 
 https://developer.mozilla.org/en-US/docs/Rhino/Scripting_Java
 
@@ -178,15 +178,15 @@ returnTypeNameSpace and returnTypeClass are separated before hand to ease manipu
 #### Replacement callback file handling/compilation.
 The only restriction is the script file must be in the the same folder as its related dynamicReturnTypeMeta.json. This restriction may be lifted at some point but it adds complexity.
 
-Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed.
+Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed now I can write compilation errors to the event log versus file log( basically compile on save will be offered).
 
 #### Api
 A variable call api is injected into the script which allows communication back to the ide. This can be expanded on request.
 A javascript file that will offer completion can be found here :
-https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/local_config/ExecutingScriptApi.js
+https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/ExecutingScriptApi.js
 
 Example initialisation can be seen here at the top :
-https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/local_config/JavaScriptReplacementCallback.js
+https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/JavaScriptReplacementCallback.js
 
 
 #### Debugging
