@@ -37,9 +37,9 @@ public class ScriptReplacementExecutor {
             );
         }
 
+        engine.eval( callableScriptConfiguration.getCode() );
         engine.put( "api", executingScriptApi );
 
-        engine.eval( callableScriptConfiguration.getCode() );
         invocable = ( Invocable ) engine;
         scriptSignatureParser = new ScriptSignatureParser();
     }
