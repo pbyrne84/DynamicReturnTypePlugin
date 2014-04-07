@@ -39,53 +39,51 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
 
     private void loadJavascript() {
-        ApplicationManager.getApplication().invokeLater(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        VirtualFile fileByPath =
-                                LocalFileSystem.getInstance().findFileByPath( absoluteJavaScriptFileLocationPath );
-                        if ( fileByPath == null ) {
-                            return;
-                        }
+        VirtualFile fileByPath =
+                LocalFileSystem.getInstance().findFileByPath( absoluteJavaScriptFileLocationPath );
+        if ( fileByPath == null ) {
+            String message = "Local file system could not find script  " + absoluteJavaScriptFileLocationPath;
 
-                        try {
-                            String script = new String( fileByPath.contentsToByteArray() );
-                            CallableScriptConfiguration callableScriptConfiguration = new CallableScriptConfiguration(
-                                    absoluteJavaScriptFileLocationPath,
-                                    script,
-                                    javascriptFunctionCall
-                            );
+            Notifications.Bus.notify( createWarningNotification( message ) );
+            return;
+        }
 
-                            scriptReplacementExecutor = new ScriptReplacementExecutor(
-                                    calculateScriptType(),
-                                    new PhpCallReferenceInfo( className, methodName ),
-                                    callableScriptConfiguration
-                            );
+        try {
+            String script = new String( fileByPath.contentsToByteArray() );
+            Notifications.Bus.notify( createWarningNotification( script ) );
 
-                        } catch ( IOException e ) {
-                            String message = "Could not read javascript call back file " + absoluteJavaScriptFileLocationPath +
-                                    "\n" + e.getMessage();
+            CallableScriptConfiguration callableScriptConfiguration = new CallableScriptConfiguration(
+                    absoluteJavaScriptFileLocationPath,
+                    script,
+                    javascriptFunctionCall
+            );
 
-                            Notifications.Bus.notify( createWarningNotification( message ) );
-                        } catch ( ScriptException e ) {
-                            String message = "Could not evaluate javascript call back file " + absoluteJavaScriptFileLocationPath +
-                                    "\n" + e.getMessage();
+            scriptReplacementExecutor = new ScriptReplacementExecutor(
+                    calculateScriptType(),
+                    new PhpCallReferenceInfo( className, methodName ),
+                    callableScriptConfiguration
+            );
 
-                            Notifications.Bus.notify( createWarningNotification( message ) );
-                        }
-                    }
+        } catch ( IOException e ) {
+            String message = "Could not read javascript call back file " + absoluteJavaScriptFileLocationPath +
+                    "\n" + e.getMessage();
+
+            Notifications.Bus.notify( createWarningNotification( message ) );
+        } catch ( ScriptException e ) {
+            String message = "Could not evaluate javascript call back file " + absoluteJavaScriptFileLocationPath +
+                    "\n" + e.getMessage();
+
+            Notifications.Bus.notify( createWarningNotification( message ) );
+        }
+    }
 
 
-                    private Notification createWarningNotification( String message ) {
-                        return new Notification(
-                                "DynamicReturnTypePlugin",
-                                "Script file error",
-                                message,
-                                NotificationType.WARNING
-                        );
-                    }
-                }
+    private Notification createWarningNotification( String message ) {
+        return new Notification(
+                "DynamicReturnTypePlugin",
+                "Script file error",
+                message,
+                NotificationType.WARNING
         );
     }
 
