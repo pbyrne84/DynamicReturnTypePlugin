@@ -9,13 +9,13 @@
         It can use either the instance type of the passed parameter or a string lookup.  <br> <br>
 
         <b>Full documentation with examples on github page for custom manipulation with rhino javascript versus the old
-        mask methodology can be found here <br>
-        https://github.com/pbyrne84/DynamicReturnTypePlugin.</b> <br>
+        mask methodology can be found here :-</b> <br>
+        https://github.com/pbyrne84/DynamicReturnTypePlugin <br>
         <br>
 
-        <b>Demo environment which is used to verify edge case are catered for ( example dynamicReturnTypeMeta.json etc )
-        can be found here <br>
-        https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment.</b> <br> <br>
+        <b>Demo environment which is used to verify edge case are catered for ( example dynamicReturnTypeMeta.json etc. )
+        can be found here :-</b> <br>
+        https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment <br> <br>
 
         Can be configured for :
          <ul>
@@ -152,7 +152,7 @@
           </ul>
           <h3>1.1.2</h3>
            <ul>
-            <li>Allow javascript callbacks ( documented https://github.com/pbyrne84/DynamicReturnTypePlugin )</li>
+            <li>Allow javascript callbacks (documentation at https://github.com/pbyrne84/DynamicReturnTypePlugin)</li>
           </ul>
 
 
