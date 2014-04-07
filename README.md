@@ -197,6 +197,14 @@ api.writeToEventLog("your message")
 Will write a message to the event log in the ide. Errors in your script will also appear here.
 
 
+### Notes/Todos
+Unfortunately I cannot offer array access as the open api would have to alias the key to the offsetGet call internally which would trigger this plugin to be called. It was mentioned here in the task that started it all :-
+http://youtrack.jetbrains.com/issue/WI-6027
+
+I do plan to add file handling to the api so you can talk to the virtual file system for basic tasks and I will also see if I can open up some completion provider methods through the javascript api.
+
+Any probs just give me a shout.
+
 
 
 
