@@ -50,8 +50,6 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
         try {
             String script = new String( fileByPath.contentsToByteArray() );
-            Notifications.Bus.notify( createWarningNotification( script ) );
-
             CallableScriptConfiguration callableScriptConfiguration = new CallableScriptConfiguration(
                     absoluteJavaScriptFileLocationPath,
                     script,
