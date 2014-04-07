@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -154,7 +154,10 @@
            <ul>
             <li>Allow javascript callbacks (documentation at https://github.com/pbyrne84/DynamicReturnTypePlugin)</li>
           </ul>
-
+        <h3>1.1.3</h3>
+           <ul>
+            <li>Fix script loading race condition</li>
+          </ul>
 
         ]]>
 
