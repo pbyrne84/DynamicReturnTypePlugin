@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProcessCanceledException;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2;
 import com.ptby.dynamicreturntypeplugin.config.ConfigState;
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer;
@@ -11,6 +12,7 @@ import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory;
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer;
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer;
+import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl;
 import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter;
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
@@ -20,6 +22,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.BySignatureSignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static com.intellij.openapi.diagnostic.Logger.getInstance;
@@ -87,6 +90,12 @@ public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
     @Override
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
+        if ( signature.contains( "[]" ) ) {
+            Collection<PhpNamedElement> customList = new ArrayList<PhpNamedElement>( );
+            customList.add( new LocalClassImpl( new PhpType().add( signature ), project ) );
+            return customList;
+        }
+
         BySignatureSignatureSplitter bySignatureSignatureSplitter = new BySignatureSignatureSplitter();
         Collection<? extends PhpNamedElement> bySignature = null;
         String lastFqnName = "";

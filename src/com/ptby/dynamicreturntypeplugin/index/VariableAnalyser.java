@@ -3,11 +3,13 @@ package com.ptby.dynamicreturntypeplugin.index;
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
+import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class VariableAnalyser {
@@ -32,7 +34,6 @@ public class VariableAnalyser {
     public Collection<? extends PhpNamedElement> getClassNameFromVariableLookup( CustomMethodCallSignature signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-
         ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, signature.getClassName(), signature.getMethod() );
         if ( matchingMethodConfig == null ) {
             return originalCallAnalyzer.getMethodCallReturnType(
@@ -48,7 +49,14 @@ public class VariableAnalyser {
 
         }
 
-        String createdType = "#C" + matchingMethodConfig.formatBeforeLookup( signature.getParameter() );
+        String formattedSignature = matchingMethodConfig.formatBeforeLookup( signature.getParameter() );
+        if ( formattedSignature.contains( "[]" ) ) {
+            Collection<PhpNamedElement> customList = new ArrayList<PhpNamedElement>( );
+            customList.add( new LocalClassImpl( new PhpType().add( formattedSignature ), project ) );
+            return customList;
+        }
+
+        String createdType = "#C" + formattedSignature;
         return phpIndex
                 .getBySignature( createdType );
     }

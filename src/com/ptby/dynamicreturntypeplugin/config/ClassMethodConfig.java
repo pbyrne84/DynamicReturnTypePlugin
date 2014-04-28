@@ -108,7 +108,8 @@ public class ClassMethodConfig {
 
 
     public String formatBeforeLookup( String passedType ) {
-        return valueReplacementStrategy.replaceCalculatedValue( passedType );
+        String s = valueReplacementStrategy.replaceCalculatedValue( passedType );
+        return s;
     }
 
 

@@ -50,8 +50,9 @@ public class CustomSignatureProcessor {
         if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall( customMethodCallSignature ) ) {
             return phpIndex.getAnyByFQN(
                     classConstantAnalyzer
-                            .getClassNameFromConstantLookup( customMethodCallSignature
-                                    .getRawStringSignature(), project
+                            .getClassNameFromConstantLookup(
+                                    customMethodCallSignature
+                                            .getRawStringSignature(), project
                             )
             );
         } else if ( signatureMatcher.verifySignatureIsFieldCall( customMethodCallSignature ) ) {
