@@ -27,7 +27,8 @@ public class ParameterTypeCalculator {
                 if ( type.toString().equals( "string" ) ) {
                     return new ParameterType( cleanClassText( element ) );
                 } else if ( classConstantAnalyzer.verifySignatureIsClassConstant( type.toString() ) ) {
-                    return new ParameterType( type.toString() );
+                    String convertedConstant = convertClassConstantToString( type.toString() );
+                    return new ParameterType( convertedConstant );
                 }
 
                 String singleType = getTypeSignature( type );
@@ -69,8 +70,20 @@ public class ParameterTypeCalculator {
 
     private String getTypeSignature(  PhpType type ){
         String typeSignature = null;
-        for( String singleType : type.getTypes() ){
+        for( String singleType : type.getTypes() ) {
             typeSignature = singleType;
+        }
+
+        return typeSignature;
+    }
+
+
+    private String convertClassConstantToString( String typeSignature ) {
+        if (  typeSignature!= null && typeSignature.matches( "#K#C\\\\(.*)\\.\\|\\?")  ) {
+            String substring = typeSignature.substring( 0, typeSignature.indexOf( "#K#C" ) ) +
+                    typeSignature.substring( 4, typeSignature.length() -3  );
+
+            return substring;
         }
 
         return typeSignature;
