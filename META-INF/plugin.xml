@@ -162,6 +162,7 @@
            <ul>
             <li>Enable list handling in masks ( use %s[] )</li>
             <li>Fix class constant issues</li>
+            <li>Fix thread safety on script/config paths</li>
           </ul>
         ]]>
 
