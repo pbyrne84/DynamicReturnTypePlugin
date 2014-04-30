@@ -22,7 +22,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
     private ScriptReplacementExecutor scriptReplacementExecutor;
 
 
-    public ScriptFileCallbackReplacementStrategy( VirtualFile configFile,
+    public ScriptFileCallbackReplacementStrategy( String scriptParentDirectory,
                                                   String className,
                                                   String methodName,
                                                   String scriptFileName,
@@ -32,7 +32,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
         this.scriptFileName = scriptFileName;
         this.javascriptFunctionCall = javascriptFunctionCall;
 
-        this.absoluteJavaScriptFileLocationPath = configFile.getParent().getCanonicalPath() + "/" + scriptFileName;
+        this.absoluteJavaScriptFileLocationPath = scriptParentDirectory + "/" + scriptFileName;
 
         loadJavascript();
     }
@@ -76,6 +76,19 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
     }
 
 
+    @Override
+    public String toString() {
+        return "ScriptFileCallbackReplacementStrategy{" +
+                "\nclassName='" + className + '\'' +
+                "\n, methodName='" + methodName + '\'' +
+                "\n, scriptFileName='" + scriptFileName + '\'' +
+                "\n, javascriptFunctionCall='" + javascriptFunctionCall + '\'' +
+                "\n, absoluteJavaScriptFileLocationPath='" + absoluteJavaScriptFileLocationPath + '\'' +
+                "\n, scriptReplacementExecutor=" + scriptReplacementExecutor +
+                '}';
+    }
+
+
     private Notification createWarningNotification( String message ) {
         return new Notification(
                 "DynamicReturnTypePlugin",
@@ -110,4 +123,52 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
     }
 
 
+    @Override
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( !( o instanceof ScriptFileCallbackReplacementStrategy ) ) {
+            return false;
+        }
+
+        ScriptFileCallbackReplacementStrategy that = ( ScriptFileCallbackReplacementStrategy ) o;
+
+        if ( absoluteJavaScriptFileLocationPath != null ? !absoluteJavaScriptFileLocationPath
+                .equals( that.absoluteJavaScriptFileLocationPath ) : that.absoluteJavaScriptFileLocationPath != null ) {
+            return false;
+        }
+        if ( className != null ? !className.equals( that.className ) : that.className != null ) {
+            return false;
+        }
+        if ( javascriptFunctionCall != null ? !javascriptFunctionCall
+                .equals( that.javascriptFunctionCall ) : that.javascriptFunctionCall != null ) {
+            return false;
+        }
+        if ( methodName != null ? !methodName.equals( that.methodName ) : that.methodName != null ) {
+            return false;
+        }
+        if ( scriptFileName != null ? !scriptFileName.equals( that.scriptFileName ) : that.scriptFileName != null ) {
+            return false;
+        }
+        if ( scriptReplacementExecutor != null ? !scriptReplacementExecutor
+                .equals( that.scriptReplacementExecutor ) : that.scriptReplacementExecutor != null ) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public int hashCode() {
+        int result = className != null ? className.hashCode() : 0;
+        result = 31 * result + ( methodName != null ? methodName.hashCode() : 0 );
+        result = 31 * result + ( scriptFileName != null ? scriptFileName.hashCode() : 0 );
+        result = 31 * result + ( javascriptFunctionCall != null ? javascriptFunctionCall.hashCode() : 0 );
+        result = 31 * result + ( absoluteJavaScriptFileLocationPath != null ? absoluteJavaScriptFileLocationPath
+                .hashCode() : 0 );
+        result = 31 * result + ( scriptReplacementExecutor != null ? scriptReplacementExecutor.hashCode() : 0 );
+        return result;
+    }
 }

@@ -27,7 +27,7 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
     @Test
     public void createFromJson_defaultPassthruConstruction() {
         JsonObject jsonObject = createJsonObject( "" );
-        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( testConfigFile, jsonObject )
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( "", jsonObject )
                         instanceof PassthruValueReplacementStrategy
         );
     }
@@ -50,7 +50,7 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
         JsonObject customMaskJsonObject = createJsonObject( "custom%Mask" );
         MaskValueReplacementStrategy expected = new MaskValueReplacementStrategy( "custom%Mask" );
         ValueReplacementStrategy actual = valueReplacementStrategyFromConfigFactory.createFromJson(
-                testConfigFile,
+                "",
                 customMaskJsonObject
         );
 
@@ -61,7 +61,7 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
     @Test
     public void createFromJson_defaultsAsMaskHasNoPercentageSymbol() {
         JsonObject jsonObject = createJsonObject( "customMask" );
-        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( testConfigFile, jsonObject )
+        assertTrue( valueReplacementStrategyFromConfigFactory.createFromJson( "", jsonObject )
                         instanceof PassthruValueReplacementStrategy
         );
     }

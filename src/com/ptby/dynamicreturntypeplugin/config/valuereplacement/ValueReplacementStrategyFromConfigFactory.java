@@ -11,7 +11,7 @@ public class ValueReplacementStrategyFromConfigFactory {
     }
 
 
-    public ValueReplacementStrategy createFromJson( VirtualFile configFile, JsonObject configObject ) {
+    public ValueReplacementStrategy createFromJson( String scriptParentDirectory, JsonObject configObject ) {
         if ( configObject.has( "mask" ) ) {
             String mask = configObject.get( "mask" ).getAsString().trim();
             if ( mask.contains( "%" ) ) {
@@ -24,8 +24,7 @@ public class ValueReplacementStrategyFromConfigFactory {
             if ( javascriptCallOptions.size() == 2 ) {
                 String fileName = javascriptCallOptions.get( 0 ).getAsString();
                 String javascriptFunctionCall = javascriptCallOptions.get( 1 ).getAsString();
-
-                return createScriptFileCallbackReplacementStrategy( configFile, configObject, fileName, javascriptFunctionCall );
+                return createScriptFileCallbackReplacementStrategy( scriptParentDirectory, configObject, fileName, javascriptFunctionCall );
             }
         }
 
@@ -33,7 +32,7 @@ public class ValueReplacementStrategyFromConfigFactory {
     }
 
 
-    private ValueReplacementStrategy createScriptFileCallbackReplacementStrategy( VirtualFile configFile,
+    private ValueReplacementStrategy createScriptFileCallbackReplacementStrategy( String scriptParentDirectory,
                                                                                   JsonObject configObject,
                                                                                   String fileName,
                                                                                   String javascriptFunctionCall ) {
@@ -47,7 +46,7 @@ public class ValueReplacementStrategyFromConfigFactory {
         }
 
         return new ScriptFileCallbackReplacementStrategy(
-                configFile,
+                scriptParentDirectory,
                 className,
                 method,
                 fileName,

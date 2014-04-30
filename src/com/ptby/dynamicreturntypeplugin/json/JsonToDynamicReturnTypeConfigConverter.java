@@ -13,22 +13,27 @@ import java.util.List;
 
 public class JsonToDynamicReturnTypeConfigConverter {
     ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
-    private VirtualFile configFile;
 
 
-    public DynamicReturnTypeConfig convertJson( VirtualFile configFile ) throws IOException {
-        this.configFile = configFile;
-        JsonElement jsonElement = createJsonElementFromJson(  new String( configFile.contentsToByteArray() ) );
+    public DynamicReturnTypeConfig convertJson( final VirtualFile configFile ) throws IOException {
+        String parentFolder = configFile.getParent().getCanonicalPath();
+        JsonElement jsonElement = createJsonElementFromJson( new String( configFile.contentsToByteArray() ) );
         if ( jsonElement == null || !jsonElement.isJsonObject() ) {
             return new DynamicReturnTypeConfig();
         }
 
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         JsonArray methodCalls = jsonObject.getAsJsonArray( "methodCalls" );
-        List<ClassMethodConfig> classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs( methodCalls );
+        List<ClassMethodConfig> classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs(
+                parentFolder,
+                methodCalls
+        );
 
         JsonElement functionCalls = jsonObject.get( "functionCalls" );
-        List<FunctionCallConfig> functionCallConfigs = castJsonMethodCallConfigToFunctionCallConfigs( functionCalls );
+        List<FunctionCallConfig> functionCallConfigs = castJsonMethodCallConfigToFunctionCallConfigs(
+                parentFolder,
+                functionCalls
+        );
 
         return new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );
     }
@@ -44,7 +49,8 @@ public class JsonToDynamicReturnTypeConfigConverter {
     }
 
 
-    private List<ClassMethodConfig> castJsonMethodCallConfigToClassMethodConfigs( JsonElement methodCalls ) {
+    private List<ClassMethodConfig> castJsonMethodCallConfigToClassMethodConfigs( String parentFolder,
+                                                                                  JsonElement methodCalls ) {
         ArrayList<ClassMethodConfig> classMethodConfigs = new ArrayList<ClassMethodConfig>();
         if ( methodCalls == null ) {
             return classMethodConfigs;
@@ -58,10 +64,10 @@ public class JsonToDynamicReturnTypeConfigConverter {
                         getJsonString( jsonMethodCall, "class" ),
                         getJsonString( jsonMethodCall, "method" ),
                         getJsonInt( jsonMethodCall, "position" ),
-                        valueReplacementStrategyFromConfigFactory.createFromJson( configFile, jsonMethodCall )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( parentFolder, jsonMethodCall )
                 );
 
-                if( classMethodConfig.isValid() ){
+                if ( classMethodConfig.isValid() ) {
                     classMethodConfigs.add( classMethodConfig );
                 }
 
@@ -90,7 +96,8 @@ public class JsonToDynamicReturnTypeConfigConverter {
     }
 
 
-    private List<FunctionCallConfig> castJsonMethodCallConfigToFunctionCallConfigs( JsonElement functionCalls ) {
+    private List<FunctionCallConfig> castJsonMethodCallConfigToFunctionCallConfigs( String parentFolder,
+                                                                                    JsonElement functionCalls ) {
         ArrayList<FunctionCallConfig> functionCallConfigs = new ArrayList<FunctionCallConfig>();
         if ( functionCalls == null ) {
             return functionCallConfigs;
@@ -103,10 +110,10 @@ public class JsonToDynamicReturnTypeConfigConverter {
                 FunctionCallConfig functionCallConfig = new FunctionCallConfig(
                         getJsonString( jsonFunctionCall, "function" ),
                         getJsonInt( jsonFunctionCall, "position" ),
-                        valueReplacementStrategyFromConfigFactory.createFromJson( configFile, jsonFunctionCall )
+                        valueReplacementStrategyFromConfigFactory.createFromJson( parentFolder, jsonFunctionCall )
                 );
 
-                if( functionCallConfig.isValid() ){
+                if ( functionCallConfig.isValid() ) {
                     functionCallConfigs.add( functionCallConfig );
                 }
             }
