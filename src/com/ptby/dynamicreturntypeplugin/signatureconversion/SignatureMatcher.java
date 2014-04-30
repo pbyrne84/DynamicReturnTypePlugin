@@ -1,7 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion;
 
 public class SignatureMatcher {
-    private static final String CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)\\|\\?";
+    private static final String CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)";
     private static final String FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)";
     private static final String RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*):(.*)";
     private static final String METHOD_CALL_PATTERN = "(#M#C.*):(.*):(.*)";

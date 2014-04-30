@@ -161,6 +161,7 @@
      <h3>1.1.3.5</h3>
            <ul>
             <li>Enable list handling in masks ( use %s[] )</li>
+            <li>Fix class constant issues</li>
           </ul>
         ]]>
 

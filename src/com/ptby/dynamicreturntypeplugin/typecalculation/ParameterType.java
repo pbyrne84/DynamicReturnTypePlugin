@@ -15,15 +15,21 @@ public class ParameterType {
 
 
     private String cleanReturnTypeOfPreviousCalls() {
-        if ( parameterType == null ) {
+        String formattableType = parameterType;
+        if ( formattableType == null ) {
             return null;
         }
 
-        String[] returnTypeParts = parameterType.split( ":" );
+        String[] returnTypeParts = formattableType.split( ":" );
         String returnTypePart = returnTypeParts[ returnTypeParts.length - 1 ];
         if ( returnTypePart.length() > 2 && returnTypePart.substring( 0, 2 ).equals( "#C" ) ) {
             return returnTypePart.substring( 2 );
         }
+
+        if ( returnTypePart.length() > 2 && returnTypePart.substring( returnTypePart.length() - 2  ).equals( "|?" ) ) {
+            returnTypePart = returnTypePart.substring( 0, returnTypePart.length() - 2 );
+        }
+
 
         return returnTypePart;
     }

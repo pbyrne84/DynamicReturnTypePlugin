@@ -33,7 +33,7 @@ public class ClassConstantAnalyzer {
         String constantName = constantParts[ 2 ];
 
         PhpIndex phpIndex = PhpIndex.getInstance( project );
-        Collection<PhpClass> classesByFQN = phpIndex.getClassesByFQN( className );
+        Collection<PhpClass> classesByFQN = phpIndex.getAnyByFQN( className );
         for ( PhpClass phpClass : classesByFQN ) {
             Collection<Field> fields = phpClass.getFields();
             for ( Field field : fields ) {
