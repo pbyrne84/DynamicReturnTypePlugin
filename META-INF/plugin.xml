@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.4</version>
+    <version>1.1.4.5</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -164,6 +164,12 @@
             <li>Fix class constant issues</li>
             <li>Fix thread safety on script/config paths</li>
           </ul>
+
+          <h3>1.1.4.5</h3>
+           <ul>
+            <li>Alias : to \ in string parameters</li>
+          </ul>
+
         ]]>
 
     </change-notes>

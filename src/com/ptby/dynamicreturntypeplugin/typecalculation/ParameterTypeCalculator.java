@@ -83,6 +83,6 @@ public class ParameterTypeCalculator {
             return null;
         }
 
-        return potentialClassName.replaceAll( "(\"|')", "" );
+        return potentialClassName.replaceAll( "(\"|')", "" ).replace( ":", "\\" );
     }
 }
