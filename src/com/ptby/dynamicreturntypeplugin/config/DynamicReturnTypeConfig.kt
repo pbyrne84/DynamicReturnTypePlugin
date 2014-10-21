@@ -3,7 +3,7 @@ package com.ptby.dynamicreturntypeplugin.config
 
 import java.util.ArrayList
 
-class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
+data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
                                      public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
 
@@ -11,38 +11,9 @@ class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMe
         fun newEmpty() = DynamicReturnTypeConfig(  ArrayList<ClassMethodConfigKt>(),  ArrayList<FunctionCallConfigKt>() )
     }
 
-    override fun toString(): String {
-        return "DynamicReturnTypeConfig{" + "\nclassMethodConfigs=" + classMethodConfigs + "\n, functionCallConfigs=" + functionCallConfigs + '}'
+    override fun equals(other: Any?): Boolean {
+        return super<Any>.equals(other)
     }
-
-
-    override fun equals(o: Any?): Boolean {
-        if (this == o) {
-            return true
-        }
-        if (o == null || javaClass != o.javaClass) {
-            return false
-        }
-
-        val that = o as DynamicReturnTypeConfig
-
-        if (classMethodConfigs != that.classMethodConfigs) {
-            return false
-        }
-        if (functionCallConfigs != that.functionCallConfigs) {
-            return false
-        }
-
-        return true
-    }
-
-
-    override fun hashCode(): Int {
-        var result = classMethodConfigs.hashCode()
-        result = 31 * result + functionCallConfigs.hashCode()
-        return result
-    }
-
 
     public fun merge(newConfig: DynamicReturnTypeConfig) {
         for (possibleNewMethodConfig in newConfig.classMethodConfigs ) {
