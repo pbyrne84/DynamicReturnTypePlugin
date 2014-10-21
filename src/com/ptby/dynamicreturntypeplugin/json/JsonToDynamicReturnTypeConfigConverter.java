@@ -2,9 +2,9 @@ package com.ptby.dynamicreturntypeplugin.json;
 
 import com.google.gson.*;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategyFromConfigFactory;
 
 import java.io.IOException;
@@ -19,18 +19,18 @@ public class JsonToDynamicReturnTypeConfigConverter {
         String parentFolder = configFile.getParent().getCanonicalPath();
         JsonElement jsonElement = createJsonElementFromJson( new String( configFile.contentsToByteArray() ) );
         if ( jsonElement == null || !jsonElement.isJsonObject() ) {
-            return new DynamicReturnTypeConfig();
+            return  DynamicReturnTypeConfig.OBJECT$.newEmpty();
         }
 
         JsonObject jsonObject = jsonElement.getAsJsonObject();
         JsonArray methodCalls = jsonObject.getAsJsonArray( "methodCalls" );
-        List<ClassMethodConfig> classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs(
+        List<ClassMethodConfigKt> classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs(
                 parentFolder,
                 methodCalls
         );
 
         JsonElement functionCalls = jsonObject.get( "functionCalls" );
-        List<FunctionCallConfig> functionCallConfigs = castJsonMethodCallConfigToFunctionCallConfigs(
+        List<FunctionCallConfigKt> functionCallConfigs = castJsonMethodCallConfigToFunctionCallConfigs(
                 parentFolder,
                 functionCalls
         );
@@ -49,9 +49,9 @@ public class JsonToDynamicReturnTypeConfigConverter {
     }
 
 
-    private List<ClassMethodConfig> castJsonMethodCallConfigToClassMethodConfigs( String parentFolder,
+    private List<ClassMethodConfigKt> castJsonMethodCallConfigToClassMethodConfigs( String parentFolder,
                                                                                   JsonElement methodCalls ) {
-        ArrayList<ClassMethodConfig> classMethodConfigs = new ArrayList<ClassMethodConfig>();
+        ArrayList<ClassMethodConfigKt> classMethodConfigs = new ArrayList<ClassMethodConfigKt>();
         if ( methodCalls == null ) {
             return classMethodConfigs;
         }
@@ -60,7 +60,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
         for ( JsonElement jsonElement : jsonMethodConfigList ) {
             if ( !jsonElement.isJsonNull() ) {
                 JsonObject jsonMethodCall = jsonElement.getAsJsonObject();
-                ClassMethodConfig classMethodConfig = new ClassMethodConfig(
+                ClassMethodConfigKt classMethodConfig = new ClassMethodConfigKt(
                         getJsonString( jsonMethodCall, "class" ),
                         getJsonString( jsonMethodCall, "method" ),
                         getJsonInt( jsonMethodCall, "position" ),
@@ -96,9 +96,9 @@ public class JsonToDynamicReturnTypeConfigConverter {
     }
 
 
-    private List<FunctionCallConfig> castJsonMethodCallConfigToFunctionCallConfigs( String parentFolder,
+    private List<FunctionCallConfigKt> castJsonMethodCallConfigToFunctionCallConfigs( String parentFolder,
                                                                                     JsonElement functionCalls ) {
-        ArrayList<FunctionCallConfig> functionCallConfigs = new ArrayList<FunctionCallConfig>();
+        ArrayList<FunctionCallConfigKt> functionCallConfigs = new ArrayList<FunctionCallConfigKt>();
         if ( functionCalls == null ) {
             return functionCallConfigs;
         }
@@ -107,7 +107,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
         for ( JsonElement jsonElement : jsonFunctionCalConfigList ) {
             if ( !jsonElement.isJsonNull() ) {
                 JsonObject jsonFunctionCall = jsonElement.getAsJsonObject();
-                FunctionCallConfig functionCallConfig = new FunctionCallConfig(
+                FunctionCallConfigKt functionCallConfig = new FunctionCallConfigKt(
                         getJsonString( jsonFunctionCall, "function" ),
                         getJsonInt( jsonFunctionCall, "position" ),
                         valueReplacementStrategyFromConfigFactory.createFromJson( parentFolder, jsonFunctionCall )

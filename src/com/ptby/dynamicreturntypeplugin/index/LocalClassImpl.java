@@ -126,6 +126,12 @@ public class LocalClassImpl implements PhpNamedElement {
     }
 
 
+    @Override
+    public boolean isInternal() {
+        return false;
+    }
+
+
     @Nullable
     @Override
     public PhpPsiElement getFirstPsiChild() {

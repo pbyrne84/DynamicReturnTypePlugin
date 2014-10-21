@@ -38,7 +38,7 @@ public class JavascriptTestEnvironment   {
         String script;
         BufferedReader br = new BufferedReader(
                 new FileReader(
-                        "C:\\development\\DynamicReturnTypePlugin\\test\\com\\ptby\\dynamicreturntypeplugin\\scripting\\exploratoryenvironment\\Test.js"
+                        "C:\\local_workspace\\DynamicReturnTypePlugin\\test\\com\\ptby\\dynamicreturntypeplugin\\scripting\\exploratoryenvironment\\Test.js"
                 )
         );
         try {

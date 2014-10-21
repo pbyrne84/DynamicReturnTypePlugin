@@ -1,12 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileSystem;
 import com.ptby.dynamicreturntypeplugin.TestVirtualFile;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigList;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigList;
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.PassthruValueReplacementStrategy;
 import org.junit.Test;
@@ -58,15 +56,15 @@ public class JsonToDynamicReturnTypeConfigConverterTest {
         );
 
         PassthruValueReplacementStrategy replacementStrategy = new PassthruValueReplacementStrategy();
-        List<ClassMethodConfig> classMethodConfigs = new ClassMethodConfigList(
-                new ClassMethodConfig( "\\TaskData", "getObject", 1, replacementStrategy ),
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0, replacementStrategy ),
-                new ClassMethodConfig( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0, replacementStrategy )
+        List<ClassMethodConfigKt> classMethodConfigs = new ClassMethodConfigList(
+                new ClassMethodConfigKt( "\\TaskData", "getObject", 1, replacementStrategy ),
+                new ClassMethodConfigKt( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "getFullMock", 0, replacementStrategy ),
+                new ClassMethodConfigKt( "\\JE\\Test\\Phpunit\\PhockitoTestCase", "verify", 0, replacementStrategy )
         );
 
-        List<FunctionCallConfig> functionCallConfigs = new FunctionCallConfigList(
-                new FunctionCallConfig( "\\verify", 0, replacementStrategy ),
-                new FunctionCallConfig( "\\mock", 0, replacementStrategy )
+        List<FunctionCallConfigKt> functionCallConfigs = new FunctionCallConfigList(
+                new FunctionCallConfigKt( "\\verify", 0, replacementStrategy ),
+                new FunctionCallConfigKt( "\\mock", 0, replacementStrategy )
         );
 
         DynamicReturnTypeConfig expectedReturnTypeConfig = new DynamicReturnTypeConfig( classMethodConfigs, functionCallConfigs );

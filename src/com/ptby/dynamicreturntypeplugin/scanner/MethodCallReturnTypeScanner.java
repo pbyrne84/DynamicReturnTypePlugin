@@ -1,7 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.scanner;
 
 import com.jetbrains.php.lang.psi.elements.MethodReference;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
@@ -17,9 +17,9 @@ public class MethodCallReturnTypeScanner {
     }
 
 
-    public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfig> classMethodConfigList,
+    public GetTypeResponse getTypeFromMethodCall( List<ClassMethodConfigKt> classMethodConfigList,
                                                   MethodReference  methodReference ) {
-        for ( ClassMethodConfig classMethodConfig : classMethodConfigList ) {
+        for ( ClassMethodConfigKt classMethodConfig : classMethodConfigList ) {
             if ( classMethodConfig.equalsMethodReferenceName( methodReference ) ) {
                 GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromMethodParameter( methodReference, classMethodConfig.getParameterIndex() );

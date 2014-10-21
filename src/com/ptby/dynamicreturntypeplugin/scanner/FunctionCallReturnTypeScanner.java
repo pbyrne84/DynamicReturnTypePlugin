@@ -1,7 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.scanner;
 
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt;
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse;
 import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator;
 
@@ -18,9 +18,9 @@ public class FunctionCallReturnTypeScanner {
     }
 
 
-    public GetTypeResponse getTypeFromFunctionCall( List<FunctionCallConfig> functionCallConfigs,
+    public GetTypeResponse getTypeFromFunctionCall( List<FunctionCallConfigKt> functionCallConfigs,
                                                     FunctionReferenceImpl functionReference ) {
-        for ( FunctionCallConfig functionCallConfig : functionCallConfigs ) {
+        for ( FunctionCallConfigKt functionCallConfig : functionCallConfigs ) {
             if ( functionCallConfig.equalsFunctionReference( functionReference ) ) {
                 GetTypeResponse getTypeResponse = callReturnTypeCalculator
                         .calculateTypeFromFunctionParameter( functionReference, functionCallConfig.getParameterIndex()

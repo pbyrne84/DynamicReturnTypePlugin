@@ -5,7 +5,7 @@ import com.jetbrains.php.PhpIndex;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 
@@ -34,7 +34,7 @@ public class VariableAnalyser {
     public Collection<? extends PhpNamedElement> getClassNameFromVariableLookup( CustomMethodCallSignature signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
 
-        ClassMethodConfig matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, signature.getClassName(), signature.getMethod() );
+        ClassMethodConfigKt matchingMethodConfig = getMatchingMethodConfig( phpIndex, project, signature.getClassName(), signature.getMethod() );
         if ( matchingMethodConfig == null ) {
             return originalCallAnalyzer.getMethodCallReturnType(
                     phpIndex, signature.getClassName().substring( 4 ), signature.getMethod(), project
@@ -62,7 +62,7 @@ public class VariableAnalyser {
     }
 
 
-    private ClassMethodConfig getMatchingMethodConfig( PhpIndex phpIndex,Project project, String variableSignature, String calledMethod ) {
+    private ClassMethodConfigKt getMatchingMethodConfig( PhpIndex phpIndex,Project project, String variableSignature, String calledMethod ) {
         String cleanedVariableSignature = variableSignature.substring( 2 );
         Collection<? extends PhpNamedElement> fieldElements = phpIndex
                 .getBySignature( cleanedVariableSignature, null, 0 );

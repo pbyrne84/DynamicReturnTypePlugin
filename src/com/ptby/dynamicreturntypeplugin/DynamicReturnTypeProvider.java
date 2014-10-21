@@ -29,7 +29,7 @@ import static com.intellij.openapi.diagnostic.Logger.getInstance;
 
 public class DynamicReturnTypeProvider implements PhpTypeProvider2 {
 
-    public static final char PLUGIN_IDENTIFIER_KEY = 'Ђ';
+    public static final char PLUGIN_IDENTIFIER_KEY = "Ђ".toCharArray()[0];
     public static final String PLUGIN_IDENTIFIER_KEY_STRING = new String( new char[] {PLUGIN_IDENTIFIER_KEY } );
     private final ClassConstantAnalyzer classConstantAnalyzer;
     private final GetTypeResponseFactory getTypeResponseFactory;

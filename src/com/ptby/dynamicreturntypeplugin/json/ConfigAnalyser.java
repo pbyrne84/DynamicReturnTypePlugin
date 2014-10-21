@@ -1,9 +1,9 @@
 package com.ptby.dynamicreturntypeplugin.json;
 
 import com.intellij.openapi.project.Project;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt;
 import com.ptby.dynamicreturntypeplugin.config.ProjectDynamicReturnTypeMap;
 import com.ptby.dynamicreturntypeplugin.config.multi.OpenProjects;
 import com.ptby.dynamicreturntypeplugin.config.multi.ProjectsConfigRefresher;
@@ -27,12 +27,12 @@ public class ConfigAnalyser implements ProjectConfigChangeListener, RefreshProje
     }
 
 
-    public List<ClassMethodConfig> getCurrentClassMethodConfigs( Project project ) {
+    public List<ClassMethodConfigKt> getCurrentClassMethodConfigs( Project project ) {
         return projectDynamicReturnTypeMap.get( project ).getClassMethodConfigs();
     }
 
 
-    public List<FunctionCallConfig> getCurrentFunctionCallConfigs( Project project ) {
+    public List<FunctionCallConfigKt> getCurrentFunctionCallConfigs( Project project ) {
         return projectDynamicReturnTypeMap.get( project ).getFunctionCallConfigs();
     }
 

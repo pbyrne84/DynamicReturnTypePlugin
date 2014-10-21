@@ -2,11 +2,10 @@ package com.ptby.dynamicreturntypeplugin.index;
 
 import com.intellij.openapi.project.Project;
 import com.jetbrains.php.PhpIndex;
-import com.jetbrains.php.lang.psi.elements.PhpClass;
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement;
 import com.jetbrains.php.lang.psi.resolve.types.PhpType;
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature;
 
@@ -73,7 +72,7 @@ public class FieldReferenceAnalyzer {
 
         PhpNamedElement fieldElement = fieldElements.iterator().next();
         PhpType type = fieldElement.getType();
-        ClassMethodConfig matchingConfig = methodCallValidator
+        ClassMethodConfigKt matchingConfig = methodCallValidator
                 .getMatchingConfig( phpIndex, project, customMethodCallSignature.getMethod(), "#C" + type.toString(), fieldElements );
 
         if ( matchingConfig == null ) {

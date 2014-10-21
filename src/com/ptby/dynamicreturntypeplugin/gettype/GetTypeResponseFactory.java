@@ -5,8 +5,8 @@ import com.intellij.psi.PsiElement;
 import com.jetbrains.php.lang.parser.PhpElementTypes;
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl;
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl;
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfig;
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfig;
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt;
+import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt;
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser;
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner;
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner;
@@ -41,7 +41,7 @@ public class GetTypeResponseFactory {
 
 
     private GetTypeResponse createMethodResponse( MethodReferenceImpl classMethod ) {
-        List<ClassMethodConfig> currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(
+        List<ClassMethodConfigKt> currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(
                 classMethod.getProject()
         );
 
@@ -52,7 +52,7 @@ public class GetTypeResponseFactory {
 
 
     private GetTypeResponse createFunctionResponse( FunctionReferenceImpl functionReference ) {
-        List<FunctionCallConfig> currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(
+        List<FunctionCallConfigKt> currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(
                 functionReference.getProject()
         );
 
