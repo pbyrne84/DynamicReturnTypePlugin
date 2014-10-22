@@ -31,6 +31,7 @@ import javax.swing.*;
 
 /**
  * There does not seem to be an easy way to get a primitive representation from the index
+ * keep java for a minute as conversion is a bit iffy
  */
 public class LocalClassImpl implements PhpNamedElement {
 

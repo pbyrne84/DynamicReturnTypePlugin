@@ -34,7 +34,7 @@ public class CustomSignatureProcessor {
 
     public Collection<? extends PhpNamedElement> getBySignature( String signature, Project project ) {
         PhpIndex phpIndex = PhpIndex.getInstance( project );
-        CustomMethodCallSignature customMethodCallSignature = CustomMethodCallSignature.createFromString( signature );
+        CustomMethodCallSignature customMethodCallSignature = CustomMethodCallSignature.OBJECT$.createFromString( signature );
         if ( customMethodCallSignature == null ) {
             return tryFunctionCall( null, signature, phpIndex, project );
         }
