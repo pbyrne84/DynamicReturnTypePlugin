@@ -23,7 +23,7 @@ public class FieldResponsePackager {
         val packagedFieldReference = FieldReferenceAnalyzer.packageForGetTypeResponse(
                 intellijReference,
                 methodReference.getName(),
-                parameterType.toString()
+                parameterType.toNullableString()
         )
 
         return GetTypeResponse(packagedFieldReference)

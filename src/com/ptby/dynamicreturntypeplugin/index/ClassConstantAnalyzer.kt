@@ -9,7 +9,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
 public class ClassConstantAnalyzer {
 
-    public fun verifySignatureIsClassConstant(signature: String?): Boolean {
+    public fun verifySignatureIsClassConstant(signature: String): Boolean {
         return signatureMatcher.verifySignatureIsClassConstantFunctionCall(signature)
     }
 

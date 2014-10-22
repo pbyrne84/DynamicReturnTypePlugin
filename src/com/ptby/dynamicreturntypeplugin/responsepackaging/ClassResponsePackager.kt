@@ -9,7 +9,7 @@ public class ClassResponsePackager {
 
     public fun packageClassReference(methodReference: MethodReference, parameterType: ParameterType): GetTypeResponse {
         val classReference = methodReference.getClassReference() as PhpReference?
-        val returnType = parameterType.toString()
+        val returnType = parameterType.toNullableString()
         if (returnType == null || classReference == null) {
             return GetTypeResponse(null)
         }

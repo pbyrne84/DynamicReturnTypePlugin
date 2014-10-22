@@ -32,8 +32,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
     private val logger = getInstance("DynamicReturnTypePlugin")
     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer
-    private var variableAnalyser: VariableAnalyser? = null
-
+    private var variableAnalyser: VariableAnalyser
 
     {
         val configState = ConfigStateContainer.configState
@@ -110,8 +109,8 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
 
-    private fun processSingleSignature(signature: String, project: Project): Collection<PhpNamedElement> {
-        val bySignature: Collection<PhpNamedElement>
+    private fun processSingleSignature(signature: String, project: Project): Collection<PhpNamedElement>? {
+        val bySignature: Collection<PhpNamedElement>?
         val customSignatureProcessor = CustomSignatureProcessor(
                 returnInitialisedSignatureConverter,
                 classConstantAnalyzer,

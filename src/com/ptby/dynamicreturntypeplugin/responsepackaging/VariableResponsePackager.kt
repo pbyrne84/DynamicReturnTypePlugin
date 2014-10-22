@@ -23,7 +23,7 @@ public class VariableResponsePackager {
         val packagedVariableReference = VariableAnalyser.packageForGetTypeResponse(
                 intellijReference.toString(),
                 name,
-                parameterType.toString()
+                parameterType.toNullableString()
         )
 
         return GetTypeResponse(packagedVariableReference)
