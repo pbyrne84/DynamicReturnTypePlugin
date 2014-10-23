@@ -22,11 +22,17 @@ public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( s
         val executingScriptApi = ExecutingScriptApi(this)
 
         val manager = ScriptEngineManager()
-        val engine = manager.getEngineByName(scriptLanguage)
+        var engine = manager.getEngineByName(scriptLanguage)
         if (engine == null) {
-            throw ScriptException(
-                    "Script engine '" + scriptLanguage + "' was not created. Relevant jar may not be in classpath."
-            )
+
+            val scriptEngineJarLoader = CustomScriptEngineJarLoader.createScriptEngineJarLoader(scriptLanguage)
+            engine = scriptEngineJarLoader.tryLoadingFromCustomPath()
+
+            if ( engine == null ) {
+                throw ScriptException(
+                        "Script engine '" + scriptLanguage + "' was not created. Relevant jar may not be in classpath."
+                )
+            }
         }
 
         engine.eval(callableScriptConfiguration.code)
@@ -71,7 +77,6 @@ public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( s
     }
 
     class object {
-
         public val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
         public val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
     }

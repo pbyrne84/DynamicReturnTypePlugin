@@ -44,6 +44,11 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         returnInitialisedSignatureConverter = ReturnInitialisedSignatureConverter()
         variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
         getTypeResponseFactory = createGetTypeResponseFactory(configAnalyser)
+
+        //for ( moo in System.getenv()) {
+        //    println( moo.key.toString() + "=" + moo.value.toString() )
+        //}
+
     }
 
     class object {
