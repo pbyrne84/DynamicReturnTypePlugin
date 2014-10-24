@@ -3,6 +3,7 @@ package com.ptby.dynamicreturntypeplugin.scripting;
 import org.intellij.lang.annotations.Language;
 import org.junit.Test;
 
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import static org.junit.Assert.assertEquals;
@@ -17,7 +18,7 @@ public class ScriptReplacementExecutorTest {
                 "}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
+                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT ),
                 new PhpCallReferenceInfo(  "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
@@ -34,7 +35,7 @@ public class ScriptReplacementExecutorTest {
         String groovy = "def abc( returnTypeNameSpace, returnTypeClass ) {return returnTypeNameSpace + \"_\" + returnTypeClass  ;}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY,
+                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY ),
                 new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration("file location", groovy, "abc" )
         );
@@ -50,7 +51,7 @@ public class ScriptReplacementExecutorTest {
         String javascript = "function abc(";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT,
+                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT ),
                 new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );

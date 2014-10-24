@@ -3,17 +3,20 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.ptby.dynamicreturntypeplugin.scripting.CustomScriptEngineFactory;
 import com.ptby.dynamicreturntypeplugin.scripting.PhpCallReferenceInfo;
 import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration;
 import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor;
 
+import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
 
 public class ScriptFileCallbackReplacementStrategy implements ValueReplacementStrategy {
+    private final ScriptEngineManager scriptEngineManager;
+
     private final String className;
     private final String methodName;
     private final String scriptFileName;
@@ -22,11 +25,13 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
     private ScriptReplacementExecutor scriptReplacementExecutor;
 
 
-    public ScriptFileCallbackReplacementStrategy( String scriptParentDirectory,
+    public ScriptFileCallbackReplacementStrategy( ScriptEngineManager scriptEngineManager,
+                                                  String scriptParentDirectory,
                                                   String className,
                                                   String methodName,
                                                   String scriptFileName,
                                                   String javascriptFunctionCall ) {
+        this.scriptEngineManager = scriptEngineManager;
         this.className = className;
         this.methodName = methodName;
         this.scriptFileName = scriptFileName;
@@ -57,7 +62,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
             );
 
             scriptReplacementExecutor = new ScriptReplacementExecutor(
-                    calculateScriptType(),
+                    CustomScriptEngineFactory.OBJECT$.createFactory( scriptEngineManager, calculateScriptType() ),
                     new PhpCallReferenceInfo( className, methodName ),
                     callableScriptConfiguration
             );

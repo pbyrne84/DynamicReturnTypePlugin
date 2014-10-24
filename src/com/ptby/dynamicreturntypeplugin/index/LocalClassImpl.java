@@ -127,7 +127,6 @@ public class LocalClassImpl implements PhpNamedElement {
     }
 
 
-    @Override
     public boolean isInternal() {
         return false;
     }

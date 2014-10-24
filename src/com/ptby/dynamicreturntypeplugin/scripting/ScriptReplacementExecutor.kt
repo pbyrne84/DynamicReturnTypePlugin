@@ -11,7 +11,7 @@ import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
-public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( scriptLanguage: String,
+public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( customScriptEngineFactory: CustomScriptEngineFactory,
                                                                                public val phpCallReferenceInfo: PhpCallReferenceInfo,
                                                                                public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
@@ -20,21 +20,7 @@ public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( s
 
     {
         val executingScriptApi = ExecutingScriptApi(this)
-
-        val manager = ScriptEngineManager()
-        var engine = manager.getEngineByName(scriptLanguage)
-        if (engine == null) {
-
-            val scriptEngineJarLoader = CustomScriptEngineJarLoader.createScriptEngineJarLoader(scriptLanguage)
-            engine = scriptEngineJarLoader.tryLoadingFromCustomPath()
-
-            if ( engine == null ) {
-                throw ScriptException(
-                        "Script engine '" + scriptLanguage + "' was not created. Relevant jar may not be in classpath."
-                )
-            }
-        }
-
+        val engine = customScriptEngineFactory.getEngine()
         engine.eval(callableScriptConfiguration.code)
         engine.put("api", executingScriptApi)
 
