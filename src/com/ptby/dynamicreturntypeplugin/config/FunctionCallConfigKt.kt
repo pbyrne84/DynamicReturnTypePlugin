@@ -20,7 +20,7 @@ data class FunctionCallConfigKt(functionName: String,
 
 
     fun formatBeforeLookup(passedType: String): String {
-        return valueReplacementStrategy.replaceCalculatedValue(passedType)
+        return valueReplacementStrategy.replaceCalculatedValue(passedType).replace("\\\\", "\\")
     }
 
 
