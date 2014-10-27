@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.6</version>
+    <version>1.1.5.5</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -176,13 +176,14 @@
             For javascript nashorn.jar is required for java 8 installs, rhino-js-1_7R4.jar for java 7 installs. For groovy groovy-all-2.2.1.jar is required.
             This path is only called if it cannot create using default classpath.
             </li>
+            <li>Multiple types assigned with masks (https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/24)</li>
           </ul>
         ]]>
 
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="129.713"/>
+    <idea-version since-build="138.2001"/>
     <extensions defaultExtensionNs="com.intellij">
      </extensions>
 

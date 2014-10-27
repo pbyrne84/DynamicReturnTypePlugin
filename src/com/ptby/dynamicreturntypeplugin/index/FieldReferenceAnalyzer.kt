@@ -33,7 +33,6 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
         val phpIndex = PhpIndex.getInstance(project)
 
         var potentiallyNullPhpType = locateType(phpIndex, project, customMethodCallSignature)
-
         if (potentiallyNullPhpType == null) {
             return originalCallAnalyzer.getFieldInstanceOriginalReturnType(phpIndex, customMethodCallSignature, project)
         }
@@ -82,7 +81,8 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
             return null
         }
 
-        return matchingConfig.formatBeforeLookup(customMethodCallSignature.parameter)
+        val formatBeforeLookup = matchingConfig.formatBeforeLookup(customMethodCallSignature.parameter)
+        return formatBeforeLookup
     }
 
     class object {

@@ -41,19 +41,37 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
                     signature.parameter, project
             )
 
-            return phpIndex.getAnyByFQN(classNameFromConstantLookup)
-
+            return formatWithMask(phpIndex, matchingMethodConfig, classNameFromConstantLookup, project)
         }
 
-        val formattedSignature = matchingMethodConfig.formatBeforeLookup(signature.parameter)
+        return formatWithMask(phpIndex, matchingMethodConfig, signature.parameter, project)
+    }
+
+
+    private fun formatWithMask(phpIndex: PhpIndex, config: ClassMethodConfigKt, signature: String?, project: Project): Collection<PhpNamedElement>? {
+        val formattedSignature = config.formatBeforeLookup(signature)
+
         if (formattedSignature.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
             customList.add(LocalClassImpl(PhpType().add(formattedSignature), project))
             return customList
         }
 
-        val createdType = "#C" + formattedSignature
-        return phpIndex.getBySignature(createdType)
+        if ( !formattedSignature.contains("|")) {
+            val createdType = "#C" + formattedSignature
+            return phpIndex.getBySignature(createdType)
+        }
+
+        return createMultiTypedFromMask(formattedSignature, project)
+    }
+
+    private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
+        val customList = ArrayList<PhpNamedElement>()
+        formattedSignature.split("\\|").forEach { type ->
+            customList.add(LocalClassImpl(PhpType().add("#C" + type), project))
+        }
+
+        return customList
     }
 
 

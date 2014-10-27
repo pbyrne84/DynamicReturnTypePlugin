@@ -53,7 +53,7 @@ public class OriginalCallAnalyzer {
         )
 
         if ( typeCollection != null ) {
-            return typeCollection as Collection<PhpNamedElement>
+            return typeCollection
         }
 
 

@@ -21,9 +21,9 @@ public class ProjectsConfigRefresher {
     public fun refreshProjects(projects: Array<Project>, refreshProjectCallBack: RefreshProjectCallBack) {
         for (project in projects) {
             val resultsListener = object : FilenameSearchResultsListener {
-                override fun respondToResults(projectConfigFiles: Collection<VirtualFile>) {
+                override fun respondToResults(virtualFilesByName: Collection<VirtualFile>) {
                     try {
-                        val configFromFileList = projectConfigBuilder.createConfigFromFileList(projectConfigFiles)
+                        val configFromFileList = projectConfigBuilder.createConfigFromFileList(virtualFilesByName)
 
                         refreshProjectCallBack.setConfig(project, configFromFileList)
                     } catch (e: IOException) {
