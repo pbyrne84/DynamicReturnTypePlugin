@@ -12,14 +12,17 @@ public class ScriptReplacementExecutorTest {
 
     @Test
     public void executeAndReplace_validJavascript() throws ScriptException {
-        @Language("JavaScript")
+        @Language( "JavaScript" )
         String javascript = "function abc( returnTypeNameSpace, returnTypeClass ) {" +
                 "print(returnTypeNameSpace);return returnTypeNameSpace + \"_\" + returnTypeClass ;" +
                 "}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT ),
-                new PhpCallReferenceInfo(  "class1", "method1" ),
+                CustomScriptEngineFactory.OBJECT$.createFactory(
+                        new ScriptEngineManager(),
+                        ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
+                ),
+                new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
@@ -31,13 +34,16 @@ public class ScriptReplacementExecutorTest {
 
     @Test
     public void executeAndReplace_validGroovy() throws ScriptException {
-        @Language("Groovy")
+        @Language( "Groovy" )
         String groovy = "def abc( returnTypeNameSpace, returnTypeClass ) {return returnTypeNameSpace + \"_\" + returnTypeClass  ;}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY ),
+                CustomScriptEngineFactory.OBJECT$.createFactory(
+                        new ScriptEngineManager(),
+                        ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
+                ),
                 new PhpCallReferenceInfo( "class1", "method1" ),
-                new CallableScriptConfiguration("file location", groovy, "abc" )
+                new CallableScriptConfiguration( "file location", groovy, "abc" )
         );
 
         String actual = replacementExecutor
@@ -46,12 +52,15 @@ public class ScriptReplacementExecutorTest {
     }
 
 
-    @Test(expected = ScriptException.class)
+    @Test( expected = ScriptException.class )
     public void executeAndReplace_invalidJavascript() throws ScriptException {
         String javascript = "function abc(";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory( new ScriptEngineManager(), ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT ),
+                CustomScriptEngineFactory.OBJECT$.createFactory(
+                        new ScriptEngineManager(),
+                        ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
+                ),
                 new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
