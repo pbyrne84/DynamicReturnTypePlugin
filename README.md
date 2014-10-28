@@ -126,11 +126,14 @@ Phockito::maskExample('User');
 There was no easy way to solve changing 'Entity\User' into 'MyNameSpace\User' without going down the path of writing a strategy for each custom user/framework request due to designs I have no knowledge of so cannot preempt. I would view this method as deprecated due to the limitations. But it will not be removed.
 
 ### 2.Script engine calls
+
+#### NOTE: Script engine jar paths can now be set using IDEA_GROOVY_JAR_PATH and IDEA_JAVASCRIPT_JAR_PATH environment variables. IDEA_JAVASCRIPT_JAR_PATH is for the path to the nashorn.jar file for javascript in JDK8.
+
 This allows custom code to be executed within the vm designed per consumer/framework. The 2 languages on offer are javascript via rhino and groovy if the groovy-all-2.2.1.jar is present in the ides lib folder. For interoperability between rhino and java the following reading is quite useful.
 
 https://developer.mozilla.org/en-US/docs/Rhino/Scripting_Java
 
-The benefit of using groovy is intellij idea(either edition) has better editing capabilities, though at the cost of having to manage the groovy-all-2.2.1.jar (I copied mine to phpstorm from my intellij ultimate).
+The benefit of using groovy is intellij idea(either edition) has better editing capabilities, though this requires setting up the IDEA_GROOVY_JAR_PATH path to groovy-all-2.2.1.jar (I set mine to point to the intellij ultimate jar).
 
 To use groovy instead of javascript just use the .groovy extension (rhino is the default behaviour).
 
@@ -180,6 +183,7 @@ The only restriction is the script file must be in the the same folder as its re
 
 Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed now I can write compilation errors to the event log versus file log( basically compile on save will be offered).
 
+
 #### Api
 A variable call api is injected into the script which allows communication back to the ide. This can be expanded on request.
 A javascript file that will offer completion can be found here :
@@ -202,6 +206,8 @@ Unfortunately I cannot offer array access as the open api would have to alias th
 http://youtrack.jetbrains.com/issue/WI-6027
 
 I do plan to add file handling to the api so you can talk to the virtual file system for basic tasks and I will also see if I can open up some completion provider methods through the javascript api.
+
+Currently IDEA_JAVASCRIPT_JAR_PATH is only for nashorn but rhino will be added for historical reasons.
 
 Any probs just give me a shout.
 
