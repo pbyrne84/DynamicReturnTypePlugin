@@ -113,7 +113,7 @@ For example the following configuration.
 {
 "class": "\\Phockito",
 "method": "maskExample",
-"position": 0
+"position": 0,
 "mask": "Test%sModel"
 }
 ```
