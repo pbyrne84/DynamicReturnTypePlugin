@@ -43,7 +43,7 @@ public class OriginalCallAnalyzer {
             return setOf()
         }
 
-        val field = methodSignatures.iterator().next() as FieldImpl
+        val field = methodSignatures.iterator().next() as Field
         val classToFindOriginalTurnTypeOf = field.getType().toString()
         val typeCollection: Collection<PhpNamedElement>? = getMethodCallReturnType(
                 phpIndex,

@@ -16,7 +16,7 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
 
         val element = parameters[parameterIndex]
         if (element is PhpTypedElement) {
-            val `type` = (element as PhpTypedElement).getType()
+            val `type` = (element).getType()
             if (`type`.toString() != "void") {
                 if (`type`.toString() == "string") {
                     return ParameterType(cleanClassText(element))
