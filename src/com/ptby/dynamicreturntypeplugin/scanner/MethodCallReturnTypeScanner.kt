@@ -10,6 +10,7 @@ public class MethodCallReturnTypeScanner(private val callReturnTypeCalculator: C
 
     public fun getTypeFromMethodCall(classMethodConfigList: List<ClassMethodConfigKt>,
                                      methodReference: MethodReference): GetTypeResponse {
+
         for (classMethodConfig in classMethodConfigList) {
             if (classMethodConfig.equalsMethodReferenceName(methodReference)) {
                 val getTypeResponse = callReturnTypeCalculator.calculateTypeFromMethodParameter(

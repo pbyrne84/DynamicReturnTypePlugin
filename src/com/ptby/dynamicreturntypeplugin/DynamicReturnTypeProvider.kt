@@ -25,6 +25,10 @@ import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator
 import java.util.ArrayList
 
 import com.intellij.openapi.diagnostic.Logger.getInstance
+import com.jetbrains.php.PhpIndex
+import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
+import com.jetbrains.php.lang.psi.elements.Variable
+import com.jetbrains.php.lang.psi.elements.Method
 
 public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val classConstantAnalyzer: ClassConstantAnalyzer
@@ -91,6 +95,13 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
+/*
+        val phpIndex = PhpIndex.getInstance(project)
+        val mutableCollection = phpIndex.getBySignature("#VphockitoTestCase")
+        val variable = mutableCollection.iterator().next() as Variable
+        println( "type " + variable.getType() )
+*/
+
         if (signature.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
             customList.add(LocalClassImpl(PhpType().add(signature), project))

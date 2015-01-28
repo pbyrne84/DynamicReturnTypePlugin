@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.6.1</version>
+    <version>1.1.6.2</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -184,6 +184,14 @@
                   Fixed https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/39 as field is not always a field implementation so casts to interface now
               </ul>
             </ul>
+
+            <h3>1.1.6.2</h3>
+              <ul>
+                  Fixed https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/36 as internal kotlin to java interop was buggy
+              </ul>
+            </ul>
+
+
         ]]>
 
     </change-notes>

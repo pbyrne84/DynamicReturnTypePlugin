@@ -36,8 +36,11 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         return equalsMethodName(methodName)
     }
 
-    public fun formatBeforeLookup(passedType: String?): String {
+    public fun formatBeforeLookup(passedType: String?): String{
         val s = valueReplacementStrategy.replaceCalculatedValue(passedType)
+        if( s == null ){
+            return "";
+        }
         return s.replace("\\\\", "\\")
 
     }

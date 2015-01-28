@@ -41,6 +41,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
                     signature.parameter, project
             )
 
+
             return formatWithMask(phpIndex, matchingMethodConfig, classNameFromConstantLookup, project)
         }
 
