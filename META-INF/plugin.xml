@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.6.2</version>
+    <version>1.1.7</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -179,18 +179,17 @@
             <li>Multiple types assigned with masks (https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/24)</li>
           </ul>
 
-            <h3>1.1.6.1</h3>
+            <h3>1.1.7</h3>
               <ul>
                   Fixed https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/39 as field is not always a field implementation so casts to interface now
               </ul>
-            </ul>
-
-            <h3>1.1.6.2</h3>
               <ul>
                   Fixed https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/36 as internal kotlin to java interop was buggy
               </ul>
+              <ul>
+                  Added implementation of https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/28
+              </ul>
             </ul>
-
 
         ]]>
 

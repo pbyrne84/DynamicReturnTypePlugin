@@ -2,6 +2,9 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion
 
 public class SignatureMatcher {
 
+    public fun verifySignatureIsProjectRootVariableCall(signature: CustomMethodCallSignature): Boolean {
+        return signature.rawStringSignature.matches(PROJECT_ROOT_VARIABLE_PATTERN)
+    }
 
     public fun verifySignatureIsClassConstantFunctionCall(signature: String): Boolean {
         return signature.matches(CLASS_CONSTANT_CALL_PATTERN)
@@ -19,7 +22,8 @@ public class SignatureMatcher {
 
 
     public fun verifySignatureIsMethodCall(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(METHOD_CALL_PATTERN)
+        return signature.rawStringSignature.matches(METHOD_CALL_PATTERN) ||
+                verifySignatureIsProjectRootVariableCall(signature)
     }
 
 
@@ -40,6 +44,7 @@ public class SignatureMatcher {
     }
 
     class object {
+        private val PROJECT_ROOT_VARIABLE_PATTERN = "(#M#V.*):(.*):(.*)"
         private val CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)"
         private val FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)"
         private val RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*):(.*)"

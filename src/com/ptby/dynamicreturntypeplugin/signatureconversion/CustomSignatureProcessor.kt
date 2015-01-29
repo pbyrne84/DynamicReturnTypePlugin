@@ -30,7 +30,8 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
 
     private fun processSignature(phpIndex: PhpIndex,
                                  customMethodCallSignature: CustomMethodCallSignature,
-                                 project: Project, signature: String): Collection<PhpNamedElement>? {
+                                 project: Project,
+                                 signature: String): Collection<PhpNamedElement>? {
 
         var processedCustomMethodCallSignature = customMethodCallSignature
         val signatureMatcher = SignatureMatcher()
