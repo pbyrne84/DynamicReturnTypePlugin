@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>1.1.7</version>
+    <version>1.1.7.1</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -191,6 +191,11 @@
               </ul>
             </ul>
 
+            <h3>1.1.7.1</h3>
+            <ul>
+            <li>Add symfony container chaining</li>
+            </ul>
+
         ]]>
 
     </change-notes>
@@ -220,6 +225,8 @@
     <actions>
         <!-- Add your actions here -->
     </actions>
+
+    <depends optional="true">fr.adrienbrault.idea.symfony2plugin</depends>
 
     <extensions defaultExtensionNs="com.intellij">
 <!--        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>-->

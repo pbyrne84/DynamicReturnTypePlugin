@@ -95,16 +95,16 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-/*
-        val phpIndex = PhpIndex.getInstance(project)
-        val mutableCollection = phpIndex.getBySignature("#VphockitoTestCase")
-        val variable = mutableCollection.iterator().next() as Variable
-        println( "type " + variable.getType() )
-*/
+        var filteredSignature = signature
 
-        if (signature.contains("[]")) {
+        if ( filteredSignature.contains("Ő")) {
+            //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME
+            filteredSignature = trySymfonyContainer(project, signature)
+        }
+
+        if (filteredSignature.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
-            customList.add(LocalClassImpl(PhpType().add(signature), project))
+            customList.add(LocalClassImpl(PhpType().add(filteredSignature), project))
 
             return customList
         }
@@ -112,7 +112,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         val bySignatureSignatureSplitter = BySignatureSignatureSplitter()
         var bySignature: Collection<PhpNamedElement>? = null
         var lastFqnName = ""
-        for (chainedSignature in bySignatureSignatureSplitter.createChainedSignatureList(signature)) {
+        for (chainedSignature in bySignatureSignatureSplitter.createChainedSignatureList(filteredSignature)) {
             val newSignature = lastFqnName + chainedSignature
             bySignature = processSingleSignature(newSignature, project)
 
@@ -139,4 +139,19 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
 
+    private fun trySymfonyContainer(project: Project, signature: String): String {
+        val startOfService = signature.indexOf("ƀ") + 1
+        val endOfService = signature.indexOf(":", startOfService)
+        val service = signature.substring(startOfService, endOfService)
+        val endOfServiceSeparator = signature.indexOf(":", endOfService)
+        val methodCall = signature.substring( endOfServiceSeparator + 1  )
+
+        val symfonyContainerLookup = SymfonyContainerLookup()
+        val lookedUpReference = symfonyContainerLookup.lookup(project, service)
+        if ( lookedUpReference == null ) {
+            return signature;
+        }
+
+        return "#M#C\\" + lookedUpReference + ":" + methodCall ;
+    }
 }
