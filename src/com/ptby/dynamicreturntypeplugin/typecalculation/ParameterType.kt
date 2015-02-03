@@ -7,6 +7,11 @@ public class ParameterType(private val parameterType: String?) {
     }
 
 
+    fun getOriginal() : String? {
+        return parameterType
+    }
+
+
     fun toNullableString(): String?{
         return cleanReturnTypeOfPreviousCalls()
     }

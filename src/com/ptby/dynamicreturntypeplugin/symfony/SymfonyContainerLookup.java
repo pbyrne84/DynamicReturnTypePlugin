@@ -1,4 +1,4 @@
-package com.ptby.dynamicreturntypeplugin;
+package com.ptby.dynamicreturntypeplugin.symfony;
 
 import com.intellij.openapi.project.Project;
 
@@ -27,7 +27,7 @@ public class SymfonyContainerLookup {
     }
 
 
-    String lookup( Project project,  String serviceName)  {
+    public String lookup( Project project,  String serviceName)  {
 
         if ( !isEnabled() ) {
             return null;

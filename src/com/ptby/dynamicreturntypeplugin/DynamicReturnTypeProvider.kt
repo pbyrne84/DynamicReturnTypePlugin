@@ -29,6 +29,8 @@ import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
 import com.jetbrains.php.lang.psi.elements.Variable
 import com.jetbrains.php.lang.psi.elements.Method
+import com.ptby.dynamicreturntypeplugin.symfony.SymfonyContainerLookup
+import com.ptby.dynamicreturntypeplugin.symfony.SymfonySignatureTranslator
 
 public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val classConstantAnalyzer: ClassConstantAnalyzer
@@ -36,8 +38,9 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
     private val logger = getInstance("DynamicReturnTypePlugin")
     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer
-    private var variableAnalyser: VariableAnalyser
+    private val symfonySignatureTranslator = SymfonySignatureTranslator( SymfonyContainerLookup() )
 
+    private var variableAnalyser: VariableAnalyser
     {
         val configState = ConfigStateContainer.configState
 
@@ -48,11 +51,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         returnInitialisedSignatureConverter = ReturnInitialisedSignatureConverter()
         variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
         getTypeResponseFactory = createGetTypeResponseFactory(configAnalyser)
-
-        //for ( moo in System.getenv()) {
-        //    println( moo.key.toString() + "=" + moo.value.toString() )
-        //}
-
     }
 
     class object {
@@ -99,7 +97,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
         if ( filteredSignature.contains("Ő")) {
             //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME
-            filteredSignature = trySymfonyContainer(project, signature)
+            filteredSignature = symfonySignatureTranslator.trySymfonyContainer(project, signature)
         }
 
         if (filteredSignature.contains("[]")) {
@@ -139,31 +137,4 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
 
-    private fun trySymfonyContainer(project: Project, signature: String): String {
-        val startOfService = signature.indexOf("ƀ") + 1
-        val endOfService = signature.indexOf(":", startOfService)
-        if ( startOfService < 0 || endOfService < 0 ) {
-            return signature
-        }
-
-        val service = signature.substring(startOfService, endOfService)
-        val symfonyContainerLookup = SymfonyContainerLookup()
-        val lookedUpReference = symfonyContainerLookup.lookup(project, service)
-        if ( lookedUpReference == null ) {
-            return signature;
-        }
-
-        val endOfServiceSeparator = signature.indexOf(":", endOfService)
-        var methodCall = signature.substring(endOfServiceSeparator + 1)
-        if ( !methodCall.contains("#") ) {
-            methodCall = methodCall.replace(":", ":#K#C") + "."
-        }
-
-        val completedMethodCall = "#M#C\\" + lookedUpReference + ":" + methodCall
-
-        //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.
-        //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService
-        // println("completedMethodCall " + completedMethodCall)
-        return completedMethodCall ;
-    }
 }
