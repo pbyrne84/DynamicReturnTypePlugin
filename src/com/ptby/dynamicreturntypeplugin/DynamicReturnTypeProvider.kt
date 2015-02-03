@@ -142,7 +142,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private fun trySymfonyContainer(project: Project, signature: String): String {
         val startOfService = signature.indexOf("ƀ") + 1
         val endOfService = signature.indexOf(":", startOfService)
-            if ( startOfService < 0 || endOfService < 0 ) {
+        if ( startOfService < 0 || endOfService < 0 ) {
             return signature
         }
 
@@ -155,7 +155,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
         val endOfServiceSeparator = signature.indexOf(":", endOfService)
         var methodCall = signature.substring(endOfServiceSeparator + 1)
-        if( !methodCall.contains("#") ){
+        if ( !methodCall.contains("#") ) {
             methodCall = methodCall.replace(":", ":#K#C") + "."
         }
 
@@ -163,7 +163,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
         //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.
         //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService
-       // println("completedMethodCall " + completedMethodCall)
+        // println("completedMethodCall " + completedMethodCall)
         return completedMethodCall ;
     }
 }
