@@ -142,16 +142,28 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private fun trySymfonyContainer(project: Project, signature: String): String {
         val startOfService = signature.indexOf("ƀ") + 1
         val endOfService = signature.indexOf(":", startOfService)
-        val service = signature.substring(startOfService, endOfService)
-        val endOfServiceSeparator = signature.indexOf(":", endOfService)
-        val methodCall = signature.substring( endOfServiceSeparator + 1  )
+            if ( startOfService < 0 || endOfService < 0 ) {
+            return signature
+        }
 
+        val service = signature.substring(startOfService, endOfService)
         val symfonyContainerLookup = SymfonyContainerLookup()
         val lookedUpReference = symfonyContainerLookup.lookup(project, service)
         if ( lookedUpReference == null ) {
             return signature;
         }
 
-        return "#M#C\\" + lookedUpReference + ":" + methodCall ;
+        val endOfServiceSeparator = signature.indexOf(":", endOfService)
+        var methodCall = signature.substring(endOfServiceSeparator + 1)
+        if( !methodCall.contains("#") ){
+            methodCall = methodCall.replace(":", ":#K#C") + "."
+        }
+
+        val completedMethodCall = "#M#C\\" + lookedUpReference + ":" + methodCall
+
+        //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.
+        //#M#C\DynamicReturnTypePluginTestEnvironment\TestClasses\ServiceBroker:getServiceWithoutMask:\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService
+       // println("completedMethodCall " + completedMethodCall)
+        return completedMethodCall ;
     }
 }
