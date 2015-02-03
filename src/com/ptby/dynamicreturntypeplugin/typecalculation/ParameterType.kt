@@ -1,6 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation
 
-public class ParameterType(private val parameterType: String?) {
+import com.jetbrains.php.lang.psi.elements.MethodReference
+import com.jetbrains.php.lang.psi.elements.FunctionReference
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+
+public class ParameterType( private val functionReference: FunctionReference, private val parameterType: String?) {
 
     override fun toString(): String {
         throw RuntimeException( "use toNullableString" )
@@ -23,8 +27,15 @@ public class ParameterType(private val parameterType: String?) {
             return null
         }
 
-        val returnTypeParts = formattableType.split(":")
-        var returnTypePart = returnTypeParts[returnTypeParts.size - 1]
+
+
+   /*     if( true ){
+            return parameterType
+        }*/
+
+
+        val returnTypeParts = formattableType.split(DynamicReturnTypeProvider.PARAMETER_SEPARATOR)
+        var returnTypePart = returnTypeParts[returnTypeParts.size() - 1]
         if (returnTypePart.length() > 2 && returnTypePart.substring(0, 2) == "#C") {
             return returnTypePart.substring(2)
         }

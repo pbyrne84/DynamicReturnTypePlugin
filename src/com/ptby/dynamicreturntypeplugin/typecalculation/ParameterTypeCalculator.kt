@@ -5,13 +5,15 @@ import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
+import com.jetbrains.php.lang.psi.elements.MethodReference
+import com.jetbrains.php.lang.psi.elements.FunctionReference
 
 public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassConstantAnalyzer) {
 
 
-    public fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
-        if (parameters.size <= parameterIndex) {
-            return ParameterType(null)
+    public fun calculateTypeFromParameter(functionReference: FunctionReference,parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
+        if (parameters.size() <= parameterIndex) {
+            return ParameterType(functionReference,null)
         }
 
         val element = parameters[parameterIndex]
@@ -19,34 +21,34 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
             val `type` = (element).getType()
             if (`type`.toString() != "void") {
                 if (`type`.toString() == "string") {
-                    return ParameterType(cleanClassText(element))
+                    return ParameterType(functionReference, cleanClassText(element))
                 } else if (classConstantAnalyzer.verifySignatureIsClassConstant(`type`.toString())) {
-                    return ParameterType(`type`.toString())
+                    return ParameterType(functionReference, `type`.toString())
                 }
 
                 val singleType = getTypeSignature(`type`)
                 if (singleType == null) {
-                    return ParameterType(null)
+                    return ParameterType(functionReference, null)
                 }
 
                 if (singleType.substring(0, 1) == "\\") {
-                    return ParameterType("#C" + singleType)
+                    return ParameterType(functionReference, "#C" + singleType)
                 }
 
                 if (singleType.length() < 3) {
-                    return ParameterType(null)
+                    return ParameterType(functionReference, null)
                 }
 
                 if (typeContains(singleType, "#C\\") || typeContains(singleType, "#P#C\\")) {
-                    return ParameterType(singleType.substring(2))
+                    return ParameterType(functionReference, singleType.substring(2))
                 }
 
                 val calculatedType = singleType.substring(3)
-                return ParameterType(calculatedType)
+                return ParameterType(functionReference, calculatedType)
             }
         }
 
-        return ParameterType(null)
+        return ParameterType(functionReference, null)
     }
 
 

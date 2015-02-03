@@ -27,7 +27,7 @@ public class BySignatureSignatureSplitter {
         val cleanedSignature = signature.substring(beginIndex + 1)
 
         var currentStringPos = 0
-        var currentOrdinalIncrement = 3
+        var currentOrdinalIncrement = 2
         for (i in 0..chainedSignatureCount - 1) {
             val nextSignatureStart = StringUtils.ordinalIndexOf(cleanedSignature, ":", currentOrdinalIncrement)
             val subSignature = getSubSignature(cleanedSignature, currentStringPos, nextSignatureStart)
@@ -37,7 +37,7 @@ public class BySignatureSignatureSplitter {
             }
 
             currentStringPos = nextSignatureStart
-            currentOrdinalIncrement = currentOrdinalIncrement + 2
+            currentOrdinalIncrement = currentOrdinalIncrement + 1
         }
 
         return chainedSignatureList

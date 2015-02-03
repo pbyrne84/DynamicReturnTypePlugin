@@ -56,6 +56,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     class object {
         public val PLUGIN_IDENTIFIER_KEY: Char = "Ђ".toCharArray()[0]
         public val PLUGIN_IDENTIFIER_KEY_STRING: String = String(charArray(PLUGIN_IDENTIFIER_KEY))
+        public val PARAMETER_SEPARATOR : String  = "ª"
     }
 
 
@@ -94,7 +95,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
         var filteredSignature = signature
-
         if ( filteredSignature.contains("Ő")) {
             //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME
             filteredSignature = symfonySignatureTranslator.trySymfonyContainer(project, signature)

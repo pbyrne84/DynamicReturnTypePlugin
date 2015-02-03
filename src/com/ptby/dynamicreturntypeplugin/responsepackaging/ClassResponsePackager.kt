@@ -4,6 +4,7 @@ import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.PhpReference
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterType
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 public class ClassResponsePackager {
 
@@ -15,7 +16,7 @@ public class ClassResponsePackager {
         }
 
         val signature = "#M" + classReference.getSignature()
-        val response = signature + ":" + methodReference.getName() + ":" + returnType
+        val response = signature + ":" + methodReference.getName() + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + returnType
         return GetTypeResponse(response)
     }
 }

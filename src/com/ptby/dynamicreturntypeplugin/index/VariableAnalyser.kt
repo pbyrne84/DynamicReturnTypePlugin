@@ -10,6 +10,7 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
 import java.util.ArrayList
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) {
     private val methodCallValidator: MethodCallValidator
@@ -92,7 +93,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
         public fun packageForGetTypeResponse(intellijReference: String?,
                                              methodName: String?,
                                              returnType: String?): String {
-            return intellijReference + ":" + methodName + ":" + returnType
+            return intellijReference + ":" + methodName + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + returnType
         }
     }
 }

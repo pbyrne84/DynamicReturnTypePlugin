@@ -17,11 +17,11 @@ public class ClassConstantAnalyzer {
     public fun getClassNameFromConstantLookup(classConstant: String, project: Project): String? {
         val constantParts = classConstant.split("((#*)K#C|\\.|\\|\\?)")
 
-        if (constantParts.size < 2) {
+        if (constantParts.size() < 2) {
             return null
         }
 
-        if (constantParts.size == 2) {
+        if (constantParts.size() == 2) {
             return constantParts[1]
         }
 

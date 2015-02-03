@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion;
 
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider;
 import org.junit.*;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class BySignatureSignatureSplitterTest {
+    String parameterSeparator = DynamicReturnTypeProvider.PARAMETER_SEPARATOR;
 
     private BySignatureSignatureSplitter bySignatureSignatureSplitter;
 
@@ -30,7 +32,11 @@ public class BySignatureSignatureSplitterTest {
 
     @Test
     public void test_createChainedSignatureList_singleMethodCall_returnsOriginalCall() {
-        String methodCallSignature = "#M#C\\DynamicReturnTypePluginTestEnvironment\\OverriddenReturnType\\Phockito:verify:\\DomDocument";
+
+        String methodCallSignature = String.format(
+                "#M#C\\DynamicReturnTypePluginTestEnvironment\\OverriddenReturnType\\Phockito:verify%s\\DomDocument",
+                parameterSeparator
+        );
         List<String> actualChainedSignatureList = bySignatureSignatureSplitter
                 .createChainedSignatureList( methodCallSignature );
         assertEquals(
@@ -42,13 +48,19 @@ public class BySignatureSignatureSplitterTest {
 
     @Test
     public void test_createChainedSignatureList_multiOverriddenMethodCall_returnsOriginalCall() {
-        String methodCallSignature = "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?:getServiceWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?";
+        String methodCallSignature = String.format(
+                "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?:getServiceWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?",
+                parameterSeparator,
+                parameterSeparator
+        );
+
+
         List<String> actualChainedSignatureList = bySignatureSignatureSplitter
                 .createChainedSignatureList( methodCallSignature );
         assertEquals(
                 new StringList(
-                        "#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?",
-                        ":getServiceWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?"
+                        String.format( "#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker.CLASS_NAME|?",parameterSeparator ),
+                        String.format( ":getServiceWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\TestService.CLASS_NAME|?", parameterSeparator )
                 ),
                 actualChainedSignatureList
         );
@@ -57,19 +69,19 @@ public class BySignatureSignatureSplitterTest {
 
     @Test
     public void test_createChainedSignatureList_multiOverriddenMethodCall_moo() {
-        String methodCallSignature = "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker";
+        String methodCallSignature = String.format(
+                "#M#Ђ#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker",
+                parameterSeparator
+        );
         List<String> actualChainedSignatureList = bySignatureSignatureSplitter
                 .createChainedSignatureList( methodCallSignature );
         assertEquals(
                 new StringList(
-                        "#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask:#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker"
+                        String.format( "#P#C\\DynamicReturnTypePluginTestEnvironment\\ChainedDynamicReturnTypeTest.classBroker:getClassWithoutMask%s#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker",parameterSeparator )
                 ),
                 actualChainedSignatureList
         );
     }
-
-
-
 
 
 }

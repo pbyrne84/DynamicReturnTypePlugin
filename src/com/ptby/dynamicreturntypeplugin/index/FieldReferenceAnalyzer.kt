@@ -10,6 +10,7 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
 import java.util.ArrayList
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -91,7 +92,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
         public fun packageForGetTypeResponse(intellijReference: String?,
                                              methodName: String?,
                                              returnType: String?): String? {
-            return intellijReference + ":" + methodName + ":" + returnType
+            return intellijReference + ":" + methodName + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + returnType
         }
     }
 }

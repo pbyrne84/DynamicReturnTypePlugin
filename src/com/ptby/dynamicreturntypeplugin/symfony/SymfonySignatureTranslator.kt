@@ -1,6 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.symfony
 
 import com.intellij.openapi.project.Project
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 public class SymfonySignatureTranslator(private val symfonyContainerLookup: SymfonyContainerLookup) {
 
@@ -21,12 +22,12 @@ public class SymfonySignatureTranslator(private val symfonyContainerLookup: Symf
         val endOfServiceSeparator = signature.indexOf(":", endOfService)
         var methodCall = signature.substring(endOfServiceSeparator + 1)
         if ( !methodCall.contains("#") ) {
-            var replacement = ":#K#C"
+            var replacement = DynamicReturnTypeProvider.PARAMETER_SEPARATOR + "#K#C"
             if( !methodCall.contains(":\\")){
-                replacement = ":#K#C\\"
+                replacement = DynamicReturnTypeProvider.PARAMETER_SEPARATOR + "#K#C\\"
             }
 
-            methodCall = methodCall.replace(":", replacement ) + "."
+            methodCall = methodCall.replace(  DynamicReturnTypeProvider.PARAMETER_SEPARATOR, replacement ) + "."
         }
 
         val completedMethodCall = "#M#C\\" + lookedUpReference + ":" + methodCall

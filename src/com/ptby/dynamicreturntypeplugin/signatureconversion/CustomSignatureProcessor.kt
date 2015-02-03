@@ -46,6 +46,7 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
                     processedCustomMethodCallSignature.rawStringSignature, project)
             )
         } else if (signatureMatcher.verifySignatureIsFieldCall(processedCustomMethodCallSignature)) {
+
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup(processedCustomMethodCallSignature, project)
         } else if (signatureMatcher.verifySignatureIsMethodCall(processedCustomMethodCallSignature)) {
             return variableAnalyser.getClassNameFromVariableLookup(processedCustomMethodCallSignature, project)

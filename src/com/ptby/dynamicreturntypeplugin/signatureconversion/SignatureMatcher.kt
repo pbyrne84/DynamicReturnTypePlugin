@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion
 
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+
 public class SignatureMatcher {
 
     public fun verifySignatureIsProjectRootVariableCall(signature: CustomMethodCallSignature): Boolean {
@@ -44,11 +46,11 @@ public class SignatureMatcher {
     }
 
     class object {
-        private val PROJECT_ROOT_VARIABLE_PATTERN = "(#M#V.*):(.*):(.*)"
+        private val PROJECT_ROOT_VARIABLE_PATTERN = "(#M#V.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_SEPARATOR+ "(.*)"
         private val CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)"
-        private val FIELD_CALL_PATTERN = "(#P#C.*):(.*):(.*)"
-        private val RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*):(.*)"
-        private val METHOD_CALL_PATTERN = "(#M#C.*):(.*):(.*)"
-        private val DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN = "(#M#F.*):(.*):(.*)"
+        private val FIELD_CALL_PATTERN = "(#P#C.*):(.*)" +DynamicReturnTypeProvider.PARAMETER_SEPARATOR+"(.*)"
+        private val RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_SEPARATOR+ "(.*)"
+        private val METHOD_CALL_PATTERN = "(#M#C.*):(.*)"+ DynamicReturnTypeProvider.PARAMETER_SEPARATOR+"(.*)"
+        private val DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN = "(#M#F.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_SEPARATOR+ "(.*)"
     }
 }
