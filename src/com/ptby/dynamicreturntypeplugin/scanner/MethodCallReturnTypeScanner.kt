@@ -26,7 +26,7 @@ public class MethodCallReturnTypeScanner(private val callReturnTypeCalculator: C
             }
         }
 
-        return GetTypeResponse(null)
+        return GetTypeResponse(null, null )
     }
 
 

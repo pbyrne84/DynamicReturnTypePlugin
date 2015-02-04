@@ -31,6 +31,8 @@ import com.jetbrains.php.lang.psi.elements.Variable
 import com.jetbrains.php.lang.psi.elements.Method
 import com.ptby.dynamicreturntypeplugin.symfony.SymfonyContainerLookup
 import com.ptby.dynamicreturntypeplugin.symfony.SymfonySignatureTranslator
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
+import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
 public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val classConstantAnalyzer: ClassConstantAnalyzer
@@ -38,7 +40,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
     private val logger = getInstance("DynamicReturnTypePlugin")
     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer
-    private val symfonySignatureTranslator = SymfonySignatureTranslator( SymfonyContainerLookup() )
+    private val symfonySignatureTranslator = SymfonySignatureTranslator(SymfonyContainerLookup())
 
     private var variableAnalyser: VariableAnalyser
     {
@@ -56,7 +58,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     class object {
         public val PLUGIN_IDENTIFIER_KEY: Char = "Ђ".toCharArray()[0]
         public val PLUGIN_IDENTIFIER_KEY_STRING: String = String(charArray(PLUGIN_IDENTIFIER_KEY))
-        public val PARAMETER_SEPARATOR : String  = "ª"
+        public val PARAMETER_SEPARATOR: String = "ª"
     }
 
 
@@ -92,8 +94,17 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         return null
     }
 
-
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
+        val getBySignature = GetBySignature( SignatureMatcher(),classConstantAnalyzer )
+
+        return getBySignature.getBySignature(signature, project)
+    }
+
+
+    fun getBySignature2(signature: String, project: Project): Collection<PhpNamedElement>? {
+        println(signature)
+
+
         var filteredSignature = signature
         if ( filteredSignature.contains("Ő")) {
             //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME

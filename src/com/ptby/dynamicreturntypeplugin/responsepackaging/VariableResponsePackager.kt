@@ -13,7 +13,7 @@ public class VariableResponsePackager {
         val name = methodReference.getName()
         val methodCallParts = methodReference.getSignature().split("\\.")
         val intellijReference = StringBuilder()
-        for (i in 0..methodCallParts.size - 1 - 1) {
+        for (i in 0..methodCallParts.size() - 1 - 1) {
             if (i > 0) {
                 intellijReference.append(".")
             }
@@ -26,7 +26,7 @@ public class VariableResponsePackager {
                 parameterType.toNullableString()
         )
 
-        return GetTypeResponse(packagedVariableReference)
+        return GetTypeResponse(packagedVariableReference, methodReference )
     }
 
 }

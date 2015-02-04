@@ -22,7 +22,7 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
             return createFunctionResponse(psiElement as FunctionReferenceImpl)
         }
 
-        return GetTypeResponse(null)
+        return GetTypeResponse(null, null )
     }
 
     private fun createMethodResponse(classMethod: MethodReferenceImpl): GetTypeResponse {

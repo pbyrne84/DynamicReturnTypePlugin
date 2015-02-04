@@ -9,14 +9,13 @@ import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterType
 
 public class FieldResponsePackager {
 
-
     public fun packageFieldReference(methodReference: MethodReference, parameterType: ParameterType): GetTypeResponse {
 
         val intellijReference: String
         if (methodReference.getSignature().matches("#M#C(.*)")) {
             intellijReference = createLocalScopedFieldReference(methodReference)
         } else {
-            val fieldReference = methodReference.getClassReference() as FieldReferenceImpl
+            val fieldReference = methodReference.getClassReference() as FieldReference
             intellijReference = fieldReference.getSignature()
         }
 
@@ -26,7 +25,7 @@ public class FieldResponsePackager {
                 parameterType.toNullableString()
         )
 
-        return GetTypeResponse(packagedFieldReference)
+        return GetTypeResponse(packagedFieldReference, methodReference )
     }
 
     private fun createLocalScopedFieldReference(methodReference: MethodReference): String {

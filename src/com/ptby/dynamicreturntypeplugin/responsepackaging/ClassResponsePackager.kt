@@ -12,11 +12,11 @@ public class ClassResponsePackager {
         val classReference = methodReference.getClassReference() as PhpReference?
         val returnType = parameterType.toNullableString()
         if (returnType == null || classReference == null) {
-            return GetTypeResponse(null)
+            return GetTypeResponse(null, null )
         }
 
         val signature = "#M" + classReference.getSignature()
         val response = signature + ":" + methodReference.getName() + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + returnType
-        return GetTypeResponse(response)
+        return GetTypeResponse(response, methodReference )
     }
 }

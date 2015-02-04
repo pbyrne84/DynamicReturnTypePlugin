@@ -19,13 +19,13 @@ public class FunctionCallReturnTypeScanner(private val callReturnTypeCalculator:
 
                 if (!getTypeResponse.isNull()) {
                     val maskReplacedType = functionCallConfig.formatBeforeLookup(getTypeResponse.toString())
-                    return GetTypeResponse(maskReplacedType)
+                    return GetTypeResponse(maskReplacedType, functionReference )
                 }
 
                 return getTypeResponse
             }
         }
 
-        return GetTypeResponse(null)
+        return GetTypeResponse(null, null )
     }
 }

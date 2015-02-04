@@ -18,15 +18,15 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
 
         val element = parameters[parameterIndex]
         if (element is PhpTypedElement) {
-            val `type` = (element).getType()
-            if (`type`.toString() != "void") {
-                if (`type`.toString() == "string") {
+            val elementType = (element).getType()
+            if (elementType.toString() != "void") {
+                if (elementType.toString() == "string") {
                     return ParameterType(functionReference, cleanClassText(element))
-                } else if (classConstantAnalyzer.verifySignatureIsClassConstant(`type`.toString())) {
-                    return ParameterType(functionReference, `type`.toString())
+                } else if (classConstantAnalyzer.verifySignatureIsClassConstant(elementType.toString())) {
+                    return ParameterType(functionReference, elementType.toString())
                 }
 
-                val singleType = getTypeSignature(`type`)
+                val singleType = getTypeSignature(elementType)
                 if (singleType == null) {
                     return ParameterType(functionReference, null)
                 }
@@ -78,6 +78,6 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
             return null
         }
 
-        return potentialClassName.replaceAll("(\"|')", "").replace(":", "\\")
+        return "#K#C\\" + ( potentialClassName.replaceAll("(\"|')", "").replace(":", "\\") ).trimLeading("\\") + "."
     }
 }

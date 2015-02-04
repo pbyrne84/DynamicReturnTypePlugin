@@ -35,7 +35,7 @@ public class CallReturnTypeCalculator {
 
         val parameterType = parameterTypeCalculator.calculateTypeFromParameter(methodReference, parameterIndex, methodReference.getParameters())
 
-        return GetTypeResponse(parameterType.toNullableString())
+        return GetTypeResponse(parameterType.toNullableString(), methodReference )
     }
 
 
@@ -47,7 +47,7 @@ public class CallReturnTypeCalculator {
     public fun calculateTypeFromFunctionParameter(functionReference: FunctionReference, parameterIndex: Int): GetTypeResponse {
         val functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(functionReference, parameterIndex, functionReference.getParameters())
 
-        return GetTypeResponse(functionReturnType.toNullableString())
+        return GetTypeResponse(functionReturnType.toNullableString(), functionReference )
     }
 
 
