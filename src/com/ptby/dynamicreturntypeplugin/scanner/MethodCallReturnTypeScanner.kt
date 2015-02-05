@@ -3,30 +3,23 @@ package com.ptby.dynamicreturntypeplugin.scanner
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
-import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator
 
-public class MethodCallReturnTypeScanner(private val callReturnTypeCalculator: CallReturnTypeCalculator) {
+public class MethodCallReturnTypeScanner() {
 
 
     public fun getTypeFromMethodCall(classMethodConfigList: List<ClassMethodConfigKt>,
                                      methodReference: MethodReference): GetTypeResponse {
 
-      //  println( "methodReference.getSignature()  " + methodReference.getSignature() )
-
         for (classMethodConfig in classMethodConfigList) {
             if (classMethodConfig.equalsMethodReferenceName(methodReference)) {
-                val getTypeResponse = callReturnTypeCalculator.calculateTypeFromMethodParameter(
-                        methodReference,
-                        classMethodConfig.parameterIndex
-                )
-
+                val getTypeResponse = GetTypeResponse.newMethod( methodReference )
                 if (!getTypeResponse.isNull()) {
                     return getTypeResponse
                 }
             }
         }
 
-        return GetTypeResponse(null, null )
+        return GetTypeResponse.createNull()
     }
 
 

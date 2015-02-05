@@ -20,7 +20,6 @@ import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.signatureconversion.BySignatureSignatureSplitter
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
-import com.ptby.dynamicreturntypeplugin.typecalculation.CallReturnTypeCalculator
 
 import java.util.ArrayList
 
@@ -63,9 +62,8 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
 
     private fun createGetTypeResponseFactory(configAnalyser: ConfigAnalyser): GetTypeResponseFactory {
-        val callReturnTypeCalculator = CallReturnTypeCalculator()
-        val functionCallReturnTypeScanner = FunctionCallReturnTypeScanner(callReturnTypeCalculator)
-        val methodCallReturnTypeScanner = MethodCallReturnTypeScanner(callReturnTypeCalculator)
+        val functionCallReturnTypeScanner = FunctionCallReturnTypeScanner()
+        val methodCallReturnTypeScanner = MethodCallReturnTypeScanner()
 
         return GetTypeResponseFactory(configAnalyser, methodCallReturnTypeScanner, functionCallReturnTypeScanner)
     }
@@ -107,54 +105,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
         return getBySignature.getBySignature(signature, project)
     }
-
-
-/*
-    fun getBySignature2(signature: String, project: Project): Collection<PhpNamedElement>? {
-        println(signature)
-
-
-        var filteredSignature = signature
-        if ( filteredSignature.contains("Ő")) {
-            //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME
-            filteredSignature = symfonySignatureTranslator.trySymfonyContainer(project, signature)
-        }
-        if (filteredSignature.contains("[]")) {
-            val customList = ArrayList<PhpNamedElement>()
-            customList.add(LocalClassImpl(PhpType().add(filteredSignature), project))
-
-            return customList
-        }
-
-        val bySignatureSignatureSplitter = BySignatureSignatureSplitter()
-        var bySignature: Collection<PhpNamedElement>? = null
-        var lastFqnName = ""
-        for (chainedSignature in bySignatureSignatureSplitter.createChainedSignatureList(filteredSignature)) {
-            val newSignature = lastFqnName + chainedSignature
-            bySignature = processSingleSignature(newSignature, project)
-
-            if (bySignature != null && bySignature!!.iterator().hasNext()) {
-                lastFqnName = "#M#C" + bySignature!!.iterator().next().getFQN()
-            }
-        }
-
-        return bySignature
-    }
-
-
-    private fun processSingleSignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val bySignature: Collection<PhpNamedElement>?
-        val customSignatureProcessor = CustomSignatureProcessor(
-                returnInitialisedSignatureConverter,
-                classConstantAnalyzer,
-                fieldReferenceAnalyzer,
-                variableAnalyser
-        )
-
-        bySignature = customSignatureProcessor.getBySignature(signature, project)
-        return bySignature
-    }
-*/
 
 
 }

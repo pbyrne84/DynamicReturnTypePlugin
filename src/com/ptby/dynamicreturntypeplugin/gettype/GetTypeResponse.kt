@@ -10,7 +10,8 @@ import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 
-public class GetTypeResponse(private val response: String?, private val originalReference: FunctionReference?) {
+open class GetTypeResponse protected (private val response: String?,
+                                      private val originalReference: FunctionReference?) {
     {
         if (response != null && response == "null") {
             throw RuntimeException("cannot be string null")
@@ -19,7 +20,22 @@ public class GetTypeResponse(private val response: String?, private val original
     }
 
 
-    public fun isNull(): Boolean {
+    class object {
+        fun createNull(): GetTypeResponse {
+            return GetTypeResponse(null, null)
+        }
+
+        fun newMethod(originalReference: FunctionReference): GetTypeResponse {
+            return GetTypeResponse("not null", originalReference)
+        }
+
+        fun function(signature: String?, originalReference: FunctionReference): GetTypeResponse {
+            return FunctionGetTypeResponse(signature, originalReference)
+        }
+    }
+
+
+    open public fun isNull(): Boolean {
         return response == null
     }
 
@@ -58,3 +74,39 @@ public class GetTypeResponse(private val response: String?, private val original
         return parameters;
     }
 }
+
+
+class FunctionGetTypeResponse (private val returnType: String?,
+                               private val originalReference: FunctionReference) : GetTypeResponse(null, null) {
+    override fun isNull(): Boolean {
+        return returnType == null
+    }
+
+    override fun toString(): String {
+        if ( returnType == null ) {
+            return ""
+        }
+
+
+        val parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
+
+        var response = ""
+        val indexOfParameterSignature = originalReference.getSignature().indexOf(DynamicReturnTypeProvider.PARAMETER_SEPARATOR)
+        if ( indexOfParameterSignature == -1 ) {
+            val paremeterType = parameterTypeCalculator.calculateTypeFromParameter(
+                    originalReference,
+                    0,
+                    originalReference.getParameters()).toNullableString()
+
+            response = originalReference.getSignature() + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + paremeterType
+
+
+        } else {
+            response = originalReference.getSignature().substring(0, indexOfParameterSignature) + returnType
+
+        }
+
+        return response
+    }
+}
+
