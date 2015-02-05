@@ -62,9 +62,9 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
     }
 
 
-    private fun getTypeSignature(`type`: PhpType): String? {
+    private fun getTypeSignature(phpType: PhpType): String? {
         var typeSignature: String? = null
-        for (singleType in `type`.getTypes()) {
+        for (singleType in phpType.getTypes()) {
             typeSignature = singleType
         }
 

@@ -95,12 +95,21 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val getBySignature = GetBySignature( SignatureMatcher(),classConstantAnalyzer )
+        val customSignatureProcessor = CustomSignatureProcessor(returnInitialisedSignatureConverter,
+                                                                ClassConstantAnalyzer(),
+                                                                fieldReferenceAnalyzer,
+                                                                variableAnalyser)
+        val getBySignature = GetBySignature(
+                SignatureMatcher(),
+                classConstantAnalyzer,
+                customSignatureProcessor
+        )
 
         return getBySignature.getBySignature(signature, project)
     }
 
 
+/*
     fun getBySignature2(signature: String, project: Project): Collection<PhpNamedElement>? {
         println(signature)
 
@@ -110,7 +119,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
             //#M#Ő#M#C\TestController.getƀservice_broker:getServiceWithoutMask:#K#C\DynamicReturnTypePluginTestEnvironment\TestClasses\TestService.CLASS_NAME
             filteredSignature = symfonySignatureTranslator.trySymfonyContainer(project, signature)
         }
-
         if (filteredSignature.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
             customList.add(LocalClassImpl(PhpType().add(filteredSignature), project))
@@ -146,6 +154,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         bySignature = customSignatureProcessor.getBySignature(signature, project)
         return bySignature
     }
+*/
 
 
 }

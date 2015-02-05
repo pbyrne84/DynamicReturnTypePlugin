@@ -22,13 +22,13 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
         val phpIndex = PhpIndex.getInstance(project)
         val customMethodCallSignature = CustomMethodCallSignature.createFromString(signature)
         if (customMethodCallSignature == null) {
-            return tryFunctionCall(null, signature, phpIndex, project)
+            return tryFunctionCall( signature, phpIndex, project)
         }
 
         return processSignature(phpIndex, customMethodCallSignature, project, signature)
     }
 
-    private fun processSignature(phpIndex: PhpIndex,
+     fun processSignature(phpIndex: PhpIndex,
                                  customMethodCallSignature: CustomMethodCallSignature,
                                  project: Project,
                                  signature: String): Collection<PhpNamedElement>? {
@@ -62,22 +62,21 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
     }
 
 
-    private fun tryFunctionCall(customMethodCallSignature: CustomMethodCallSignature?,
-                                signature: String,
+    fun tryFunctionCall( parameter: String,
                                 phpIndex: PhpIndex, project: Project): Collection<PhpNamedElement> {
         val signatureMatcher = SignatureMatcher()
-        if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(signature)) {
-            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(signature, project))
+        if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter)) {
+            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter, project))
         }
 
-        return tryToDeferToDefaultType(customMethodCallSignature, signature, phpIndex)
+        return tryToDeferToDefaultType(null, parameter, phpIndex)
     }
 
 
     private fun tryToDeferToDefaultType(customMethodCallSignature: CustomMethodCallSignature?,
                                         signature: String,
                                         phpIndex: PhpIndex): Collection<PhpNamedElement> {
-        var cleanedSignature = signature
+        var cleanedSignature = signature.replace("\\\\", "\\")
         if (cleanedSignature.indexOf("#") != 0) {
             if (cleanedSignature.indexOf("\\") != 0) {
                 cleanedSignature = "\\" + cleanedSignature
