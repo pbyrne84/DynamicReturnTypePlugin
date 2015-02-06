@@ -5,8 +5,17 @@
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
-        Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. <br>
-        It can use either the instance type of the passed parameter or a string lookup.  <br> <br>
+        Intellij/Phpstorm PHP plugin to allow a dynamic return type from ALL method/function calls, not just static methods. <br>
+        It can use either the instance type of the passed parameter, string lookup or ::class.
+        It can also use masking and custom javascript callbacks to massage the return type to enable aliasing<br>
+
+        It can be configured for :
+         <ul>
+            <li>Instance method calls</li>
+            <li>Static method calls</li>
+            <li>Function calls</li>
+        </ul>
+
 
         <b>Full documentation with examples on github page for custom manipulation with rhino javascript versus the old
         mask methodology can be found here :-</b> <br>
@@ -17,12 +26,6 @@
         can be found here :-</b> <br>
         https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment <br> <br>
 
-        Can be configured for :
-         <ul>
-            <li>Instance method calls</li>
-            <li>Static method calls</li>
-            <li>Function calls</li>
-        </ul>
 
         Accepts the following to calculate return type
         <ul>
