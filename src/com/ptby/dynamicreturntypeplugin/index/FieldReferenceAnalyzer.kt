@@ -82,7 +82,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
             return null
         }
 
-        val formatBeforeLookup = matchingConfig.formatBeforeLookup(customMethodCallSignature.parameter)
+        val formatBeforeLookup = matchingConfig.formatBeforeLookup(customMethodCallSignature.parameter[0])
         return formatBeforeLookup
     }
 

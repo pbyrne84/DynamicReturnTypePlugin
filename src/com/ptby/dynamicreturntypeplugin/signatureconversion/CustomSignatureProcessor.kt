@@ -18,16 +18,6 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
     private val logger = getInstance("DynamicReturnTypePlugin")
 
 
-    public fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val phpIndex = PhpIndex.getInstance(project)
-        val customMethodCallSignature = CustomMethodCallSignature.createFromString(signature)
-        if (customMethodCallSignature == null) {
-            return tryFunctionCall( signature, phpIndex, project)
-        }
-
-        return processSignature(phpIndex, customMethodCallSignature, project, signature)
-    }
-
      fun processSignature(phpIndex: PhpIndex,
                                  customMethodCallSignature: CustomMethodCallSignature,
                                  project: Project,

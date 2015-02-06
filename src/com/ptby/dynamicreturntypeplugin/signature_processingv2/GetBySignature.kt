@@ -17,6 +17,29 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                      private val  classConstantAnalyzer: ClassConstantAnalyzer,
                      private val customSignatureProcessor: CustomSignatureProcessor) {
 
+    class object {
+        fun getLastSignatureCombo(signature: String): SignatureParameterCombo {
+            val lastIndexOdfSignature = signature.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
+            val startingIndex = if ( lastIndexOdfSignature == -1 ) {
+                0
+            } else {
+                lastIndexOdfSignature + 1
+            }
+
+            val signatureWithoutParameter = signature.substring(
+                    startingIndex,
+                    signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
+            )
+
+            val startOfLastParameter = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
+            return SignatureParameterCombo(
+                    signatureWithoutParameter,
+                    signature.substring(startOfLastParameter).split(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
+            )
+        }
+
+    }
+
     fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
         val signatureParameterCombo = getLastSignatureCombo(signature)
 
@@ -28,10 +51,12 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                 return tryMethod(
                         phpNamedElement,
                         phpIndex,
-                        signatureParameterCombo.parameter,
+                        signatureParameterCombo.parameters,
                         project)
             } else if ( phpNamedElement is Function ) {
-                return customSignatureProcessor.tryFunctionCall(signatureParameterCombo.parameter, phpIndex, project)
+                return customSignatureProcessor.tryFunctionCall(signatureParameterCombo.parameters[0],
+                                                                phpIndex,
+                                                                project)
 
             }
         }
@@ -40,37 +65,23 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
         return setOf()
     }
 
-    private fun getLastSignatureCombo(signature: String): SignatureParameterCombo {
-        val lastIndexOdfSignature = signature.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
-        val startingIndex = if ( lastIndexOdfSignature == -1 ) {
-            0
+
+    data class SignatureParameterCombo(val signature: String, val parameters: Array<String>) {
+        val methodStart = signature.indexOf(".")
+        val className = if (methodStart > 0 ) {
+            signature.substring(0, methodStart)
         } else {
-            lastIndexOdfSignature + 1
+            ""
         }
 
-        val signatureWithoutParameter = signature.substring(
-                startingIndex,
-                signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
-        )
+        val method = signature.substring( methodStart + 1)
 
-        val startOfLastParameter = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
-        val lastIndexOfItemSeparator = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
-
-        val parameter = if( lastIndexOfItemSeparator < startOfLastParameter) {
-            signature.substring(startOfLastParameter)
-        }  else {
-            signature.substring(startOfLastParameter, lastIndexOfItemSeparator )
-        }
-
-        return SignatureParameterCombo(signatureWithoutParameter, parameter)
     }
-
-    data class SignatureParameterCombo(val signature: String, val parameter: String)
 
 
     private fun tryMethod(method: Method,
                           phpIndex: PhpIndex,
-                          parameter: String,
+                          parameters: Array<String>,
                           project: Project): Collection<PhpNamedElement>? {
         val fullQualifiedName = method.getFQN()
         val indexOfMethodSeparator = fullQualifiedName.indexOf(".")
@@ -79,7 +90,7 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
         val customMethodCallSignature = CustomMethodCallSignature.new(
                 "#M#C" + className,
                 methodName,
-                parameter
+                parameters
         )
 
         val collection = customSignatureProcessor.processSignature(phpIndex,

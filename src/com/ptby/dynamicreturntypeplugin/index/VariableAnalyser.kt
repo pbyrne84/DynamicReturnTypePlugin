@@ -37,16 +37,16 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             )
         }
 
-        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.parameter)) {
+        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.parameter[0])) {
             val classNameFromConstantLookup = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    signature.parameter, project
+                    signature.parameter[0], project
             )
 
 
             return formatWithMask(phpIndex, matchingMethodConfig, classNameFromConstantLookup, project)
         }
 
-        return formatWithMask(phpIndex, matchingMethodConfig, signature.parameter, project)
+        return formatWithMask(phpIndex, matchingMethodConfig, signature.parameter[0], project)
     }
 
 
