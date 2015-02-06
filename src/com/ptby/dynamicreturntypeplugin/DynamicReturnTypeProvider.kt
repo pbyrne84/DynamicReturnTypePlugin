@@ -40,12 +40,12 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val logger = getInstance("DynamicReturnTypePlugin")
     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer
     private val symfonySignatureTranslator = SymfonySignatureTranslator(SymfonyContainerLookup())
+    private val configState = ConfigStateContainer.configState
+    private val configAnalyser = configState.configAnalyser
 
     private var variableAnalyser: VariableAnalyser
     {
-        val configState = ConfigStateContainer.configState
 
-        val configAnalyser = configState.configAnalyser
         fieldReferenceAnalyzer = FieldReferenceAnalyzer(configAnalyser)
         classConstantAnalyzer = ClassConstantAnalyzer()
         variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
@@ -101,7 +101,9 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         val getBySignature = GetBySignature(
                 SignatureMatcher(),
                 classConstantAnalyzer,
-                customSignatureProcessor
+                customSignatureProcessor,
+                configAnalyser,
+                fieldReferenceAnalyzer
         )
 
         return getBySignature.getBySignature(signature, project)

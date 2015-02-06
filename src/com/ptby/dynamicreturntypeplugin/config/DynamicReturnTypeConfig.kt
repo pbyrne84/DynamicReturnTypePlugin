@@ -2,13 +2,14 @@ package com.ptby.dynamicreturntypeplugin.config
 
 
 import java.util.ArrayList
+import com.jetbrains.php.PhpIndex
 
 data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
-                                     public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
+                                   public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
 
     class object {
-        fun newEmpty() = DynamicReturnTypeConfig(  ArrayList<ClassMethodConfigKt>(),  ArrayList<FunctionCallConfigKt>() )
+        fun newEmpty() = DynamicReturnTypeConfig(ArrayList<ClassMethodConfigKt>(), ArrayList<FunctionCallConfigKt>())
     }
 
     override fun equals(other: Any?): Boolean {
@@ -27,5 +28,23 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
                 functionCallConfigs.add(possibleNewFunctionCallConfig)
             }
         }
+    }
+
+
+    public fun locateClassMethodConfig(phpIndex: PhpIndex, className: String, methodName: String): ClassMethodConfigKt? {
+        for (it in classMethodConfigs) {
+            if ( it.equalsMethodName(methodName) ) {
+
+                val classesByFQN = phpIndex.getAnyByFQN(className)
+                if ( classesByFQN.size() > 0 ) {
+                    val phpClass = classesByFQN.iterator().next()
+                    if ( phpClass.getFQN() == className ) {
+                        return it
+                    }
+                }
+            }
+        }
+
+        return null
     }
 }

@@ -37,21 +37,21 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             )
         }
 
-        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.parameter[0])) {
+        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.desiredParameter)) {
             val classNameFromConstantLookup = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    signature.parameter[0], project
+                    signature.desiredParameter, project
             )
 
 
             return formatWithMask(phpIndex, matchingMethodConfig, classNameFromConstantLookup, project)
         }
 
-        return formatWithMask(phpIndex, matchingMethodConfig, signature.parameter[0], project)
+        return formatWithMask(phpIndex, matchingMethodConfig, signature.desiredParameter, project)
     }
 
 
     private fun formatWithMask(phpIndex: PhpIndex, config: ClassMethodConfigKt, signature: String?, project: Project): Collection<PhpNamedElement>? {
-        val formattedSignature = config.formatBeforeLookup(signature)
+        val formattedSignature = signature ?: ""
 
         if (formattedSignature.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
@@ -59,21 +59,8 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             return customList
         }
 
-        if ( !formattedSignature.contains("|")) {
-            val createdType = "#C" + formattedSignature
-            return phpIndex.getBySignature(createdType)
-        }
-
-        return createMultiTypedFromMask(formattedSignature, project)
-    }
-
-    private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
-        val customList = ArrayList<PhpNamedElement>()
-        formattedSignature.split("\\|").forEach { type ->
-            customList.add(LocalClassImpl(PhpType().add("#C" + type), project))
-        }
-
-        return customList
+        val createdType = "#C" + formattedSignature
+        return phpIndex.getBySignature(createdType)
     }
 
 
@@ -87,13 +74,5 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
         return methodCallValidator.getMatchingConfig(
                 phpIndex, project, calledMethod, cleanedVariableSignature, fieldElements
         )
-    }
-
-    class object {
-        public fun packageForGetTypeResponse(intellijReference: String?,
-                                             methodName: String?,
-                                             returnType: String?): String {
-            return intellijReference + ":" + methodName + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + returnType
-        }
     }
 }

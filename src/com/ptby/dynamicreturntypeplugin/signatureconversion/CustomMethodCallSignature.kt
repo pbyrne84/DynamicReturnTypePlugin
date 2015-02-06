@@ -6,17 +6,17 @@ import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 
 public data class CustomMethodCallSignature private(public val className: String,
                                                     public val method: String,
-                                                    public val parameter: Array<String>,
+                                                    public val desiredParameter: String,
                                                     public val rawStringSignature: String) {
 
 
     class object {
 
-        fun new(className: String, method: String, parameters: Array<String>): CustomMethodCallSignature {
+        fun new(className: String, method: String, desiredParameter: String): CustomMethodCallSignature {
             return CustomMethodCallSignature(className,
                                              method,
-                                             parameters,
-                                             className + ":" + method + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + parameters)
+                                             desiredParameter,
+                                             className + ":" + method + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + desiredParameter)
         }
     }
 }

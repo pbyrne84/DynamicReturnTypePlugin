@@ -23,7 +23,7 @@ public class ReturnInitialisedSignatureConverter {
         return CustomMethodCallSignature.new(
                 "#M#C" + firstSignatureMatch.getType(),
                 signature.method,
-                signature.parameter
+                signature.desiredParameter
         )
     }
 }

@@ -12,10 +12,16 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProce
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 import com.jetbrains.php.lang.psi.elements.Method
 import com.jetbrains.php.lang.psi.elements.Function
+import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
+import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
+import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
+import com.jetbrains.php.lang.psi.resolve.types.PhpType
 
 class GetBySignature(private val signatureMatcher: SignatureMatcher,
-                     private val  classConstantAnalyzer: ClassConstantAnalyzer,
-                     private val customSignatureProcessor: CustomSignatureProcessor) {
+                     private val classConstantAnalyzer: ClassConstantAnalyzer,
+                     private val customSignatureProcessor: CustomSignatureProcessor,
+                     private val configAnalyser: ConfigAnalyser,
+                     private val fieldReferenceAnalyzer : FieldReferenceAnalyzer) {
 
     class object {
         fun getLastSignatureCombo(signature: String): SignatureParameterCombo {
@@ -74,7 +80,7 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
             ""
         }
 
-        val method = signature.substring( methodStart + 1)
+        val method = signature.substring(methodStart + 1)
 
     }
 
@@ -87,11 +93,32 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
         val indexOfMethodSeparator = fullQualifiedName.indexOf(".")
         val className = fullQualifiedName.substring(0, indexOfMethodSeparator)
         val methodName = fullQualifiedName.substring(indexOfMethodSeparator + 1)
-        val customMethodCallSignature = CustomMethodCallSignature.new(
+
+
+        val currentConfig = configAnalyser.getCurrentConfig(project)
+        val classMethodConfigKt = currentConfig.locateClassMethodConfig(phpIndex, className, methodName)
+        if ( classMethodConfigKt == null ) {
+            return setOf()
+        }
+
+        if ( parameters.size()  -1 < classMethodConfigKt.parameterIndex  ) {
+            return setOf()
+        }
+
+        val untreatedParameter = parameters[classMethodConfigKt.parameterIndex]
+        val treatedParameter = classMethodConfigKt.formatBeforeLookup( untreatedParameter )
+
+        if( treatedParameter.contains("|")){
+            return createMultiTypedFromMask( treatedParameter, project )
+        }
+
+
+      val customMethodCallSignature = CustomMethodCallSignature.new(
                 "#M#C" + className,
                 methodName,
-                parameters
+                treatedParameter
         )
+
 
         val collection = customSignatureProcessor.processSignature(phpIndex,
                                                                    customMethodCallSignature,
@@ -99,6 +126,15 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                                                                    customMethodCallSignature.rawStringSignature)
 
         return collection
+    }
+
+    private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
+        val customList = ArrayList<PhpNamedElement>()
+        formattedSignature.split("\\|").reverse().forEach { type ->
+            customList.add(LocalClassImpl(PhpType().add("#C" + type.trimLeading("#K#C").trimTrailing(".")), project))
+        }
+
+        return customList
     }
 
 
