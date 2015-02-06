@@ -58,20 +58,25 @@ open class GetTypeResponse protected (private val response: String?,
     private fun convertParameters(originalReference: FunctionReference): String {
         val parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
 
-        var parameters = ""
+        var parameters = DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR
+        if ( originalReference.getParameters().size() == 0 ) {
+            return parameters
+        }
+
+
         var index = 0
         for ( parameter in originalReference.getParameters() ) {
             if ( parameter is PhpTypedElement ) {
-                parameters += DynamicReturnTypeProvider.PARAMETER_SEPARATOR + parameterTypeCalculator.calculateTypeFromParameter(
+                parameters += parameterTypeCalculator.calculateTypeFromParameter(
                         originalReference,
                         index,
-                        originalReference.getParameters()).toNullableString()
+                        originalReference.getParameters()).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
             }
 
             index++;
         }
 
-        return parameters;
+        return parameters.trimTrailing(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR);
     }
 }
 
@@ -91,14 +96,14 @@ class FunctionGetTypeResponse (private val returnType: String?,
         val parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
 
         var response = ""
-        val indexOfParameterSignature = originalReference.getSignature().indexOf(DynamicReturnTypeProvider.PARAMETER_SEPARATOR)
+        val indexOfParameterSignature = originalReference.getSignature().indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
         if ( indexOfParameterSignature == -1 ) {
             val paremeterType = parameterTypeCalculator.calculateTypeFromParameter(
                     originalReference,
                     0,
                     originalReference.getParameters()).toNullableString()
 
-            response = originalReference.getSignature() + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + paremeterType
+            response = originalReference.getSignature() + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + paremeterType
 
 
         } else {

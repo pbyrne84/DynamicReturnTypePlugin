@@ -15,7 +15,7 @@ public data class CustomMethodCallSignature private(public val className: String
             return CustomMethodCallSignature(className,
                                              method,
                                              parameter,
-                                             className + ":" + method + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + parameter)
+                                             className + ":" + method + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + parameter)
         }
 
 
@@ -27,8 +27,8 @@ public data class CustomMethodCallSignature private(public val className: String
             var signatureWithParameterSeparated = signature as String
             var parameter = ""
 
-            if( signatureWithParameterSeparated.contains( DynamicReturnTypeProvider.PARAMETER_SEPARATOR ) ) {
-                val indexOfParameterSignature = signatureWithParameterSeparated.indexOf(DynamicReturnTypeProvider.PARAMETER_SEPARATOR)
+            if( signatureWithParameterSeparated.contains( DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) ) {
+                val indexOfParameterSignature = signatureWithParameterSeparated.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
                 parameter = signatureWithParameterSeparated.substring(
                         indexOfParameterSignature + 1
                 )

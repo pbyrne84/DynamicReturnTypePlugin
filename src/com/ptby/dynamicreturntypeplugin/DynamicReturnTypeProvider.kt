@@ -57,7 +57,8 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     class object {
         public val PLUGIN_IDENTIFIER_KEY: Char = "Ђ".toCharArray()[0]
         public val PLUGIN_IDENTIFIER_KEY_STRING: String = String(charArray(PLUGIN_IDENTIFIER_KEY))
-        public val PARAMETER_SEPARATOR: String = "ª"
+        public val PARAMETER_START_SEPARATOR: String = "ª"
+        public val PARAMETER_ITEM_SEPARATOR: String = "♠"
     }
 
 
@@ -76,7 +77,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
     override fun getType(psiElement: PsiElement): String? {
         try {
-            val dynamicReturnType = getTypeResponseFactory.createDynamicReturnType(psiElement)
+            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(psiElement)
             if (dynamicReturnType.isNull()) {
                 return null
             }

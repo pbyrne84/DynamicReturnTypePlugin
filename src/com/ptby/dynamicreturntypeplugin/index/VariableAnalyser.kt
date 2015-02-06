@@ -93,7 +93,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
         public fun packageForGetTypeResponse(intellijReference: String?,
                                              methodName: String?,
                                              returnType: String?): String {
-            return intellijReference + ":" + methodName + DynamicReturnTypeProvider.PARAMETER_SEPARATOR + returnType
+            return intellijReference + ":" + methodName + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + returnType
         }
     }
 }

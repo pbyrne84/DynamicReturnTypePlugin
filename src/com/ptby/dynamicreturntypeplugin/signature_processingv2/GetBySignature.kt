@@ -40,7 +40,7 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
         return setOf()
     }
 
-    private fun getLastSignatureCombo(signature: String) : SignatureParameterCombo {
+    private fun getLastSignatureCombo(signature: String): SignatureParameterCombo {
         val lastIndexOdfSignature = signature.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
         val startingIndex = if ( lastIndexOdfSignature == -1 ) {
             0
@@ -50,15 +50,22 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
 
         val signatureWithoutParameter = signature.substring(
                 startingIndex,
-                signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_SEPARATOR)
+                signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
         )
 
-        val parameter = signature.substring(signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_SEPARATOR) + 1)
+        val startOfLastParameter = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
+        val lastIndexOfItemSeparator = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
 
-        return SignatureParameterCombo( signatureWithoutParameter, parameter)
+        val parameter = if( lastIndexOfItemSeparator < startOfLastParameter) {
+            signature.substring(startOfLastParameter)
+        }  else {
+            signature.substring(startOfLastParameter, lastIndexOfItemSeparator )
+        }
+
+        return SignatureParameterCombo(signatureWithoutParameter, parameter)
     }
 
-    data class SignatureParameterCombo( val signature: String, val parameter: String)
+    data class SignatureParameterCombo(val signature: String, val parameter: String)
 
 
     private fun tryMethod(method: Method,
