@@ -28,8 +28,6 @@ import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
 import com.jetbrains.php.lang.psi.elements.Variable
 import com.jetbrains.php.lang.psi.elements.Method
-import com.ptby.dynamicreturntypeplugin.symfony.SymfonyContainerLookup
-import com.ptby.dynamicreturntypeplugin.symfony.SymfonySignatureTranslator
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
@@ -39,7 +37,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
     private val logger = getInstance("DynamicReturnTypePlugin")
     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer
-    private val symfonySignatureTranslator = SymfonySignatureTranslator(SymfonyContainerLookup())
     private val configState = ConfigStateContainer.configState
     private val configAnalyser = configState.configAnalyser
 
