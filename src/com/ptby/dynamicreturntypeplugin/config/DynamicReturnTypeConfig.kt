@@ -4,7 +4,7 @@ package com.ptby.dynamicreturntypeplugin.config
 import java.util.ArrayList
 import com.jetbrains.php.PhpIndex
 
-data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
+open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
                                    public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
 

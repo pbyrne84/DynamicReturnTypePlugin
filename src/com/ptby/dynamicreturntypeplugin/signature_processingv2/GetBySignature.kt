@@ -21,26 +21,34 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                      private val classConstantAnalyzer: ClassConstantAnalyzer,
                      private val customSignatureProcessor: CustomSignatureProcessor,
                      private val configAnalyser: ConfigAnalyser,
-                     private val fieldReferenceAnalyzer : FieldReferenceAnalyzer) {
+                     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer) {
 
     class object {
         fun getLastSignatureCombo(signature: String): SignatureParameterCombo {
-            val lastIndexOdfSignature = signature.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
+            var signatureTrimmedOfLastEnd = signature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+            while( signatureTrimmedOfLastEnd !=  signatureTrimmedOfLastEnd.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)){
+                signatureTrimmedOfLastEnd = signatureTrimmedOfLastEnd.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+            }
+
+            println(signatureTrimmedOfLastEnd)
+
+
+            val lastIndexOdfSignature = signatureTrimmedOfLastEnd.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
             val startingIndex = if ( lastIndexOdfSignature == -1 ) {
                 0
             } else {
                 lastIndexOdfSignature + 1
             }
 
-            val signatureWithoutParameter = signature.substring(
+            val signatureWithoutParameter = signatureTrimmedOfLastEnd.substring(
                     startingIndex,
-                    signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
+                    signatureTrimmedOfLastEnd.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
             )
 
-            val startOfLastParameter = signature.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
+            val startOfLastParameter = signatureTrimmedOfLastEnd.lastIndexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
             return SignatureParameterCombo(
                     signatureWithoutParameter,
-                    signature.substring(startOfLastParameter).split(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
+                    signatureTrimmedOfLastEnd.substring(startOfLastParameter).split(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
             )
         }
 
@@ -66,7 +74,6 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
 
             }
         }
-
 
         return setOf()
     }
@@ -101,50 +108,21 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
             return setOf()
         }
 
-        if ( parameters.size()  -1 < classMethodConfigKt.parameterIndex  ) {
+        if ( parameters.size() - 1 < classMethodConfigKt.parameterIndex  ) {
             return setOf()
         }
 
-        val untreatedParameter = parameters[classMethodConfigKt.parameterIndex]
-        val treatedParameter = classMethodConfigKt.formatBeforeLookup( untreatedParameter )
 
-        if( treatedParameter.contains("|")){
-            return createMultiTypedFromMask( treatedParameter, project )
-        }
+        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor(signatureMatcher,
+                                                                                    classConstantAnalyzer,
+                                                                                    customSignatureProcessor)
 
 
-      val customMethodCallSignature = CustomMethodCallSignature.new(
-                "#M#C" + className,
-                methodName,
-                treatedParameter
-        )
+        return returnValueFromParametersProcessor.getReturnValue(project,
+                                                                 classMethodConfigKt,
+                                                                 ClassCall( className, methodName ),
+                                                                 parameters,
+                                                                 phpIndex)
 
-
-        val collection = customSignatureProcessor.processSignature(phpIndex,
-                                                                   customMethodCallSignature,
-                                                                   project,
-                                                                   customMethodCallSignature.rawStringSignature)
-
-        return collection
     }
-
-    private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
-        val customList = ArrayList<PhpNamedElement>()
-        formattedSignature.split("\\|").reverse().forEach { type ->
-            customList.add(LocalClassImpl(PhpType().add("#C" + type.trimLeading("#K#C").trimTrailing(".")), project))
-        }
-
-        return customList
-    }
-
-
-    private fun convertParameter(phpIndex: PhpIndex, parameter: String, project: Project): Collection<PhpNamedElement> {
-        if ( signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter)) {
-            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter, project))
-        }
-
-        return setOf()
-    }
-
-
 }

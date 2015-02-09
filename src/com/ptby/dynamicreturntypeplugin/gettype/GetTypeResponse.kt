@@ -76,7 +76,7 @@ open class GetTypeResponse protected (private val response: String?,
             index++;
         }
 
-        return parameters.trimTrailing(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR);
+        return parameters.trimTrailing(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR) + DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR;
     }
 }
 

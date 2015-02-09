@@ -56,6 +56,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         public val PLUGIN_IDENTIFIER_KEY_STRING: String = String(charArray(PLUGIN_IDENTIFIER_KEY))
         public val PARAMETER_START_SEPARATOR: String = "ª"
         public val PARAMETER_ITEM_SEPARATOR: String = "♠"
+        public val PARAMETER_END_SEPARATOR: String = "♣"
     }
 
 

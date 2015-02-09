@@ -49,6 +49,8 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
 
         if (nullSafePhpType.contains("[]")) {
             val customList = ArrayList<PhpNamedElement>()
+            println("nullSafePhpType " + nullSafePhpType)
+
             customList.add(LocalClassImpl(PhpType().add(nullSafePhpType), project))
             return customList
         }
