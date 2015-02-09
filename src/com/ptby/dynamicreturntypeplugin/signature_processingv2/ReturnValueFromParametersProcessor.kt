@@ -22,12 +22,12 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
                        classMethodConfigKt: ClassMethodConfigKt,
                        classCall : ClassCall,
                        parameters: Array<String>,
-                       phpIndex : PhpIndex): Collection<PhpNamedElement>? {
+                       phpIndex : PhpIndex): ReturnType {
         val selectedParameter = parameters[classMethodConfigKt.parameterIndex]
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
         if ( treatedParameter.contains("|")) {
-            return createMultiTypedFromMask(treatedParameter, project)
+            return ReturnType( createMultiTypedFromMask(treatedParameter, project) )
         }
 
 
@@ -43,7 +43,7 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
                                                                    project,
                                                                    customMethodCallSignature.rawStringSignature)
 
-        return collection
+        return ReturnType( collection )
     }
 
 
@@ -55,4 +55,30 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
 
         return customList
     }
+}
+
+
+data class ReturnType(  val phpNamedElements: Collection<PhpNamedElement>?) {
+    private var fqnClassName : String? = null
+
+    fun getClassName() : String {
+        if( fqnClassName == null ){
+            fqnClassName = ""
+            if( phpNamedElements != null && hasFoundReturnType() ){
+                val phpNamedElement = phpNamedElements.iterator().next()
+                fqnClassName = if( phpNamedElement.getFQN() == null ){
+                    ""
+                }else{
+                    phpNamedElement.getFQN()
+                }
+            }
+        }
+
+        return fqnClassName as String
+    }
+
+    fun hasFoundReturnType() : Boolean {
+        return phpNamedElements != null && phpNamedElements.size() > 0
+    }
+
 }

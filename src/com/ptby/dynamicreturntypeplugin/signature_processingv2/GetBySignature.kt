@@ -30,9 +30,6 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                 signatureTrimmedOfLastEnd = signatureTrimmedOfLastEnd.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
             }
 
-            println(signatureTrimmedOfLastEnd)
-
-
             val lastIndexOdfSignature = signatureTrimmedOfLastEnd.lastIndexOf(DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
             val startingIndex = if ( lastIndexOdfSignature == -1 ) {
                 0
@@ -118,11 +115,12 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                                                                                     customSignatureProcessor)
 
 
-        return returnValueFromParametersProcessor.getReturnValue(project,
-                                                                 classMethodConfigKt,
-                                                                 ClassCall( className, methodName ),
-                                                                 parameters,
-                                                                 phpIndex)
+        val returnType = returnValueFromParametersProcessor.getReturnValue(project,
+                                                                           classMethodConfigKt,
+                                                                           ClassCall(className, methodName),
+                                                                           parameters,
+                                                                           phpIndex)
+        return returnType.phpNamedElements
 
     }
 }
