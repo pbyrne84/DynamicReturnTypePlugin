@@ -52,10 +52,27 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
     }
 
     fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val signatureParameterCombo = getLastSignatureCombo(signature)
+  //      val signatureParameterCombo = getLastSignatureCombo(signature)
 
         val phpIndex = PhpIndex.getInstance(project)
-        val mutableCollection = phpIndex.getBySignature(signatureParameterCombo.signature)
+//        val mutableCollection = phpIndex.getBySignature(signatureParameterCombo.signature)
+        val currentConfig = configAnalyser.getCurrentConfig(project)
+
+
+        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor(signatureMatcher,
+                                                                                    classConstantAnalyzer,
+                                                                                    customSignatureProcessor)
+
+        val chainedSignatureProcessor = ChainedSignatureProcessor(phpIndex,
+                                                                  currentConfig,
+                                                                  returnValueFromParametersProcessor)
+
+        if( signature.contains(".") ){
+            return  chainedSignatureProcessor.parseSignature( signature, project )
+        }
+
+
+/*
         if ( mutableCollection.size() > 0 ) {
             val phpNamedElement = mutableCollection.iterator().next()
             if ( phpNamedElement is Method) {
@@ -71,6 +88,7 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
 
             }
         }
+*/
 
         return setOf()
     }
