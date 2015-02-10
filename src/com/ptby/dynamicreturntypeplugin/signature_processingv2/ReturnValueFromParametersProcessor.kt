@@ -11,22 +11,23 @@ import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
+import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
 
 public class ReturnValueFromParametersProcessor(private val signatureMatcher: SignatureMatcher,
                                                 private val classConstantAnalyzer: ClassConstantAnalyzer,
                                                 private val customSignatureProcessor: CustomSignatureProcessor
-                                                ) {
+) {
 
 
     fun getReturnValue(project: Project,
-                       classMethodConfigKt: ClassMethodConfigKt,
-                       classCall : ClassCall,
-                       phpIndex : PhpIndex): ReturnType {
+                       classMethodConfigKt: ParameterValueFormatter,
+                       classCall: ClassCall,
+                       phpIndex: PhpIndex): ReturnType {
         val selectedParameter = classCall.parameters[classMethodConfigKt.parameterIndex]
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
         if ( treatedParameter.contains("|")) {
-            return ReturnType( createMultiTypedFromMask(treatedParameter, project) )
+            return ReturnType(createMultiTypedFromMask(treatedParameter, project))
         }
 
 
@@ -37,12 +38,14 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
         )
 
 
-        val collection = customSignatureProcessor.processSignature(phpIndex,
-                                                                   customMethodCallSignature,
-                                                                   project,
-                                                                   customMethodCallSignature.rawStringSignature)
+        val collection = customSignatureProcessor.processSignature(
+                phpIndex,
+                customMethodCallSignature,
+                project,
+                customMethodCallSignature.rawStringSignature
+        )
 
-        return ReturnType( collection )
+        return ReturnType(collection)
     }
 
 
@@ -57,17 +60,17 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
 }
 
 
-data class ReturnType(  val phpNamedElements: Collection<PhpNamedElement>?) {
-    private var fqnClassName : String? = null
+data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
+    private var fqnClassName: String? = null
 
-    fun getClassName() : String {
-        if( fqnClassName == null ){
+    fun getClassName(): String {
+        if ( fqnClassName == null ) {
             fqnClassName = ""
-            if( phpNamedElements != null && hasFoundReturnType() ){
+            if ( phpNamedElements != null && hasFoundReturnType() ) {
                 val phpNamedElement = phpNamedElements.iterator().next()
-                fqnClassName = if( phpNamedElement.getFQN() == null ){
+                fqnClassName = if ( phpNamedElement.getFQN() == null ) {
                     ""
-                }else{
+                } else {
                     phpNamedElement.getFQN()
                 }
             }
@@ -76,7 +79,7 @@ data class ReturnType(  val phpNamedElements: Collection<PhpNamedElement>?) {
         return fqnClassName as String
     }
 
-    fun hasFoundReturnType() : Boolean {
+    fun hasFoundReturnType(): Boolean {
         return phpNamedElements != null && phpNamedElements.size() > 0
     }
 

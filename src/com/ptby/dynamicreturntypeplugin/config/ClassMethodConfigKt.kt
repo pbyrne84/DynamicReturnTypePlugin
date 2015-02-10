@@ -6,8 +6,8 @@ import org.apache.commons.lang.StringUtils
 
 data class ClassMethodConfigKt(public val fqnClassName: String,
                                methodName: String,
-                               public val parameterIndex: Int,
-                               private val valueReplacementStrategy: ValueReplacementStrategy) {
+                               override public val parameterIndex: Int,
+                               private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter{
     private val methodName: String
     {
         this.methodName = methodName.toLowerCase()
@@ -15,7 +15,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
 
     //Not equality does not work unless overridden???
     override fun equals(other: Any?): Boolean {
-        return super<Any>.equals(other)
+        return super.equals(other)
     }
 
     public fun isValid(): Boolean {
@@ -36,7 +36,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         return equalsMethodName(methodName)
     }
 
-    public fun formatBeforeLookup(passedType: String?): String{
+    override public fun formatBeforeLookup(passedType: String?): String{
         val s = valueReplacementStrategy.replaceCalculatedValue(passedType)
         if( s == null ){
             return "";

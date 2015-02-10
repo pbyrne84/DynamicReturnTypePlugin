@@ -18,17 +18,7 @@ public class FunctionCallReturnTypeScanner() {
                                        functionReference: FunctionReferenceImpl): GetTypeResponse {
         for (functionCallConfig in functionCallConfigs) {
             if (functionCallConfig.equalsFunctionReference(functionReference)) {
-                val getTypeResponse = calculateTypeFromFunctionParameter(
-                        functionReference,
-                        functionCallConfig.parameterIndex
-                )
-
-                if (!getTypeResponse.isNull()) {
-                    val maskReplacedType = functionCallConfig.formatBeforeLookup(getTypeResponse.toString())
-                    return GetTypeResponse.function( maskReplacedType, functionReference )
-                }
-
-                return getTypeResponse
+                    return GetTypeResponse.newFunction( functionReference )
             }
         }
 
@@ -36,9 +26,7 @@ public class FunctionCallReturnTypeScanner() {
     }
 
     private fun calculateTypeFromFunctionParameter(functionReference: FunctionReference, parameterIndex: Int): GetTypeResponse {
-        val functionReturnType = parameterTypeCalculator.calculateTypeFromParameter(functionReference, parameterIndex, functionReference.getParameters())
-
-        return GetTypeResponse.function(functionReturnType.toNullableString(),functionReference )
+        return GetTypeResponse.newFunction( functionReference )
     }
 
 }

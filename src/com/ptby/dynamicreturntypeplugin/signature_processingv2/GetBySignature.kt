@@ -37,23 +37,6 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                                                                   currentConfig,
                                                                   returnValueFromParametersProcessor)
 
-        if( signature.contains(".") ){
-            return  chainedSignatureProcessor.parseSignature( signature, project )
-        }
-
-        return setOf()
-    }
-
-
-    data class SignatureParameterCombo(val signature: String, val parameters: Array<String>) {
-        val methodStart = signature.indexOf(".")
-        val className = if (methodStart > 0 ) {
-            signature.substring(0, methodStart)
-        } else {
-            ""
-        }
-
-        val method = signature.substring(methodStart + 1)
-
+        return  chainedSignatureProcessor.parseSignature( signature, project )
     }
 }

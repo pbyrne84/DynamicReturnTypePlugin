@@ -29,8 +29,8 @@ open class GetTypeResponse protected (private val response: String?,
             return GetTypeResponse("not null", originalReference)
         }
 
-        fun function(signature: String?, originalReference: FunctionReference): GetTypeResponse {
-            return FunctionGetTypeResponse(signature, originalReference)
+        fun newFunction(originalReference: FunctionReference): GetTypeResponse {
+            return FunctionGetTypeResponse("not null", originalReference)
         }
     }
 
@@ -82,36 +82,16 @@ open class GetTypeResponse protected (private val response: String?,
 
 
 class FunctionGetTypeResponse (private val returnType: String?,
-                               private val originalReference: FunctionReference) : GetTypeResponse(null, null) {
+                               private val originalReference: FunctionReference) : GetTypeResponse(returnType,
+                                                                                                   originalReference) {
     override fun isNull(): Boolean {
         return returnType == null
     }
 
     override fun toString(): String {
-        if ( returnType == null ) {
-            return ""
-        }
-
-
-        val parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
-
-        var response = ""
-        val indexOfParameterSignature = originalReference.getSignature().indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
-        if ( indexOfParameterSignature == -1 ) {
-            val paremeterType = parameterTypeCalculator.calculateTypeFromParameter(
-                    originalReference,
-                    0,
-                    originalReference.getParameters()).toNullableString()
-
-            response = originalReference.getSignature() + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + paremeterType
-
-
-        } else {
-            response = originalReference.getSignature().substring(0, indexOfParameterSignature) + returnType
-
-        }
-
-        return response
+        val functionSig = super.toString()
+        println("functionSig " + functionSig)
+        return functionSig;
     }
 }
 

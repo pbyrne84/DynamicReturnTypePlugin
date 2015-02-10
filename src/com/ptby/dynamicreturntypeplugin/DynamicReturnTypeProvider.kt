@@ -92,10 +92,13 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val customSignatureProcessor = CustomSignatureProcessor(returnInitialisedSignatureConverter,
-                                                                ClassConstantAnalyzer(),
-                                                                fieldReferenceAnalyzer,
-                                                                variableAnalyser)
+        val customSignatureProcessor = CustomSignatureProcessor(
+                returnInitialisedSignatureConverter,
+                ClassConstantAnalyzer(),
+                fieldReferenceAnalyzer,
+                variableAnalyser
+        )
+
         val getBySignature = GetBySignature(
                 SignatureMatcher(),
                 classConstantAnalyzer,

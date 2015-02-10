@@ -6,6 +6,8 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.intellij.openapi.project.Project
+import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
+import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
 
 
 public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
@@ -19,53 +21,81 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         val preparedSignature = prepareSignature(signature)
         val chainedCalls = preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
 
-        var lastClassType = ""
-        var lastReturnType: ReturnType? = null
+        var lastTypes = LastTypes("", null)
 
         var callIndex = 0
-
         for ( singleCall in chainedCalls ) {
-            val callFromSignature = signatureToCallConverter.getCallFromSignature(phpIndex, lastClassType, singleCall)
-            if ( callFromSignature.fqnClass == "" ) {
+            val callConfiguration = getParameterFormatterForSignature(singleCall, lastTypes.lastClassType)
+            if ( !callConfiguration.isValid() ) {
                 return setOf()
             }
 
-            val classMethodConfigKt = dynamicReturnTypeConfig.locateClassMethodConfig(phpIndex,
-                                                                                      callFromSignature.fqnClass,
-                                                                                      callFromSignature.method)
-
-            if ( classMethodConfigKt == null ) {
-                return setOf()
-            }
-
-
-            val returnType = returnValueFromParametersProcessor.getReturnValue(project,
-                                                                               classMethodConfigKt,
-                                                                               callFromSignature,
-                                                                               phpIndex)
+            val returnType = getReturnTypeFromCallConfiguration(callConfiguration, project)
 
             if ( !returnType.hasFoundReturnType() ) {
                 return setOf()
             }
 
-            lastClassType = returnType.getClassName()
-            lastReturnType = returnType
+            lastTypes = LastTypes(returnType.getClassName(), returnType)
 
             callIndex += 1
         }
 
-        if ( lastReturnType != null && lastReturnType?.hasFoundReturnType() as Boolean ) {
-            return lastReturnType?.phpNamedElements
+        if ( lastTypes.lastReturnType != null && lastTypes.lastReturnType?.hasFoundReturnType() as Boolean ) {
+            return lastTypes.lastReturnType?.phpNamedElements
         }
 
         return setOf()
     }
 
+    private fun getReturnTypeFromCallConfiguration(callConfiguration: HasParameterValueFormatter,
+                                                   project: Project): ReturnType {
+        if (  callConfiguration is MethodCallConfiguration ) {
+            return returnValueFromParametersProcessor.getReturnValue(
+                    project,
+                    callConfiguration.parameterValueFormatter(),
+                    callConfiguration.callFromSignature,
+                    phpIndex
+            )
+
+        }else if( callConfiguration is FunctionConfiguration ){
+            println( "callConfiguration.referenceSignature "+ callConfiguration.referenceSignature )
+
+        }
+        return ReturnType(setOf())
+    }
+
+
+    private fun getParameterFormatterForSignature(signature: String, lastType: String): HasParameterValueFormatter {
+        if ( signature.substring(0, 2).equals("#F")) {
+            val functionName = signature.substring(2, signature.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR))
+            println( "functionName "  + functionName )
+            val functionConfig = dynamicReturnTypeConfig. locateFunctionConfig(
+                    functionName
+            )
+
+            println("functionConfig "+ functionConfig)
+            return FunctionConfiguration(functionConfig, signature)
+        }
+
+        val callFromSignature = signatureToCallConverter.getCallFromSignature(phpIndex, lastType, signature)
+        if ( callFromSignature.fqnClass == "" ) {
+            return MethodCallConfiguration(null, callFromSignature, signature) ;
+        }
+
+        val classMethodConfigKt = dynamicReturnTypeConfig.locateClassMethodConfig(
+                phpIndex,
+                callFromSignature.fqnClass,
+                callFromSignature.method
+        )
+        return MethodCallConfiguration(classMethodConfigKt, callFromSignature, signature)
+
+    }
+
+
     private fun prepareSignature(signature: String): String {
         var preparedSignature = cleanParameterEndSignature(signature)
                 .trimLeading("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
-
-
 
         return preparedSignature
     }
@@ -80,5 +110,47 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
 
     }
 
+
+    data class LastTypes(val lastClassType: String, val lastReturnType: ReturnType?)
+
+    data class MethodCallConfiguration(private val _parameterValueFormatter: ParameterValueFormatter?,
+                                       val callFromSignature: ClassCall,
+                                       override val referenceSignature: String) : HasParameterValueFormatter {
+        override fun isValid(): Boolean {
+            return _parameterValueFormatter != null && callFromSignature.fqnClass != ""
+        }
+
+
+        override fun parameterValueFormatter(): ParameterValueFormatter {
+            if ( _parameterValueFormatter == null ) {
+                throw RuntimeException("_parameterValueFormatter cannot be null")
+
+            }
+            return _parameterValueFormatter
+        }
+    }
+
+
+    data class FunctionConfiguration(private val _parameterValueFormatter: ParameterValueFormatter?,
+                                     override val referenceSignature: String) : HasParameterValueFormatter {
+        override fun isValid(): Boolean {
+            return _parameterValueFormatter != null
+        }
+
+        override fun parameterValueFormatter(): ParameterValueFormatter {
+            if ( _parameterValueFormatter == null ) {
+                throw RuntimeException("_parameterValueFormatter cannot be null")
+
+            }
+            return _parameterValueFormatter
+        }
+    }
+
+    trait HasParameterValueFormatter {
+        fun isValid(): Boolean
+        val referenceSignature: String
+        fun parameterValueFormatter(): ParameterValueFormatter
+
+    }
 
 }
