@@ -21,9 +21,8 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
     fun getReturnValue(project: Project,
                        classMethodConfigKt: ClassMethodConfigKt,
                        classCall : ClassCall,
-                       parameters: Array<String>,
                        phpIndex : PhpIndex): ReturnType {
-        val selectedParameter = parameters[classMethodConfigKt.parameterIndex]
+        val selectedParameter = classCall.parameters[classMethodConfigKt.parameterIndex]
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
         if ( treatedParameter.contains("|")) {

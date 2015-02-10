@@ -12,24 +12,24 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
                                        private val returnValueFromParametersProcessor: ReturnValueFromParametersProcessor) {
 
+    val signatureToCallConverter = SignatureToCallConverter()
+
 
     fun parseSignature(signature: String, project: Project): Collection<PhpNamedElement>? {
         val preparedSignature = prepareSignature(signature)
         val chainedCalls = preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
 
         var lastClassType = ""
-        var lastReturnType : ReturnType? = null
+        var lastReturnType: ReturnType? = null
 
         var callIndex = 0
 
         for ( singleCall in chainedCalls ) {
-            val callFromSignature =  getCallFromSignature( lastClassType, singleCall )
-            if( callFromSignature.fqnClass == "" ){
+            val callFromSignature = signatureToCallConverter.getCallFromSignature(phpIndex, lastClassType, singleCall)
+            if ( callFromSignature.fqnClass == "" ) {
                 return setOf()
-
             }
 
-            val parameters = getParameters(singleCall)
             val classMethodConfigKt = dynamicReturnTypeConfig.locateClassMethodConfig(phpIndex,
                                                                                       callFromSignature.fqnClass,
                                                                                       callFromSignature.method)
@@ -42,10 +42,9 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
             val returnType = returnValueFromParametersProcessor.getReturnValue(project,
                                                                                classMethodConfigKt,
                                                                                callFromSignature,
-                                                                               parameters,
                                                                                phpIndex)
 
-            if( !returnType.hasFoundReturnType() ){
+            if ( !returnType.hasFoundReturnType() ) {
                 return setOf()
             }
 
@@ -55,7 +54,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
             callIndex += 1
         }
 
-        if( lastReturnType != null && lastReturnType?.hasFoundReturnType() as Boolean ){
+        if ( lastReturnType != null && lastReturnType?.hasFoundReturnType() as Boolean ) {
             return lastReturnType?.phpNamedElements
         }
 
@@ -63,16 +62,17 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
     }
 
     private fun prepareSignature(signature: String): String {
-        var preparedSignature = cleanParameterEndSignature(signature ).trimLeading("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
+        var preparedSignature = cleanParameterEndSignature(signature)
+                .trimLeading("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
 
 
         return preparedSignature
     }
 
-    private fun cleanParameterEndSignature( signature : String ) : String{
+    private fun cleanParameterEndSignature(signature: String): String {
         var cleanSignature = signature
-        while( cleanSignature != cleanSignature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)){
+        while ( cleanSignature != cleanSignature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)) {
             cleanSignature = cleanSignature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
         }
 
@@ -81,46 +81,4 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
     }
 
 
-    private fun getParameters(singleCall: String): Array<String> {
-        val parameterSignature = singleCall.substring(singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1)
-
-        return parameterSignature.split(
-                DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
-    }
-
-
-    private fun getCallFromSignature(lastClassType : String, singleCall: String): ClassCall {
-        val indexOfParameterStart = singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
-        if( indexOfParameterStart == -1 ){
-            throw RuntimeException( "Single call has no parameters " + singleCall)
-        }
-        val callSignature = singleCall.substring(0, indexOfParameterStart)
-
-        val mutableCollection = if( callSignature.indexOf(".") == 0){
-            val chainedSignature = "#M#C" + lastClassType + callSignature
-            phpIndex.getBySignature(chainedSignature)
-        }else{
-            phpIndex.getBySignature(callSignature)
-        }
-
-
-        if( mutableCollection.size() == 0 ){
-            return ClassCall("", "" )
-        }
-
-        val phpNamedElement = mutableCollection.iterator().next()
-
-        val fqn = phpNamedElement.getFQN()
-        val indexOfMethod = fqn.indexOf(".")
-
-        if( indexOfMethod == -1 ){
-            return ClassCall("", "" )
-        }
-
-
-        return ClassCall( fqn.substring(0, indexOfMethod), fqn.substring( indexOfMethod + 1) )
-    }
-
 }
-
-data class ClassCall(val fqnClass: String, val  method: String)
