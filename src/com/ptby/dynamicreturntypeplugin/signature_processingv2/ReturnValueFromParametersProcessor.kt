@@ -15,14 +15,12 @@ import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
 
 public class ReturnValueFromParametersProcessor(private val signatureMatcher: SignatureMatcher,
                                                 private val classConstantAnalyzer: ClassConstantAnalyzer,
-                                                private val customSignatureProcessor: CustomSignatureProcessor
-) {
-
+                                                private val customSignatureProcessor: CustomSignatureProcessor) {
 
     fun getMethodReturnValue(project: Project,
-                       classMethodConfigKt: ParameterValueFormatter,
-                       classCall: ClassCall,
-                       phpIndex: PhpIndex): ReturnType {
+                             classMethodConfigKt: ParameterValueFormatter,
+                             classCall: ClassCall,
+                             phpIndex: PhpIndex): ReturnType {
         val selectedParameter = classCall.parameters[classMethodConfigKt.parameterIndex]
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
@@ -59,7 +57,7 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
     }
 
     fun getFunctionReturnValue(parameter: String, phpIndex: PhpIndex, project: Project): ReturnType {
-        return ReturnType( customSignatureProcessor.tryFunctionCall( parameter, phpIndex, project ) )
+        return ReturnType(customSignatureProcessor.tryFunctionCall(parameter, phpIndex, project))
     }
 
 }

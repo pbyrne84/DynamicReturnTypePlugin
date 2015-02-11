@@ -11,8 +11,9 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
 
 import java.util.ArrayList
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
-public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) {
+public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging{
     private val methodCallValidator: MethodCallValidator
     private val originalCallAnalyzer: OriginalCallAnalyzer
 
@@ -53,10 +54,8 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
     private fun formatWithMask(phpIndex: PhpIndex, config: ClassMethodConfigKt, signature: String?, project: Project): Collection<PhpNamedElement>? {
         val formattedSignature = signature ?: ""
 
-        if (formattedSignature.contains("[]")) {
-            val customList = ArrayList<PhpNamedElement>()
-            customList.add(LocalClassImpl(PhpType().add("\\" +formattedSignature.trimTrailing("\\")), project))
-            return customList
+        if ( requiresListPackaging(formattedSignature)) {
+            return packageList(formattedSignature, project )
         }
 
         val createdType = "#C" + formattedSignature

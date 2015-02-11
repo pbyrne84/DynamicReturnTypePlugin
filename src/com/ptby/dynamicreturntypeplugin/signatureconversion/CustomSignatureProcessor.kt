@@ -10,18 +10,19 @@ import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
 import java.util.Collections
 
 import com.intellij.openapi.diagnostic.Logger.getInstance
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
 public class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter,
                                       private val classConstantAnalyzer: ClassConstantAnalyzer,
                                       private val fieldReferenceAnalyzer: FieldReferenceAnalyzer,
-                                      private val variableAnalyser: VariableAnalyser) {
+                                      private val variableAnalyser: VariableAnalyser) : ListReturnPackaging {
     private val logger = getInstance("DynamicReturnTypePlugin")
 
 
-     fun processSignature(phpIndex: PhpIndex,
-                          customMethodCallSignature: CustomMethodCallSignature,
-                          project: Project,
-                          signature: String): Collection<PhpNamedElement>? {
+    fun processSignature(phpIndex: PhpIndex,
+                         customMethodCallSignature: CustomMethodCallSignature,
+                         project: Project,
+                         signature: String): Collection<PhpNamedElement>? {
 
         var processedCustomMethodCallSignature = customMethodCallSignature
         val signatureMatcher = SignatureMatcher()
@@ -52,11 +53,16 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
     }
 
 
-    fun tryFunctionCall( parameter: String,
-                                phpIndex: PhpIndex, project: Project): Collection<PhpNamedElement> {
+    fun tryFunctionCall(parameter: String,
+                        phpIndex: PhpIndex,
+                        project: Project): Collection<PhpNamedElement> {
         val signatureMatcher = SignatureMatcher()
         if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter)) {
             return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter, project))
+        }
+
+        if ( requiresListPackaging(parameter)) {
+            return packageList(parameter, project)
         }
 
         return tryToDeferToDefaultType(null, parameter, phpIndex)
