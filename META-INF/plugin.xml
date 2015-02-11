@@ -9,13 +9,15 @@
         It can use either the instance type of the passed parameter, string lookup or ::class.
         It can also use masking and custom javascript callbacks to massage the return type to enable aliasing<br>
 
+        Internal signature resolution has been completely reworked to allow better chaining/stability of results.
+        It should also play nicely with other plugin service providers etc.
+
         It can be configured for :
          <ul>
             <li>Instance method calls</li>
             <li>Static method calls</li>
             <li>Function calls</li>
         </ul>
-
 
         <b>Full documentation with examples on github page for custom manipulation with rhino javascript versus the old
         mask methodology can be found here :-</b> <br>
@@ -194,9 +196,11 @@
               </ul>
             </ul>
 
-            <h3>1.1.7.1</h3>
+            <h3>1.1.8</h3>
             <ul>
-            <li>Add symfony container chaining</li>
+            <li>Fixed chaining so works with symfony etc.
+                https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/35
+            </li>
             </ul>
 
         ]]>
