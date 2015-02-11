@@ -19,7 +19,7 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
 ) {
 
 
-    fun getReturnValue(project: Project,
+    fun getMethodReturnValue(project: Project,
                        classMethodConfigKt: ParameterValueFormatter,
                        classCall: ClassCall,
                        phpIndex: PhpIndex): ReturnType {
@@ -57,6 +57,11 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
 
         return customList
     }
+
+    fun getFunctionReturnValue(parameter: String, phpIndex: PhpIndex, project: Project): ReturnType {
+        return ReturnType( customSignatureProcessor.tryFunctionCall( parameter, phpIndex, project ) )
+    }
+
 }
 
 

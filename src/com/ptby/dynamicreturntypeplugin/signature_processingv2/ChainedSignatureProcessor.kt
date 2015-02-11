@@ -8,6 +8,7 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.intellij.openapi.project.Project
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.signature_processingv2
 
 
 public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
@@ -15,29 +16,29 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val returnValueFromParametersProcessor: ReturnValueFromParametersProcessor) {
 
     val signatureToCallConverter = SignatureToCallConverter()
-
+    private val singleCallSignatureProcessor = SingleCallSignatureProcessor(
+            phpIndex,
+            dynamicReturnTypeConfig,
+            returnValueFromParametersProcessor
+    )
 
     fun parseSignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val preparedSignature = prepareSignature(signature)
-        val chainedCalls = preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
-
+        val chainedCalls = createChainedCalls(signature)
         var lastTypes = LastTypes("", null)
-
         var callIndex = 0
+
         for ( singleCall in chainedCalls ) {
-            val callConfiguration = getParameterFormatterForSignature(singleCall, lastTypes.lastClassType)
+            val callConfiguration = singleCallSignatureProcessor.getParameterFormatterForSignature(
+                    singleCall,
+                    lastTypes.lastClassType,
+                    project
+            )
+
             if ( !callConfiguration.isValid() ) {
                 return setOf()
             }
 
-            val returnType = getReturnTypeFromCallConfiguration(callConfiguration, project)
-
-            if ( !returnType.hasFoundReturnType() ) {
-                return setOf()
-            }
-
-            lastTypes = LastTypes(returnType.getClassName(), returnType)
-
+            lastTypes = LastTypes(callConfiguration.getReturnTypeClassName(), callConfiguration.getReturnType())
             callIndex += 1
         }
 
@@ -48,57 +49,14 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         return setOf()
     }
 
-    private fun getReturnTypeFromCallConfiguration(callConfiguration: HasParameterValueFormatter,
-                                                   project: Project): ReturnType {
-        if (  callConfiguration is MethodCallConfiguration ) {
-            return returnValueFromParametersProcessor.getReturnValue(
-                    project,
-                    callConfiguration.parameterValueFormatter(),
-                    callConfiguration.callFromSignature,
-                    phpIndex
-            )
-
-        }else if( callConfiguration is FunctionConfiguration ){
-            println( "callConfiguration.referenceSignature "+ callConfiguration.referenceSignature )
-
-        }
-        return ReturnType(setOf())
-    }
-
-
-    private fun getParameterFormatterForSignature(signature: String, lastType: String): HasParameterValueFormatter {
-        if ( signature.substring(0, 2).equals("#F")) {
-            val functionName = signature.substring(2, signature.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR))
-            println( "functionName "  + functionName )
-            val functionConfig = dynamicReturnTypeConfig. locateFunctionConfig(
-                    functionName
-            )
-
-            println("functionConfig "+ functionConfig)
-            return FunctionConfiguration(functionConfig, signature)
-        }
-
-        val callFromSignature = signatureToCallConverter.getCallFromSignature(phpIndex, lastType, signature)
-        if ( callFromSignature.fqnClass == "" ) {
-            return MethodCallConfiguration(null, callFromSignature, signature) ;
-        }
-
-        val classMethodConfigKt = dynamicReturnTypeConfig.locateClassMethodConfig(
-                phpIndex,
-                callFromSignature.fqnClass,
-                callFromSignature.method
-        )
-        return MethodCallConfiguration(classMethodConfigKt, callFromSignature, signature)
-
-    }
-
-
-    private fun prepareSignature(signature: String): String {
+    fun createChainedCalls(signature: String): Array<String> {
         var preparedSignature = cleanParameterEndSignature(signature)
                 .trimLeading("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
-        return preparedSignature
+
+        return preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
     }
+
 
     private fun cleanParameterEndSignature(signature: String): String {
         var cleanSignature = signature

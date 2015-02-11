@@ -90,7 +90,6 @@ class FunctionGetTypeResponse (private val returnType: String?,
 
     override fun toString(): String {
         val functionSig = super.toString()
-        println("functionSig " + functionSig)
         return functionSig;
     }
 }

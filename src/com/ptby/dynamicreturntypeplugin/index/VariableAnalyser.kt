@@ -54,7 +54,6 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
         val formattedSignature = signature ?: ""
 
         if (formattedSignature.contains("[]")) {
-            println("formattedSignature " + formattedSignature)
             val customList = ArrayList<PhpNamedElement>()
             customList.add(LocalClassImpl(PhpType().add("\\" +formattedSignature.trimTrailing("\\")), project))
             return customList
