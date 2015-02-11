@@ -21,13 +21,17 @@ public class ReturnValueFromParametersProcessor(private val signatureMatcher: Si
                              classMethodConfigKt: ParameterValueFormatter,
                              classCall: ClassCall,
                              phpIndex: PhpIndex): ReturnType {
-        val selectedParameter = classCall.parameters[classMethodConfigKt.parameterIndex]
+
+        if(!classCall.hasParameterAtIndex( classMethodConfigKt.parameterIndex )){
+            return ReturnType.empty()
+        }
+
+        val selectedParameter = classCall.getParameterAtIndex( classMethodConfigKt.parameterIndex )
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
         if ( treatedParameter.contains("|")) {
             return ReturnType(createMultiTypedFromMask(treatedParameter, project))
         }
-
 
         val customMethodCallSignature = CustomMethodCallSignature.new(
                 "#M#C" + classCall.fqnClass,
@@ -84,6 +88,13 @@ data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
 
     fun hasFoundReturnType(): Boolean {
         return phpNamedElements != null && phpNamedElements.size() > 0
+    }
+
+
+    class object {
+        fun empty(): ReturnType {
+            return ReturnType(setOf())
+        }
     }
 
 }

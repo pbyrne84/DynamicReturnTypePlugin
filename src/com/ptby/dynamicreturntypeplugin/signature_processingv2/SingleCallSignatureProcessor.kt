@@ -17,15 +17,16 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
 
     fun getParameterFormatterForSignature(signature: String, lastType: String, project: Project): SingleCall {
         if ( signature.substring(0, 2).equals("#F")) {
-            return processFunction(signature, project )
+            return processFunction(signature, project)
         }
 
         val methodCallConfiguration = processMethod(lastType, signature)
         if ( !methodCallConfiguration.isValid() ) {
-            return SingleCall(methodCallConfiguration, null)
+            return SingleCall.createInvalid()
         }
 
-        return SingleCall(methodCallConfiguration, getReturnTypeFromCallConfiguration(methodCallConfiguration, project))
+        val returnType = getReturnTypeFromMethodCallConfiguration(methodCallConfiguration, project)
+        return SingleCall.createValid(methodCallConfiguration, returnType)
 
     }
 
@@ -43,6 +44,10 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
         return MethodCallConfiguration(classMethodConfigKt, callFromSignature, signature)
     }
 
+    private fun parameterIndexIsValid(desiredParameterIndex: Int, parameterValueList: Array<String>): Boolean {
+        return desiredParameterIndex < parameterValueList.size()
+    }
+
     private fun processFunction(signature: String, project: Project): SingleCall {
         val functionName = signature.substring(
                 2, signature.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
@@ -54,39 +59,37 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
         val functionConfig = dynamicReturnTypeConfig.locateFunctionConfig(functionName)
         val functionConfiguration = FunctionConfiguration(functionConfig, signature)
 
-        val originalParameterValue = parameterList[functionConfiguration.parameterValueFormatter().parameterIndex]
-        val processedParameterValue = functionConfiguration.parameterValueFormatter().formatBeforeLookup(originalParameterValue)
+        val parameterIndex = functionConfiguration.parameterValueFormatter().parameterIndex
+        if ( !parameterIndexIsValid(parameterIndex, parameterList) ) {
+            return SingleCall.createInvalid()
+        }
 
-        return SingleCall(
+        val originalParameterValue = parameterList[parameterIndex]
+        val processedParameterValue = functionConfiguration.parameterValueFormatter().formatBeforeLookup(
+                originalParameterValue)
+
+        return SingleCall.createValid(
                 functionConfiguration,
-                returnValueFromParametersProcessor.getFunctionReturnValue( processedParameterValue, phpIndex, project )
+                returnValueFromParametersProcessor.getFunctionReturnValue(processedParameterValue, phpIndex, project)
         )
     }
 
-
-    private fun getReturnTypeFromCallConfiguration(callConfiguration: HasParameterValueFormatter,
-                                                   project: Project): ReturnType {
-        if (  callConfiguration is MethodCallConfiguration ) {
-            return returnValueFromParametersProcessor.getMethodReturnValue(
-                    project,
-                    callConfiguration.parameterValueFormatter(),
-                    callConfiguration.callFromSignature,
-                    phpIndex
-            )
-
-        } else if ( callConfiguration is FunctionConfiguration ) {
-            println("callConfiguration.referenceSignature " + callConfiguration.referenceSignature)
-
-        }
-        return ReturnType(setOf())
+    private fun getReturnTypeFromMethodCallConfiguration(callConfiguration: MethodCallConfiguration,
+                                                         project: Project): ReturnType {
+        return returnValueFromParametersProcessor.getMethodReturnValue(
+                project,
+                callConfiguration.parameterValueFormatter(),
+                callConfiguration.callFromSignature,
+                phpIndex
+        )
     }
 }
 
 
-data class SingleCall(private val hasParameterValueFormatter: HasParameterValueFormatter,
-                      private val returnType: ReturnType?) {
+data class SingleCall private (private val hasParameterValueFormatter: HasParameterValueFormatter?,
+                               private val returnType: ReturnType?) {
     fun isValid(): Boolean {
-        return hasParameterValueFormatter.isValid() && hasFoundReturnType()
+        return hasParameterValueFormatter !== null && hasParameterValueFormatter.isValid() && hasFoundReturnType()
     }
 
     private fun hasFoundReturnType(): Boolean {
@@ -105,6 +108,8 @@ data class SingleCall(private val hasParameterValueFormatter: HasParameterValueF
     }
 
     class object {
-
+        fun createInvalid(): SingleCall = SingleCall(null, null)
+        fun createValid(hasParameterValueFormatter: HasParameterValueFormatter, returnType: ReturnType) =
+                SingleCall(hasParameterValueFormatter, returnType)
     }
 }

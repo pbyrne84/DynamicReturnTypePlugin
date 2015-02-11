@@ -49,7 +49,7 @@ public class SignatureToCallConverter {
 }
 
 
-data class ClassCall private (val fqnClass: String, val  method: String, val parameters: Array<String>) {
+data class ClassCall private (val fqnClass: String, val  method: String, private val parameters: Array<String>) {
     class object {
         fun newClassCall(fqnClass: String, method: String, parameters: Array<String>): ClassCall {
             return ClassCall(fqnClass, method, parameters)
@@ -59,6 +59,14 @@ data class ClassCall private (val fqnClass: String, val  method: String, val par
         fun newEmpty(): ClassCall {
             return ClassCall("", "", "".split(""))
         }
+    }
+
+    fun hasParameterAtIndex( index : Int ): Boolean {
+        return index < parameters.size()
+    }
+
+    fun getParameterAtIndex(index : Int ): String {
+        return parameters.get( index )
     }
 }
 
