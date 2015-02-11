@@ -50,8 +50,26 @@ open class GetTypeResponse protected (private val response: String?,
             parameters = convertParameters(originalReference)
         }
 
+        //
+        //#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mock|#M#C\object.mockªBouh?
+        //signature #M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mockªBouh?
+        var reference = originalReference?.getSignature() as String
+        return filterExcessReturnTypes( reference ) + parameters
+    }
 
-        return originalReference?.getSignature() as String + parameters
+    private fun filterExcessReturnTypes( originalReference : String ): String {
+        val multiAliasedMethodCalls = originalReference.split("\\|")
+        if( multiAliasedMethodCalls.size() == 1 ){
+            return originalReference;
+        }
+
+        for( multiAliasedMethodCall in  multiAliasedMethodCalls ){
+            if( multiAliasedMethodCall.indexOf("#M#C\\object" ) !== 0 ){
+                return multiAliasedMethodCall;
+            }
+        }
+
+        return originalReference
     }
 
 
@@ -84,6 +102,7 @@ open class GetTypeResponse protected (private val response: String?,
 class FunctionGetTypeResponse (private val returnType: String?,
                                private val originalReference: FunctionReference) : GetTypeResponse(returnType,
                                                                                                    originalReference) {
+
     override fun isNull(): Boolean {
         return returnType == null
     }

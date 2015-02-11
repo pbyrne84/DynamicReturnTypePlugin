@@ -24,7 +24,6 @@ class GetBySignature(private val signatureMatcher: SignatureMatcher,
                      private val fieldReferenceAnalyzer: FieldReferenceAnalyzer) {
 
     fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-
         val phpIndex = PhpIndex.getInstance(project)
         val currentConfig = configAnalyser.getCurrentConfig(project)
 
