@@ -102,7 +102,7 @@
               Fixed https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/36 as internal kotlin to java interop was buggy
           </ul>
           <ul>
-              Added implementation of https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/28
+              <a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/28">Added implementation of include file resolution</a>
           </ul>
         </ul>
 
@@ -112,7 +112,7 @@
             For javascript nashorn.jar is required for java 8 installs. For groovy groovy-all-2.2.1.jar is required.
             This path is only called if it cannot create using default classpath.
             </li>
-            <li><a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/24">Multiple types assigned with masks</li>
+            <li><a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/24">Multiple types assigned with masks</a></li>
           </ul>
 
           <h3>1.1.5</h3>
