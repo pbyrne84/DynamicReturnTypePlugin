@@ -23,7 +23,7 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
 
     private val customJarLocation = System.getenv(envVariable)
 
-    class object {
+    companion object {
         private val ENV_VARIABLE_GROOVY = "IDEA_GROOVY_JAR_PATH"
         private val ENV_VARIABLE_JAVASCRIPT = "IDEA_JAVASCRIPT_JAR_PATH"
 

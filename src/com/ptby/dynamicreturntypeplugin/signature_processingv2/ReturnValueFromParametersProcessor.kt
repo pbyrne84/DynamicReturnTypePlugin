@@ -91,7 +91,7 @@ data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
     }
 
 
-    class object {
+    companion object {
         fun empty(): ReturnType {
             return ReturnType(setOf())
         }

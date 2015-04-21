@@ -13,7 +13,7 @@ public class ProjectsConfigRefresher {
     private val filenameSearcher: FilenameSearcher
     private val projectConfigBuilder: ProjectConfigBuilder
 
-    {
+    init {
         filenameSearcher = FilenameSearcher()
         projectConfigBuilder = ProjectConfigBuilder()
     }

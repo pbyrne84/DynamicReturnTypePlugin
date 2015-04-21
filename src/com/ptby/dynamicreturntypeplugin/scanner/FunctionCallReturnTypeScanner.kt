@@ -10,7 +10,7 @@ import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 public class FunctionCallReturnTypeScanner() {
     private val parameterTypeCalculator: ParameterTypeCalculator
 
-    {
+    init {
         parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
     }
 

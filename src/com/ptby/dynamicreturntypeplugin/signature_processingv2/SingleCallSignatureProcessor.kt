@@ -107,7 +107,7 @@ data class SingleCall private (private val hasParameterValueFormatter: HasParame
         return returnType as ReturnType
     }
 
-    class object {
+    companion object {
         fun createInvalid(): SingleCall = SingleCall(null, null)
         fun createValid(hasParameterValueFormatter: HasParameterValueFormatter, returnType: ReturnType) =
                 SingleCall(hasParameterValueFormatter, returnType)

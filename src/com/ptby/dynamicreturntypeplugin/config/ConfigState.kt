@@ -12,7 +12,7 @@ public class ConfigState {
     public val openProjects: OpenProjects
 
 
-    {
+    init {
         this.openProjects = OpenProjects()
         this.configAnalyser = ConfigAnalyser(openProjects)
         fileSytemConfigChangeListener = FileSytemConfigChangeListener()

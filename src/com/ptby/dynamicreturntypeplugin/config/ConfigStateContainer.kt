@@ -3,7 +3,7 @@ package com.ptby.dynamicreturntypeplugin.config
 import com.intellij.openapi.project.Project
 
 public class ConfigStateContainer {
-    class object {
+    companion object {
         val configState : ConfigState = ConfigState()
 
 

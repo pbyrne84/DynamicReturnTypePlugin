@@ -61,7 +61,7 @@ public class ClassConstantAnalyzer {
 
     }
 
-    class object {
+    companion object {
         private val signatureMatcher = SignatureMatcher()
     }
 

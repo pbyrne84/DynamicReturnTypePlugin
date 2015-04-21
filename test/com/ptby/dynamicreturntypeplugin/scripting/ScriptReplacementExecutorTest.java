@@ -18,7 +18,7 @@ public class ScriptReplacementExecutorTest {
                 "}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory(
+                CustomScriptEngineFactory.Companion.createFactory(
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
                 ),
@@ -38,7 +38,7 @@ public class ScriptReplacementExecutorTest {
         String groovy = "def abc( returnTypeNameSpace, returnTypeClass ) {return returnTypeNameSpace + \"_\" + returnTypeClass  ;}";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory(
+                CustomScriptEngineFactory.Companion.createFactory(
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
                 ),
@@ -57,7 +57,7 @@ public class ScriptReplacementExecutorTest {
         String javascript = "function abc(";
 
         ScriptReplacementExecutor replacementExecutor = new ScriptReplacementExecutor(
-                CustomScriptEngineFactory.OBJECT$.createFactory(
+                CustomScriptEngineFactory.Companion.createFactory(
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
                 ),

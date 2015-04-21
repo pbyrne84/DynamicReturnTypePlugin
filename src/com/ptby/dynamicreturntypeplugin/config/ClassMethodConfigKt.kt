@@ -9,7 +9,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
                                override public val parameterIndex: Int,
                                private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter{
     private val methodName: String
-    {
+    init {
         this.methodName = methodName.toLowerCase()
     }
 

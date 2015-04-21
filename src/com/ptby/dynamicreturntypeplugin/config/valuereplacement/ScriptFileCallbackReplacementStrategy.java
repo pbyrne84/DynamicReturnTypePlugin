@@ -62,7 +62,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
             );
 
             scriptReplacementExecutor = new ScriptReplacementExecutor(
-                    CustomScriptEngineFactory.OBJECT$.createFactory( scriptEngineManager, calculateScriptType() ),
+                    CustomScriptEngineFactory.Companion.createFactory( scriptEngineManager, calculateScriptType() ),
                     new PhpCallReferenceInfo( className, methodName ),
                     callableScriptConfiguration
             );

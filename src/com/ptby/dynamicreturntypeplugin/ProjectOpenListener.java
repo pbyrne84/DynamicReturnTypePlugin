@@ -34,7 +34,7 @@ public class ProjectOpenListener implements ProjectComponent {
         Runnable postInitialisationCallBack = new Runnable() {
             @Override
             public void run() {
-                ConfigStateContainer.OBJECT$.notifyProjectOpened( project );
+                ConfigStateContainer.Companion.notifyProjectOpened( project );
             }
         };
 
@@ -43,6 +43,6 @@ public class ProjectOpenListener implements ProjectComponent {
 
 
     public void projectClosed() {
-        ConfigStateContainer.OBJECT$.notifyProjectClosed( this.project );
+        ConfigStateContainer.Companion.notifyProjectClosed( this.project );
     }
 }

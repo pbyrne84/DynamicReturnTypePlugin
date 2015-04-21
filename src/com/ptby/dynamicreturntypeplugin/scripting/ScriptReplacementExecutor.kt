@@ -18,7 +18,7 @@ public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( c
     private val scriptSignatureParser: ScriptSignatureParser
 
 
-    {
+    init {
         val executingScriptApi = ExecutingScriptApi(this)
         val engine = customScriptEngineFactory.getEngine()
         engine.eval(callableScriptConfiguration.code)
@@ -62,7 +62,7 @@ public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( c
         return Notification("DynamicReturnTypePlugin", "Script file error", message, NotificationType.WARNING)
     }
 
-    class object {
+    companion object {
         public val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
         public val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
     }

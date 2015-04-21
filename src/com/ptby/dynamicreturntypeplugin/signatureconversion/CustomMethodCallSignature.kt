@@ -10,7 +10,7 @@ public data class CustomMethodCallSignature private(public val className: String
                                                     public val rawStringSignature: String) {
 
 
-    class object {
+    companion object {
 
         fun new(className: String, method: String, desiredParameter: String): CustomMethodCallSignature {
             return CustomMethodCallSignature(className,

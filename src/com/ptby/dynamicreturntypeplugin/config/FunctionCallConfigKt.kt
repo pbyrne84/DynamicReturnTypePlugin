@@ -9,7 +9,7 @@ data class FunctionCallConfigKt(functionName: String,
                                 private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter {
 
     private val functionName: String?
-    {
+    init {
         this.functionName = functionName.toLowerCase()
     }
 

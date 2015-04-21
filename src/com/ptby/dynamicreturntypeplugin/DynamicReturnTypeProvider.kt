@@ -41,8 +41,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val configAnalyser = configState.configAnalyser
 
     private var variableAnalyser: VariableAnalyser
-    {
-
+    init {
         fieldReferenceAnalyzer = FieldReferenceAnalyzer(configAnalyser)
         classConstantAnalyzer = ClassConstantAnalyzer()
         variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
@@ -51,7 +50,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         getTypeResponseFactory = createGetTypeResponseFactory(configAnalyser)
     }
 
-    class object {
+    companion object {
         public val PLUGIN_IDENTIFIER_KEY: Char = "Ђ".toCharArray()[0]
         public val PLUGIN_IDENTIFIER_KEY_STRING: String = String(charArray(PLUGIN_IDENTIFIER_KEY))
         public val PARAMETER_START_SEPARATOR: String = "ª"

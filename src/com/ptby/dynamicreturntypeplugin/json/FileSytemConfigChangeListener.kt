@@ -5,9 +5,9 @@ import com.intellij.openapi.vfs.*
 import java.util.ArrayList
 
 public class FileSytemConfigChangeListener : VirtualFileListener {
-    private val projectConfigChangeListeners = ArrayList<ProjectConfigChangeListener>();
+    private val projectConfigChangeListeners = ArrayList<ProjectConfigChangeListener>()
 
-    {
+    init {
         val instance = LocalFileSystem.getInstance()
         instance.addVirtualFileListener(this)
     }
@@ -70,7 +70,7 @@ public class FileSytemConfigChangeListener : VirtualFileListener {
     override fun beforeFileMovement(event: VirtualFileMoveEvent) {
     }
 
-    class object {
+    companion object {
         private val expectedConfigFileName = "dynamicReturnTypeMeta.json"
     }
 }

@@ -12,7 +12,7 @@ import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 
 open class GetTypeResponse protected (private val response: String?,
                                       private val originalReference: FunctionReference?) {
-    {
+    init {
         if (response != null && response == "null") {
             throw RuntimeException("cannot be string null")
 
@@ -20,7 +20,7 @@ open class GetTypeResponse protected (private val response: String?,
     }
 
 
-    class object {
+    companion object {
         fun createNull(): GetTypeResponse {
             return GetTypeResponse(null, null)
         }
@@ -51,8 +51,8 @@ open class GetTypeResponse protected (private val response: String?,
         }
 
         //
-        //#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mock|#M#C\object.mockªBouh?
-        //signature #M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mockªBouh?
+        //#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mock|#M#C\object.mockï¿½Bouh?
+        //signature #M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mockï¿½Bouh?
         var reference = originalReference?.getSignature() as String
         return filterExcessReturnTypes( reference ) + parameters
     }

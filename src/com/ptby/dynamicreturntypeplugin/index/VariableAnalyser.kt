@@ -18,7 +18,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
     private val originalCallAnalyzer: OriginalCallAnalyzer
 
 
-    {
+    init {
         this.methodCallValidator = MethodCallValidator(configAnalyser)
         originalCallAnalyzer = OriginalCallAnalyzer()
     }

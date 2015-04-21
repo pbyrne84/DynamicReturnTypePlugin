@@ -8,7 +8,7 @@ open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableLi
                                    public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
 
-    class object {
+    companion object {
         fun newEmpty() = DynamicReturnTypeConfig(ArrayList<ClassMethodConfigKt>(), ArrayList<FunctionCallConfigKt>())
     }
 

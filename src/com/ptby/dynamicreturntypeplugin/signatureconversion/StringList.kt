@@ -4,7 +4,7 @@ import java.util.ArrayList
 
 public class StringList(vararg strings: String) : ArrayList<String>() {
 
-    {
+    init {
         for (string in strings) {
             add(string)
         }

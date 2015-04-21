@@ -10,7 +10,7 @@ public class ProjectConfigBuilder {
 
     private val jsonToDynamicReturnTypeConfigConverter: JsonToDynamicReturnTypeConfigConverter
 
-    {
+    init {
         jsonToDynamicReturnTypeConfigConverter = JsonToDynamicReturnTypeConfigConverter()
     }
 

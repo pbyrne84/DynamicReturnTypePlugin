@@ -23,7 +23,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
     private val methodCallValidator: MethodCallValidator
 
 
-    {
+    init {
         classConstantAnalyzer = ClassConstantAnalyzer()
         originalCallAnalyzer = OriginalCallAnalyzer()
         methodCallValidator = MethodCallValidator(configAnalyser)
