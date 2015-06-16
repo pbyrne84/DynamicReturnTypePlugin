@@ -30,8 +30,4 @@ public class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptRep
         return scriptReplacementExecutor.callableScriptConfiguration
     }
 
-    SuppressWarnings("unused")
-    public fun getPhpCallReferenceInfo(): PhpCallReferenceInfo {
-        return scriptReplacementExecutor.phpCallReferenceInfo
-    }
 }

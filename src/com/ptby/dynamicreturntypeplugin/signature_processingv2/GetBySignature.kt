@@ -20,17 +20,16 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType
 class GetBySignature(private val signatureMatcher: SignatureMatcher,
                      private val classConstantAnalyzer: ClassConstantAnalyzer,
                      private val customSignatureProcessor: CustomSignatureProcessor,
-                     private val configAnalyser: ConfigAnalyser,
-                     private val fieldReferenceAnalyzer: FieldReferenceAnalyzer) {
+                     private val configAnalyser: ConfigAnalyser
+) {
 
     fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
         val phpIndex = PhpIndex.getInstance(project)
         val currentConfig = configAnalyser.getCurrentConfig(project)
 
 
-        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor(signatureMatcher,
-                                                                                    classConstantAnalyzer,
-                                                                                    customSignatureProcessor)
+        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor(
+                customSignatureProcessor)
 
         val chainedSignatureProcessor = ChainedSignatureProcessor(phpIndex,
                                                                   currentConfig,

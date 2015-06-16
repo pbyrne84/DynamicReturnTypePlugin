@@ -25,8 +25,4 @@ public class FunctionCallReturnTypeScanner() {
         return GetTypeResponse.createNull()
     }
 
-    private fun calculateTypeFromFunctionParameter(functionReference: FunctionReference, parameterIndex: Int): GetTypeResponse {
-        return GetTypeResponse.newFunction( functionReference )
-    }
-
 }

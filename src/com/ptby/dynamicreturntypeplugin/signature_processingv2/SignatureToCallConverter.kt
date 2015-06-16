@@ -71,14 +71,3 @@ data class ClassCall private constructor(val fqnClass: String, val  method: Stri
     }
 }
 
-data class FunctionCall private constructor(val fqnFunction: String, val parameters: List<String>) {
-    companion object {
-        fun newFunction(fqnFunction: String, parameters: List<String>): FunctionCall {
-            return FunctionCall(fqnFunction, parameters)
-        }
-
-        fun newEmpty(): FunctionCall {
-            return FunctionCall("", "".splitBy(""))
-        }
-    }
-}

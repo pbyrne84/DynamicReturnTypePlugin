@@ -13,9 +13,8 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProce
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
 
-public class ReturnValueFromParametersProcessor(private val signatureMatcher: SignatureMatcher,
-                                                private val classConstantAnalyzer: ClassConstantAnalyzer,
-                                                private val customSignatureProcessor: CustomSignatureProcessor) {
+public class ReturnValueFromParametersProcessor(
+        private val customSignatureProcessor: CustomSignatureProcessor) {
 
     fun getMethodReturnValue(project: Project,
                              classMethodConfigKt: ParameterValueFormatter,

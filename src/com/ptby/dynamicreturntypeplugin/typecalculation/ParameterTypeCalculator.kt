@@ -13,7 +13,7 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
 
     public fun calculateTypeFromParameter(functionReference: FunctionReference,parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
         if (parameters.size() <= parameterIndex) {
-            return ParameterType(functionReference,null)
+            return ParameterType(null)
         }
 
         val element = parameters[parameterIndex]
@@ -21,32 +21,32 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
             val elementType = (element).getType()
             if (elementType.toString() != "void") {
                 if (elementType.toString() == "string") {
-                    return ParameterType(functionReference, cleanClassText(element))
+                    return ParameterType(cleanClassText(element))
                 } else if (classConstantAnalyzer.verifySignatureIsClassConstant(elementType.toString())) {
-                    return ParameterType(functionReference, elementType.toString())
+                    return ParameterType(elementType.toString())
                 }
 
                 val singleType = getTypeSignature(elementType)
-                        ?: return ParameterType(functionReference, null)
+                        ?: return ParameterType(null)
 
                 if (singleType.substring(0, 1) == "\\") {
-                    return ParameterType(functionReference, "#C" + singleType)
+                    return ParameterType("#C" + singleType)
                 }
 
                 if (singleType.length() < 3) {
-                    return ParameterType(functionReference, null)
+                    return ParameterType(null)
                 }
 
                 if (typeContains(singleType, "#C\\") || typeContains(singleType, "#P#C\\")) {
-                    return ParameterType(functionReference, singleType.substring(2))
+                    return ParameterType(singleType.substring(2))
                 }
 
                 val calculatedType = singleType.substring(3)
-                return ParameterType(functionReference, calculatedType)
+                return ParameterType(calculatedType)
             }
         }
 
-        return ParameterType(functionReference, null)
+        return ParameterType(null)
     }
 
 

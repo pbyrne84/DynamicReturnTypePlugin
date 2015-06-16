@@ -4,15 +4,10 @@ import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
-public class ParameterType( private val functionReference: FunctionReference, private val parameterType: String?) {
+public class ParameterType(private val parameterType: String?) {
 
     override fun toString(): String {
         throw RuntimeException( "use toNullableString" )
-    }
-
-
-    fun getOriginal() : String? {
-        return parameterType
     }
 
 

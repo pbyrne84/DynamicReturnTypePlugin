@@ -102,8 +102,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
                 SignatureMatcher(),
                 classConstantAnalyzer,
                 customSignatureProcessor,
-                configAnalyser,
-                fieldReferenceAnalyzer
+                configAnalyser
         )
 
         return getBySignature.getBySignature(signature, project)
