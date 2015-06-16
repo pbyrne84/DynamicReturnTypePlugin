@@ -48,12 +48,12 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         return setOf()
     }
 
-    fun createChainedCalls(signature: String): Array<String> {
+    fun createChainedCalls(signature: String): List<String> {
         var preparedSignature = cleanParameterEndSignature(signature)
                 .removePrefix("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
 
-        return preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+        return preparedSignature.splitBy(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
     }
 
 
