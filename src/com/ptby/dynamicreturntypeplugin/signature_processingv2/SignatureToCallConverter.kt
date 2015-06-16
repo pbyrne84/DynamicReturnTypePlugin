@@ -41,24 +41,24 @@ public class SignatureToCallConverter {
     }
 
 
-    private fun getParameters(singleCall: String): Array<String> {
+    private fun getParameters(singleCall: String): List<String> {
         val parameterSignature = singleCall.substring(singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1)
 
-        return parameterSignature.split(
+        return parameterSignature.splitBy(
                 DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
     }
 }
 
 
-data class ClassCall private constructor(val fqnClass: String, val  method: String, private val parameters: Array<String>) {
+data class ClassCall private constructor(val fqnClass: String, val  method: String, private val parameters: List<String>) {
     companion object {
-        fun newClassCall(fqnClass: String, method: String, parameters: Array<String>): ClassCall {
+        fun newClassCall(fqnClass: String, method: String, parameters: List<String>): ClassCall {
             return ClassCall(fqnClass, method, parameters)
         }
 
 
         fun newEmpty(): ClassCall {
-            return ClassCall("", "", "".split(""))
+            return ClassCall("", "", "".splitBy(""))
         }
     }
 
@@ -71,14 +71,14 @@ data class ClassCall private constructor(val fqnClass: String, val  method: Stri
     }
 }
 
-data class FunctionCall private constructor(val fqnFunction: String, val parameters: Array<String>) {
+data class FunctionCall private constructor(val fqnFunction: String, val parameters: List<String>) {
     companion object {
-        fun newFunction(fqnFunction: String, parameters: Array<String>): FunctionCall {
+        fun newFunction(fqnFunction: String, parameters: List<String>): FunctionCall {
             return FunctionCall(fqnFunction, parameters)
         }
 
         fun newEmpty(): FunctionCall {
-            return FunctionCall("", "".split(""))
+            return FunctionCall("", "".splitBy(""))
         }
     }
 }

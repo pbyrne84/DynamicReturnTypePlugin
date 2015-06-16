@@ -15,7 +15,6 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
                                        private val returnValueFromParametersProcessor: ReturnValueFromParametersProcessor) {
 
-    val signatureToCallConverter = SignatureToCallConverter()
     private val singleCallSignatureProcessor = SingleCallSignatureProcessor(
             phpIndex,
             dynamicReturnTypeConfig,

@@ -54,7 +54,7 @@ public class ClassConstantAnalyzer {
 
     private fun formatStringConstant(constantText: String): String {
         var replaceStringConstant = constantText.replace("'", "").replace("\"", "")
-        if( replaceStringConstant.indexOf("\\") != 0 ){
+        if ( replaceStringConstant.indexOf("\\") != 0 ) {
             replaceStringConstant = "\\" + replaceStringConstant
         }
         return replaceStringConstant
