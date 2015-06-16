@@ -58,7 +58,7 @@ open class GetTypeResponse protected constructor(private val response: String?,
     }
 
     private fun filterExcessReturnTypes( originalReference : String ): String {
-        val multiAliasedMethodCalls = originalReference.split("\\|")
+        val multiAliasedMethodCalls = originalReference.split("\\|".toRegex())
         if( multiAliasedMethodCalls.size() == 1 ){
             return originalReference;
         }

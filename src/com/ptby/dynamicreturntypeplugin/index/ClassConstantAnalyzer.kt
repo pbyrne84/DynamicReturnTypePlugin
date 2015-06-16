@@ -15,6 +15,7 @@ public class ClassConstantAnalyzer {
 
 
     public fun getClassNameFromConstantLookup(classConstant: String, project: Project): String? {
+        //@TODO Converting to regex fails
         val constantParts = classConstant.split("((#*)K#C|\\.|\\|\\?)")
 
         if (constantParts.size() < 2) {

@@ -44,7 +44,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
         return MethodCallConfiguration(classMethodConfigKt, callFromSignature, signature)
     }
 
-    private fun parameterIndexIsValid(desiredParameterIndex: Int, parameterValueList: Array<String>): Boolean {
+    private fun parameterIndexIsValid(desiredParameterIndex: Int, parameterValueList: List<String>): Boolean {
         return desiredParameterIndex < parameterValueList.size()
     }
 
@@ -54,7 +54,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
         )
 
         val parameterList = signature.substring(signature.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1)
-                .split(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
+                .splitBy(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
 
         val functionConfig = dynamicReturnTypeConfig.locateFunctionConfig(functionName)
         val functionConfiguration = FunctionConfiguration(functionConfig, signature)

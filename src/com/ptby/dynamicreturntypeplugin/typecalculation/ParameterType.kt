@@ -28,13 +28,7 @@ public class ParameterType( private val functionReference: FunctionReference, pr
         }
 
 
-
-   /*     if( true ){
-            return parameterType
-        }*/
-
-
-        val returnTypeParts = formattableType.split(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
+        val returnTypeParts = formattableType.splitBy(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
         var returnTypePart = returnTypeParts[returnTypeParts.size() - 1]
         if (returnTypePart.length() > 2 && returnTypePart.substring(0, 2) == "#C") {
             return returnTypePart.substring(2)
