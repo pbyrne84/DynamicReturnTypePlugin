@@ -12,7 +12,7 @@ import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 import kotlin.reflect
 
-public class ScriptReplacementExecutor constructor(customScriptEngineFactory: CustomScriptEngineFactory,
+public class ScriptReplacementExecutor @throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
                                                                                public val phpCallReferenceInfo: PhpCallReferenceInfo,
                                                                                public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
@@ -32,9 +32,7 @@ public class ScriptReplacementExecutor constructor(customScriptEngineFactory: Cu
 
     public fun executeAndReplace(currentValue: String): String {
         val parsedSignature = scriptSignatureParser.parseSignature(currentValue)
-        if (parsedSignature == null) {
-            return ""
-        }
+                ?: return ""
 
         try {
             val result = invocable.invokeFunction(

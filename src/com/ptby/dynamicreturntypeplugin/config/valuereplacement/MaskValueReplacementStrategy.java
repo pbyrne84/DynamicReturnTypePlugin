@@ -29,6 +29,7 @@ public class MaskValueReplacementStrategy implements ValueReplacementStrategy {
 
         MaskValueReplacementStrategy that = ( MaskValueReplacementStrategy ) o;
 
+        //noinspection RedundantIfStatement
         if ( mask != null ? !mask.equals( that.mask ) : that.mask != null ) {
             return false;
         }

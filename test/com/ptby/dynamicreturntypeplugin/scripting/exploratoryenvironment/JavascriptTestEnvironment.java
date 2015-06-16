@@ -10,7 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class JavascriptTestEnvironment   {
+class JavascriptTestEnvironment {
 
     public static void main( String[] args ) throws ScriptException, IOException, NoSuchMethodException {
         ScriptEngineManager manager = new ScriptEngineManager();
@@ -58,12 +58,14 @@ public class JavascriptTestEnvironment   {
     }
 
 
+    @SuppressWarnings( "unused" )
     public void testCallBack( Runnable testObject ) {
         System.out.println( testObject );
         testObject.run();
     }
 
 
+    @SuppressWarnings( "unused" )
     public void runByInterface( JavascriptTestInterface value ) {
         value.runByInterface("banana");
     }

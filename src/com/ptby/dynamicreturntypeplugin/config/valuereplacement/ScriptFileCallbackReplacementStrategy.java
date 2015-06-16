@@ -139,6 +139,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
         ScriptFileCallbackReplacementStrategy that = ( ScriptFileCallbackReplacementStrategy ) o;
 
+        //noinspection ConstantConditions
         if ( absoluteJavaScriptFileLocationPath != null ? !absoluteJavaScriptFileLocationPath
                 .equals( that.absoluteJavaScriptFileLocationPath ) : that.absoluteJavaScriptFileLocationPath != null ) {
             return false;
@@ -156,6 +157,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
         if ( scriptFileName != null ? !scriptFileName.equals( that.scriptFileName ) : that.scriptFileName != null ) {
             return false;
         }
+        //noinspection RedundantIfStatement
         if ( scriptReplacementExecutor != null ? !scriptReplacementExecutor
                 .equals( that.scriptReplacementExecutor ) : that.scriptReplacementExecutor != null ) {
             return false;

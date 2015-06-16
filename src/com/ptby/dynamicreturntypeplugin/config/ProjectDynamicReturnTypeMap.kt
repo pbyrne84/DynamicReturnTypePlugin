@@ -9,9 +9,7 @@ public class ProjectDynamicReturnTypeMap : ConcurrentHashMap<String, DynamicRetu
     fun get(project: Project): DynamicReturnTypeConfig {
         val key = project.getBaseDir().toString()
         val dynamicReturnTypeConfig = get(key)
-        if (dynamicReturnTypeConfig == null) {
-            return DynamicReturnTypeConfig.newEmpty()
-        }
+                ?: return DynamicReturnTypeConfig.newEmpty()
 
         return dynamicReturnTypeConfig
     }

@@ -9,7 +9,7 @@ import static org.junit.Assert.assertEquals;
 
 
 public class BySignatureSignatureSplitterTest {
-    String parameterSeparator = DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR;
+    private final String parameterSeparator = DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR;
 
     private BySignatureSignatureSplitter bySignatureSignatureSplitter;
 

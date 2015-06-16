@@ -2,7 +2,6 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.ptby.dynamicreturntypeplugin.TestVirtualFile;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,13 +13,10 @@ public class ValueReplacementStrategyFromConfigFactoryTest {
 
 
     private ValueReplacementStrategyFromConfigFactory valueReplacementStrategyFromConfigFactory;
-    private TestVirtualFile testConfigFile;
-
 
     @Before
     public void setup() {
         valueReplacementStrategyFromConfigFactory = new ValueReplacementStrategyFromConfigFactory();
-        testConfigFile = new TestVirtualFile();
     }
 
 

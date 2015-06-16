@@ -2,14 +2,12 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.intellij.openapi.vfs.VirtualFile;
-
-import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 
 public class ValueReplacementStrategyFromConfigFactory {
-    public static final String FILE_RETURN_TYPE_REPLACEMENT_CALL = "fileReturnTypeReplacementCall";
-    private ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+    private static final String FILE_RETURN_TYPE_REPLACEMENT_CALL = "fileReturnTypeReplacementCall";
+
+    private final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
     public ValueReplacementStrategyFromConfigFactory() {
 

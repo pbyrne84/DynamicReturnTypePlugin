@@ -27,9 +27,7 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
                 }
 
                 val singleType = getTypeSignature(elementType)
-                if (singleType == null) {
-                    return ParameterType(functionReference, null)
-                }
+                        ?: return ParameterType(functionReference, null)
 
                 if (singleType.substring(0, 1) == "\\") {
                     return ParameterType(functionReference, "#C" + singleType)
