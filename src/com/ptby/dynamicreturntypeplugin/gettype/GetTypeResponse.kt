@@ -10,7 +10,7 @@ import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 
-open class GetTypeResponse protected (private val response: String?,
+open class GetTypeResponse protected constructor(private val response: String?,
                                       private val originalReference: FunctionReference?) {
     init {
         if (response != null && response == "null") {
@@ -94,7 +94,7 @@ open class GetTypeResponse protected (private val response: String?,
             index++;
         }
 
-        return parameters.trimTrailing(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR) + DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR;
+        return parameters.removeSuffix(DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR) + DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR;
     }
 }
 

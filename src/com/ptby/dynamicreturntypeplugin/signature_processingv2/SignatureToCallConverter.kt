@@ -50,7 +50,7 @@ public class SignatureToCallConverter {
 }
 
 
-data class ClassCall private (val fqnClass: String, val  method: String, private val parameters: Array<String>) {
+data class ClassCall private constructor(val fqnClass: String, val  method: String, private val parameters: Array<String>) {
     companion object {
         fun newClassCall(fqnClass: String, method: String, parameters: Array<String>): ClassCall {
             return ClassCall(fqnClass, method, parameters)
@@ -71,7 +71,7 @@ data class ClassCall private (val fqnClass: String, val  method: String, private
     }
 }
 
-data class FunctionCall private (val fqnFunction: String, val parameters: Array<String>) {
+data class FunctionCall private constructor(val fqnFunction: String, val parameters: Array<String>) {
     companion object {
         fun newFunction(fqnFunction: String, parameters: Array<String>): FunctionCall {
             return FunctionCall(fqnFunction, parameters)

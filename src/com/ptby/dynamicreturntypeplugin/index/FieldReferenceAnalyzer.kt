@@ -39,7 +39,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
             return originalCallAnalyzer.getFieldInstanceOriginalReturnType(phpIndex, customMethodCallSignature, project)
         }
 
-        var nullSafePhpType = potentiallyNullPhpType as String
+        var nullSafePhpType = potentiallyNullPhpType
         return processNonNullPhpType(project, phpIndex, nullSafePhpType)
     }
 

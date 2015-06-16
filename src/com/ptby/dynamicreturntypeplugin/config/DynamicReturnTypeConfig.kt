@@ -50,7 +50,7 @@ open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableLi
 
 
     public fun locateFunctionConfig( functionSignature : String ) : FunctionCallConfigKt?{
-        val absoluteFqn = "\\" + functionSignature.trimLeading("\\")
+        val absoluteFqn = "\\" + functionSignature.removePrefix("\\")
         for( functionCallConfig in functionCallConfigs){
             if( functionCallConfig.equalsFqnString( absoluteFqn )){
                 return functionCallConfig

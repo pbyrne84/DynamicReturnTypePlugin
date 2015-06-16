@@ -1,6 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.config
 
-public trait ParameterValueFormatter {
+public interface ParameterValueFormatter {
     fun formatBeforeLookup(passedType: String?): String
 
     val parameterIndex : Int

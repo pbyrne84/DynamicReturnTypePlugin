@@ -10,8 +10,9 @@ import javax.script.Invocable
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineManager
 import javax.script.ScriptException
+import kotlin.reflect
 
-public class ScriptReplacementExecutor [throws(javaClass<ScriptException>())]( customScriptEngineFactory: CustomScriptEngineFactory,
+public class ScriptReplacementExecutor constructor(customScriptEngineFactory: CustomScriptEngineFactory,
                                                                                public val phpCallReferenceInfo: PhpCallReferenceInfo,
                                                                                public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable

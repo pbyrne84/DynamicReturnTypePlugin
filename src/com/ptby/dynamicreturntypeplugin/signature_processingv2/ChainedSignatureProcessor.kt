@@ -51,7 +51,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
 
     fun createChainedCalls(signature: String): Array<String> {
         var preparedSignature = cleanParameterEndSignature(signature)
-                .trimLeading("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
+                .removePrefix("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
 
         return preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
@@ -60,8 +60,8 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
 
     private fun cleanParameterEndSignature(signature: String): String {
         var cleanSignature = signature
-        while ( cleanSignature != cleanSignature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)) {
-            cleanSignature = cleanSignature.trimTrailing(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+        while ( cleanSignature != cleanSignature.removeSuffix(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)) {
+            cleanSignature = cleanSignature.removeSuffix(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
         }
 
         return cleanSignature
@@ -104,7 +104,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         }
     }
 
-    trait HasParameterValueFormatter {
+    interface HasParameterValueFormatter {
         fun isValid(): Boolean
         val referenceSignature: String
         fun parameterValueFormatter(): ParameterValueFormatter

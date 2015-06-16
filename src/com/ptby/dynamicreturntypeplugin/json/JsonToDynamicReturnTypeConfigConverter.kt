@@ -13,7 +13,6 @@ import java.util.ArrayList
 public class JsonToDynamicReturnTypeConfigConverter {
     var valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
 
-    throws(javaClass<IOException>())
     public fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
         val parentFolder = configFile.getParent().getCanonicalPath()
         val jsonElement = createJsonElementFromJson(String(configFile.contentsToByteArray()))

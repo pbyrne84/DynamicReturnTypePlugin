@@ -5,11 +5,11 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 public class SignatureMatcher {
 
     public fun verifySignatureIsProjectRootVariableCall(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(PROJECT_ROOT_VARIABLE_PATTERN)
+        return signature.rawStringSignature.matches(PROJECT_ROOT_VARIABLE_PATTERN.toRegex())
     }
 
     public fun verifySignatureIsClassConstantFunctionCall(signature: String): Boolean {
-        return signature.matches(CLASS_CONSTANT_CALL_PATTERN)
+        return signature.matches(CLASS_CONSTANT_CALL_PATTERN.toRegex())
     }
 
 
@@ -19,12 +19,12 @@ public class SignatureMatcher {
 
 
     public fun verifySignatureIsFieldCall(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(FIELD_CALL_PATTERN)
+        return signature.rawStringSignature.matches(FIELD_CALL_PATTERN.toRegex())
     }
 
 
     public fun verifySignatureIsMethodCall(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(METHOD_CALL_PATTERN) ||
+        return signature.rawStringSignature.matches(METHOD_CALL_PATTERN.toRegex()) ||
                 verifySignatureIsProjectRootVariableCall(signature)
     }
 
@@ -33,7 +33,7 @@ public class SignatureMatcher {
      * deferred in the sense that there is no \, this causes signatures to change and have to be further processed
      */
     public fun verifySignatureIsDeferredGlobalFunctionCall(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN)
+        return signature.rawStringSignature.matches(DEFERRED_GLOBAL_FUNCTON_CALL_PATTERN.toRegex())
     }
 
     /**
@@ -41,7 +41,7 @@ public class SignatureMatcher {
      * called on it
      */
     public fun verifySignatureIsFromReturnInitialiasedLocalObject(signature: CustomMethodCallSignature): Boolean {
-        return signature.rawStringSignature.matches(RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN)
+        return signature.rawStringSignature.matches(RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN.toRegex())
 
     }
 

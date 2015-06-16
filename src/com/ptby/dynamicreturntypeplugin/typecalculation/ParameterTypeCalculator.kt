@@ -78,6 +78,6 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
             return null
         }
 
-        return potentialClassName.replaceAll("(\"|')", "").replace(":", "\\")
+        return potentialClassName.replace("(\"|')".toRegex(), "").replace(":", "\\")
     }
 }
