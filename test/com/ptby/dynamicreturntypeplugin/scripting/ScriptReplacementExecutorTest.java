@@ -22,7 +22,6 @@ public class ScriptReplacementExecutorTest {
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
                 ),
-                new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
@@ -42,7 +41,6 @@ public class ScriptReplacementExecutorTest {
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
                 ),
-                new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", groovy, "abc" )
         );
 
@@ -61,7 +59,6 @@ public class ScriptReplacementExecutorTest {
                         new ScriptEngineManager(),
                         ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
                 ),
-                new PhpCallReferenceInfo( "class1", "method1" ),
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 

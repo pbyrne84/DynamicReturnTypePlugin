@@ -13,8 +13,7 @@ import javax.script.ScriptException
 import kotlin.reflect
 
 public class ScriptReplacementExecutor @throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
-                                                                               public val phpCallReferenceInfo: PhpCallReferenceInfo,
-                                                                               public val callableScriptConfiguration: CallableScriptConfiguration) {
+                                                                                   public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
     private val scriptSignatureParser: ScriptSignatureParser
 

@@ -17,8 +17,8 @@ import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
 import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 
-class GetBySignature(private val signatureMatcher: SignatureMatcher,
-                     private val classConstantAnalyzer: ClassConstantAnalyzer,
+class GetBySignature(
+        private val classConstantAnalyzer: ClassConstantAnalyzer,
                      private val customSignatureProcessor: CustomSignatureProcessor,
                      private val configAnalyser: ConfigAnalyser
 ) {

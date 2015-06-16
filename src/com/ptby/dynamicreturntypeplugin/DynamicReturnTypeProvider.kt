@@ -99,7 +99,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         )
 
         val getBySignature = GetBySignature(
-                SignatureMatcher(),
                 classConstantAnalyzer,
                 customSignatureProcessor,
                 configAnalyser

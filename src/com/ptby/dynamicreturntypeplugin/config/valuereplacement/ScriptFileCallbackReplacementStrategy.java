@@ -6,7 +6,6 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ptby.dynamicreturntypeplugin.scripting.CustomScriptEngineFactory;
-import com.ptby.dynamicreturntypeplugin.scripting.PhpCallReferenceInfo;
 import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration;
 import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor;
 
@@ -63,7 +62,6 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
             scriptReplacementExecutor = new ScriptReplacementExecutor(
                     CustomScriptEngineFactory.Companion.createFactory( scriptEngineManager, calculateScriptType() ),
-                    new PhpCallReferenceInfo( className, methodName ),
                     callableScriptConfiguration
             );
 
