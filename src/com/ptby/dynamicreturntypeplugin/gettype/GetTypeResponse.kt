@@ -85,10 +85,8 @@ open class GetTypeResponse protected constructor(private val response: String?,
         var index = 0
         for ( parameter in originalReference.getParameters() ) {
             if ( parameter is PhpTypedElement ) {
-                parameters += parameterTypeCalculator.calculateTypeFromParameter(
-                        originalReference,
-                        index,
-                        originalReference.getParameters()).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
+                parameters += parameterTypeCalculator.calculateTypeFromParameter(index,
+                                                                                 originalReference.getParameters()).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
             }
 
             index++;

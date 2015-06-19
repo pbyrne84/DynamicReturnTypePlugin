@@ -10,7 +10,7 @@ import javax.script.ScriptContext
 import javax.script.ScriptException
 
 
-data class ScriptLanguageSystemMapping(languageDescriptor: String, val scriptEngineFactoryName: String, val jarName: String) {
+data class ScriptLanguageSystemMapping(val scriptEngineFactoryName: String, val jarName: String) {
     fun matchesType(jarFileLocation: String): Boolean {
         return 0 == jarFileLocation.reverse().indexOf(jarName.reverse())
     }
@@ -32,8 +32,8 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
 
         val javascriptRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
         val groovyRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
-        private val mappings = arrayOf(ScriptLanguageSystemMapping(javascriptRef, nashornFactory, "nashorn.jar"),
-                                       ScriptLanguageSystemMapping(groovyRef, groovyFactory, "groovy-all-2.2.1.jar")
+        private val mappings = arrayOf(ScriptLanguageSystemMapping(nashornFactory, "nashorn.jar"),
+                                       ScriptLanguageSystemMapping(groovyFactory, "groovy-all-2.2.1.jar")
         )
 
         fun createFactory(scriptEngineManager : ScriptEngineManager, scriptType: String): CustomScriptEngineFactory {

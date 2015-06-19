@@ -11,7 +11,7 @@ import com.jetbrains.php.lang.psi.elements.FunctionReference
 public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassConstantAnalyzer) {
 
 
-    public fun calculateTypeFromParameter(functionReference: FunctionReference,parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
+    public fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
         if (parameters.size() <= parameterIndex) {
             return ParameterType(null)
         }

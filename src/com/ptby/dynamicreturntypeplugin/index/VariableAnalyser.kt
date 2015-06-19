@@ -13,7 +13,7 @@ import java.util.ArrayList
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
-public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging{
+public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging {
     private val methodCallValidator: MethodCallValidator
     private val originalCallAnalyzer: OriginalCallAnalyzer
 
@@ -44,18 +44,18 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             )
 
 
-            return formatWithMask(phpIndex, matchingMethodConfig, classNameFromConstantLookup, project)
+            return formatWithMask(phpIndex, classNameFromConstantLookup, project)
         }
 
-        return formatWithMask(phpIndex, matchingMethodConfig, signature.desiredParameter, project)
+        return formatWithMask(phpIndex, signature.desiredParameter, project)
     }
 
 
-    private fun formatWithMask(phpIndex: PhpIndex, config: ClassMethodConfigKt, signature: String?, project: Project): Collection<PhpNamedElement>? {
+    private fun formatWithMask(phpIndex: PhpIndex, signature: String?, project: Project): Collection<PhpNamedElement>? {
         val formattedSignature = signature ?: ""
 
         if ( requiresListPackaging(formattedSignature)) {
-            return packageList(formattedSignature, project )
+            return packageList(formattedSignature, project)
         }
 
         val createdType = "#C" + formattedSignature
