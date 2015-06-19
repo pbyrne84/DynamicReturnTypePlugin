@@ -32,9 +32,8 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
 
         val javascriptRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
         val groovyRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
-        private val mappings = array(
-                ScriptLanguageSystemMapping(javascriptRef, nashornFactory, "nashorn.jar"),
-                ScriptLanguageSystemMapping(groovyRef, groovyFactory, "groovy-all-2.2.1.jar")
+        private val mappings = arrayOf(ScriptLanguageSystemMapping(javascriptRef, nashornFactory, "nashorn.jar"),
+                                       ScriptLanguageSystemMapping(groovyRef, groovyFactory, "groovy-all-2.2.1.jar")
         )
 
         fun createFactory(scriptEngineManager : ScriptEngineManager, scriptType: String): CustomScriptEngineFactory {
@@ -79,7 +78,7 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
 
         val jarFileUrl = File(customJarLocation).toURI().toURL();
         val classLoader = Thread.currentThread().getContextClassLoader()
-        val urlCl = URLClassLoader(array(jarFileUrl), classLoader);
+        val urlCl = URLClassLoader(arrayOf(jarFileUrl), classLoader);
         val clazz = urlCl.loadClass(scriptLanguageSystemMapping.scriptEngineFactoryName)
         val scriptEngineFactory = clazz.newInstance() as ScriptEngineFactory
         scriptEngineManager.registerEngineName( scriptType, scriptEngineFactory )

@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-    <version>2.0.1</version>
+  <version>2.0.2</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,6 +85,13 @@
 
     <change-notes>
         <![CDATA[
+        <h3>2.0.2</h3>
+       <ul>
+       <li>
+        Fix ::class resolution in 141.1619
+       </li>
+       </ul>
+
        <h3>2.0.1</h3>
        <ul>
        <li><a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/35">Completely reworked all signature processing to allow fluent chaining between containers, including source container/locator being symfony</a>.
@@ -173,7 +180,7 @@
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-    <idea-version since-build="133.982"/>
+  <idea-version since-build="141.1619"/>
     <extensions defaultExtensionNs="com.intellij">
      </extensions>
 

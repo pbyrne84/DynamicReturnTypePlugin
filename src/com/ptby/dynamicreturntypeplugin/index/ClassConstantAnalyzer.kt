@@ -15,9 +15,14 @@ public class ClassConstantAnalyzer {
 
 
     public fun getClassNameFromConstantLookup(classConstant: String, project: Project): String? {
-        //@TODO Converting to regex fails
-        val constantParts = classConstant.split("((#*)K#C|\\.|\\|\\?)")
+        val trimmedClassConstant = if ( classConstant.endsWith(".class")) {
+            classConstant.removeSuffix("class")
+        } else {
+            classConstant
+        }
 
+        //@TODO Converting to regex fails
+        val constantParts = trimmedClassConstant.split("((#*)K#C|\\.|\\|\\?)")
         if (constantParts.size() < 2) {
             return null
         }
@@ -36,9 +41,8 @@ public class ClassConstantAnalyzer {
             for (field in fields) {
                 if (field.isConstant() && field.getName() == constantName) {
                     val defaultValue = field.getDefaultValue()
-                    if (defaultValue == null) {
-                        return null
-                    }
+                            ?: return null
+
                     val constantText = defaultValue.getText()
                     if (constantText == "__CLASS__") {
                         return className
