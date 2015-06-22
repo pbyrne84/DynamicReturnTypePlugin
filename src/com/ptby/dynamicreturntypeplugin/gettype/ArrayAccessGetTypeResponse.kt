@@ -1,8 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.gettype
 
-import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
-import com.jetbrains.php.lang.psi.elements.PhpReference
-import com.jetbrains.php.lang.psi.elements.StringLiteralExpression
+import com.jetbrains.php.lang.psi.elements.*
+import com.jetbrains.php.lang.psi.elements.impl.ConstantReferenceImpl
 import com.jetbrains.php.lang.psi.elements.impl.PhpNamedElementImpl
 import com.jetbrains.php.lang.psi.elements.impl.StringLiteralExpressionImpl
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl
@@ -31,10 +30,10 @@ class ArrayAccessGetTypeResponse(private val  originalReference: String?,
     }
 
 
-    private fun createSignature(reference: PhpReference, index: StringLiteralExpression): String {
+    private fun createSignature(reference: PhpReference, index: String): String {
         return "#M" + reference.getSignature() + ".offsetGet" +
                 DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
-                index.getContents() +
+                index +
                 DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR
     }
 
@@ -43,7 +42,16 @@ class ArrayAccessGetTypeResponse(private val  originalReference: String?,
             return ""
         }
 
+        val index = arrayAccessExpression?.getIndex()?.getValue()
+        val indexSignature: String = if ( index is StringLiteralExpression ) {
+            index.getContents()
+        } else if ( index is PhpReference ) {
+            index.getSignature()
+        } else {
+            throw  RuntimeException("Unknown " + index?.javaClass)
+        }
+
         return createSignature(arrayAccessExpression?.getValue() as PhpReference,
-                               arrayAccessExpression?.getIndex()?.getValue() as StringLiteralExpressionImpl)
+                               indexSignature)
     }
 }
