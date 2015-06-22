@@ -3,6 +3,9 @@ package com.ptby.dynamicreturntypeplugin.gettype
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.parser.PhpElementTypes
+import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
+import com.jetbrains.php.lang.psi.elements.FunctionReference
+import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl
 import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
@@ -17,24 +20,34 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
 
     public fun createDynamicReturnType(psiElement: PsiElement): GetTypeResponse {
         if (PlatformPatterns.psiElement(PhpElementTypes.METHOD_REFERENCE).accepts(psiElement)) {
-            return createMethodResponse(psiElement as MethodReferenceImpl)
+            return createMethodResponse(psiElement as MethodReference)
         } else if (PlatformPatterns.psiElement(PhpElementTypes.FUNCTION_CALL).accepts(psiElement)) {
-            return createFunctionResponse(psiElement as FunctionReferenceImpl)
+            return createFunctionResponse(psiElement as FunctionReference)
+        } else if ( PlatformPatterns.psiElement(PhpElementTypes.ARRAY_ACCESS_EXPRESSION).accepts(psiElement) ) {
+            return createArrayAccessResponse(psiElement as ArrayAccessExpression)
         }
 
-        return GetTypeResponse.createNull()
+        return FunctionReferenceGetTypeResponse.createNull()
     }
 
-    private fun createMethodResponse(classMethod: MethodReferenceImpl): GetTypeResponse {
+    private fun createMethodResponse(classMethod: MethodReference): GetTypeResponse {
         val currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(classMethod.getProject())
 
         return methodCallReturnTypeScanner.getTypeFromMethodCall(currentClassMethodConfigs, classMethod)
     }
 
 
-    private fun createFunctionResponse(functionReference: FunctionReferenceImpl): GetTypeResponse {
+    private fun createFunctionResponse(functionReference: FunctionReference): GetTypeResponse {
         val currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(functionReference.getProject())
 
         return functionCallReturnTypeScanner.getTypeFromFunctionCall(currentFunctionCallConfigs, functionReference)
     }
+
+
+    private fun createArrayAccessResponse(arrayAccess: ArrayAccessExpression): GetTypeResponse {
+        val currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(arrayAccess.getProject())
+
+        return methodCallReturnTypeScanner.getTypeFromArrayAccess(currentClassMethodConfigs, arrayAccess)
+    }
+
 }

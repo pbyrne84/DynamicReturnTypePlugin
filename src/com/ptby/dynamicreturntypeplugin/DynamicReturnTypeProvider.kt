@@ -8,7 +8,7 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2
 import com.ptby.dynamicreturntypeplugin.config.ConfigState
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer
-import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
+import com.ptby.dynamicreturntypeplugin.gettype.FunctionReferenceGetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
@@ -25,9 +25,11 @@ import java.util.ArrayList
 
 import com.intellij.openapi.diagnostic.Logger.getInstance
 import com.jetbrains.php.PhpIndex
+import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
 import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
 import com.jetbrains.php.lang.psi.elements.Variable
 import com.jetbrains.php.lang.psi.elements.Method
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
@@ -74,12 +76,13 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
     override fun getType(psiElement: PsiElement): String? {
         try {
-            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(psiElement)
+            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(
+                    psiElement)
             if (dynamicReturnType.isNull()) {
                 return null
             }
 
-            return dynamicReturnType.toString()
+            return dynamicReturnType.getSignature()
         } catch (e: Exception) {
             if (e !is ProcessCanceledException) {
                 logger.error("Exception", e)
