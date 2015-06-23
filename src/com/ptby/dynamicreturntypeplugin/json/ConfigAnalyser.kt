@@ -21,6 +21,11 @@ public class ConfigAnalyser(private val openProjects: OpenProjects) : ProjectCon
     }
 
 
+    public fun hasArrayAccessEnabled(project: Project): Boolean {
+        return getCurrentConfig(project).hasArrayAccessEnabled()
+    }
+
+
     public fun getCurrentClassMethodConfigs(project: Project): List<ClassMethodConfigKt> {
         return projectDynamicReturnTypeMap.get(project).classMethodConfigs
     }

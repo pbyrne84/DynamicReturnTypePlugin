@@ -19,11 +19,14 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
                                     private val functionCallReturnTypeScanner: FunctionCallReturnTypeScanner) {
 
     public fun createDynamicReturnType(psiElement: PsiElement): GetTypeResponse {
+        val project = psiElement.getProject()
+
         if (PlatformPatterns.psiElement(PhpElementTypes.METHOD_REFERENCE).accepts(psiElement)) {
             return createMethodResponse(psiElement as MethodReference)
         } else if (PlatformPatterns.psiElement(PhpElementTypes.FUNCTION_CALL).accepts(psiElement)) {
             return createFunctionResponse(psiElement as FunctionReference)
-        } else if ( PlatformPatterns.psiElement(PhpElementTypes.ARRAY_ACCESS_EXPRESSION).accepts(psiElement) ) {
+        } else if (   PlatformPatterns.psiElement(PhpElementTypes.ARRAY_ACCESS_EXPRESSION).accepts(psiElement) &&
+                configAnalyser.hasArrayAccessEnabled(project) ) {
             return createArrayAccessResponse(psiElement as ArrayAccessExpression)
         }
 
@@ -45,9 +48,7 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
 
 
     private fun createArrayAccessResponse(arrayAccess: ArrayAccessExpression): GetTypeResponse {
-        val currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(arrayAccess.getProject())
-
-        return methodCallReturnTypeScanner.getTypeFromArrayAccess(currentClassMethodConfigs, arrayAccess)
+        return methodCallReturnTypeScanner.getTypeFromArrayAccess(arrayAccess)
     }
 
 }

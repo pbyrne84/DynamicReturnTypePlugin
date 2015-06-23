@@ -13,6 +13,10 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         this.methodName = methodName.toLowerCase()
     }
 
+    public fun isArrayAccessConfig(): Boolean {
+        return methodName == "offsetget"
+    }
+
     //Not equality does not work unless overridden???
     override fun equals(other: Any?): Boolean {
         return super.equals(other)

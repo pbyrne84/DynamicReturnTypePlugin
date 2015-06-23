@@ -7,6 +7,11 @@ import com.jetbrains.php.PhpIndex
 open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
                                    public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
+    private var arrayAccessEnabled = false;
+
+    public fun hasArrayAccessEnabled(): Boolean {
+        return arrayAccessEnabled
+    }
 
     companion object {
         fun newEmpty() = DynamicReturnTypeConfig(ArrayList<ClassMethodConfigKt>(), ArrayList<FunctionCallConfigKt>())
@@ -19,6 +24,10 @@ open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableLi
     public fun merge(newConfig: DynamicReturnTypeConfig) {
         for (possibleNewMethodConfig in newConfig.classMethodConfigs ) {
             if (!classMethodConfigs.contains(possibleNewMethodConfig)) {
+                if ( possibleNewMethodConfig.isArrayAccessConfig()) {
+                    arrayAccessEnabled = true
+                }
+
                 classMethodConfigs.add(possibleNewMethodConfig)
             }
         }

@@ -15,10 +15,7 @@ public class MethodCallReturnTypeScanner() {
 
         for (classMethodConfig in classMethodConfigList) {
             if (classMethodConfig.equalsMethodReferenceName(methodReference)) {
-                val getTypeResponse = FunctionReferenceGetTypeResponse.newMethod(methodReference)
-                if (!getTypeResponse.isNull()) {
-                    return getTypeResponse
-                }
+                return FunctionReferenceGetTypeResponse.newMethod(methodReference)
             }
         }
 
@@ -26,20 +23,9 @@ public class MethodCallReturnTypeScanner() {
     }
 
 
-    public fun getTypeFromArrayAccess(classMethodConfigList: List<ClassMethodConfigKt>,
-                                      arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
+    public fun getTypeFromArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
 
-        for (classMethodConfig in classMethodConfigList) {
-            if (classMethodConfig.equalsMethodReferenceName("offsetGet")) {
-                val getTypeResponse = ArrayAccessGetTypeResponse.newArrayAccess(arrayAccessExpression)
-                if (!getTypeResponse.isNull()) {
-                    return getTypeResponse
-                }
-            }
-        }
-
-        return ArrayAccessGetTypeResponse.createNull()
-
+        return ArrayAccessGetTypeResponse.newArrayAccess(arrayAccessExpression)
     }
 
 

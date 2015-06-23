@@ -30,13 +30,6 @@ class ArrayAccessGetTypeResponse(private val  originalReference: String?,
     }
 
 
-    private fun createSignature(reference: PhpReference, index: String): String {
-        return "#M" + reference.getSignature() + ".offsetGet" +
-                DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
-                index +
-                DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR
-    }
-
     override fun getSignature(): String {
         if ( isNull() ) {
             return ""
@@ -51,7 +44,16 @@ class ArrayAccessGetTypeResponse(private val  originalReference: String?,
             throw  RuntimeException("Unknown " + index?.javaClass)
         }
 
-        return createSignature(arrayAccessExpression?.getValue() as PhpReference,
-                               indexSignature)
+        return createSignature(
+                arrayAccessExpression?.getValue() as PhpReference,
+                indexSignature
+        )
+    }
+
+    private fun createSignature(reference: PhpReference, index: String): String {
+        return "#M" + reference.getSignature() + ".offsetGet" +
+                DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
+                index +
+                DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR
     }
 }
