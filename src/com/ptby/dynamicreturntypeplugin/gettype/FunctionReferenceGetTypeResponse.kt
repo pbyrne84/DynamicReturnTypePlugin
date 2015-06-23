@@ -10,34 +10,27 @@ import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 
-open class FunctionReferenceGetTypeResponse protected constructor(private val response: String?,
+open class FunctionReferenceGetTypeResponse protected constructor(private val isNull: Boolean,
                                                                   private val originalReference: FunctionReference?) : GetTypeResponse {
-    init {
-        if (response != null && response == "null") {
-            throw RuntimeException("cannot be string null")
-
-        }
-    }
-
 
     companion object {
         fun createNull(): FunctionReferenceGetTypeResponse {
-            return FunctionReferenceGetTypeResponse(null, null)
+            return FunctionReferenceGetTypeResponse(true, null)
         }
 
         fun newMethod(originalReference: FunctionReference): FunctionReferenceGetTypeResponse {
-            return FunctionReferenceGetTypeResponse("not null", originalReference)
+            return FunctionReferenceGetTypeResponse(false, originalReference)
         }
 
         fun newFunction(originalReference: FunctionReference): FunctionReferenceGetTypeResponse {
-            return FunctionGetTypeResponse("not null", originalReference)
+            return FunctionGetTypeResponse(false, originalReference)
         }
 
     }
 
 
     override public fun isNull(): Boolean {
-        return response == null
+        return isNull
     }
 
     override fun toString(): String {
@@ -102,14 +95,10 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val re
 }
 
 
-class FunctionGetTypeResponse(private val returnType: String?,
-                              private val originalReference: FunctionReference) : FunctionReferenceGetTypeResponse(
-        returnType,
-        originalReference) {
+class FunctionGetTypeResponse(private val isNull: Boolean,
+                              private val originalReference: FunctionReference) :
+        FunctionReferenceGetTypeResponse(isNull, originalReference) {
 
-    override fun isNull(): Boolean {
-        return returnType == null
-    }
 
     override fun toString(): String {
         val functionSig = super.toString()
