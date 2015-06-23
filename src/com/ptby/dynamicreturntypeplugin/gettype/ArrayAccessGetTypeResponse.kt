@@ -7,22 +7,49 @@ import com.jetbrains.php.lang.psi.elements.impl.StringLiteralExpressionImpl
 import com.jetbrains.php.lang.psi.elements.impl.VariableImpl
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
-class ArrayAccessGetTypeResponse(private val  originalReference: String?,
-                                 private val arrayAccessExpression: ArrayAccessExpression?) : GetTypeResponse {
+class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
+                                 private val signature: String) : GetTypeResponse {
+
+
 
     companion object {
         public fun createNull(): GetTypeResponse {
-            return ArrayAccessGetTypeResponse(null, null)
+            return ArrayAccessGetTypeResponse(true, "")
         }
 
         fun newArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
-            return ArrayAccessGetTypeResponse("not null", arrayAccessExpression)
+            val attemptedSignature = attemptSignature(arrayAccessExpression)
+                    ?: return createNull()
+
+            return ArrayAccessGetTypeResponse(false, attemptedSignature)
+        }
+
+        private fun attemptSignature(arrayAccessExpression: ArrayAccessExpression): String? {
+            val index = arrayAccessExpression.getIndex()?.getValue()
+            val indexSignature: String = if ( index is StringLiteralExpression ) {
+                index.getContents()
+            } else if ( index is PhpReference ) {
+                index.getSignature()
+            } else {
+                return null
+            }
+
+            return formatSignature(
+                    arrayAccessExpression.getValue() as PhpReference,
+                    indexSignature
+            )
+        }
+
+        private fun formatSignature(reference: PhpReference, index: String): String {
+            return "#M" + reference.getSignature() + ".offsetGet" +
+                    DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
+                    index +
+                    DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR
         }
     }
 
-
     override fun isNull(): Boolean {
-        return originalReference == null
+        return isNull
     }
 
     override fun toString(): String {
@@ -30,30 +57,10 @@ class ArrayAccessGetTypeResponse(private val  originalReference: String?,
     }
 
 
+
     override fun getSignature(): String {
-        if ( isNull() ) {
-            return ""
-        }
-
-        val index = arrayAccessExpression?.getIndex()?.getValue()
-        val indexSignature: String = if ( index is StringLiteralExpression ) {
-            index.getContents()
-        } else if ( index is PhpReference ) {
-            index.getSignature()
-        } else {
-            throw  RuntimeException("Unknown " + index?.javaClass)
-        }
-
-        return createSignature(
-                arrayAccessExpression?.getValue() as PhpReference,
-                indexSignature
-        )
+        return signature
     }
 
-    private fun createSignature(reference: PhpReference, index: String): String {
-        return "#M" + reference.getSignature() + ".offsetGet" +
-                DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
-                index +
-                DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR
-    }
+
 }
