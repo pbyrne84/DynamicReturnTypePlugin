@@ -17,7 +17,7 @@ class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
             return ArrayAccessGetTypeResponse(true, "")
         }
 
-        fun newArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
+        public fun newArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
             val attemptedSignature = attemptSignature(arrayAccessExpression)
                     ?: return createNull()
 
@@ -25,6 +25,10 @@ class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
         }
 
         private fun attemptSignature(arrayAccessExpression: ArrayAccessExpression): String? {
+            if ( arrayAccessExpression.getValue() !is PhpReference ) {
+                return null
+            }
+
             val index = arrayAccessExpression.getIndex()?.getValue()
             val indexSignature: String = if ( index is StringLiteralExpression ) {
                 index.getContents()
