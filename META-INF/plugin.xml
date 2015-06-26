@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-  <version>2.0.2</version>
+  <version>2.0.3</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,7 +85,18 @@
 
     <change-notes>
         <![CDATA[
-        <h3>2.0.2</h3>
+        <h3>2.0.3</h3>
+       <ul>
+       <li>
+        Added basic array access
+        examples
+        https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/TestEnvironment/lib/DynamicReturnTypePluginTestEnvironment/ArrayAccessTest.php
+
+        Use offsetGet
+        https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/TestEnvironment/dynamicReturnTypeMeta.json#L99-99
+       </li>
+       </ul>
+      <h3>2.0.2</h3>
        <ul>
        <li>
         Fix ::class resolution in 141.1619
