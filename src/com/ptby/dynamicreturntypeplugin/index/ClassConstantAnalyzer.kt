@@ -15,45 +15,49 @@ public class ClassConstantAnalyzer {
 
 
     public fun getClassNameFromConstantLookup(classConstant: String, project: Project): String? {
-        val trimmedClassConstant = if ( classConstant.endsWith(".class")) {
-            classConstant.removeSuffix("class")
-        } else {
-            classConstant
-        }
+        val classConstantWalker  = ClassConstantWalker()
+        val result = classConstantWalker.walkThroughConstants(PhpIndex.getInstance(project), classConstant)
+        return result
 
-        //@TODO Converting to regex fails
-        val constantParts = trimmedClassConstant.split("((#*)K#C|\\.|\\|\\?)")
-        if (constantParts.size() < 2) {
-            return null
-        }
+        /*   val trimmedClassConstant = if ( classConstant.endsWith(".class")) {
+               classConstant.removeSuffix("class")
+           } else {
+               classConstant
+           }
 
-        if (constantParts.size() == 2) {
-            return constantParts[1]
-        }
+           //@TODO Converting to regex fails
+           val constantParts = trimmedClassConstant.split("((#*)K#C|\\.|\\|\\?)")
+           if (constantParts.size() < 2) {
+               return null
+           }
 
-        val className = constantParts[1]
-        val constantName = constantParts[2]
+           if (constantParts.size() == 2) {
+               return constantParts[1]
+           }
 
-        val phpIndex = PhpIndex.getInstance(project)
-        val classesByFQN = phpIndex.getAnyByFQN(className)
-        for (phpClass in classesByFQN) {
-            val fields = phpClass.getFields()
-            for (field in fields) {
-                if (field.isConstant() && field.getName() == constantName) {
-                    val defaultValue = field.getDefaultValue()
-                            ?: return null
+           val className = constantParts[1]
+           val constantName = constantParts[2]
 
-                    val constantText = defaultValue.getText()
-                    if (constantText == "__CLASS__") {
-                        return className
-                    } else {
-                        return formatStringConstant(constantText)
-                    }
-                }
-            }
-        }
+           val phpIndex = PhpIndex.getInstance(project)
+           val classesByFQN = phpIndex.getAnyByFQN(className)
+           for (phpClass in classesByFQN) {
+               val fields = phpClass.getFields()
+               for (field in fields) {
+                   if (field.isConstant() && field.getName() == constantName) {
+                       val defaultValue = field.getDefaultValue()
+                               ?: return null
 
-        return null
+                       val constantText = defaultValue.getText()
+                       if (constantText == "__CLASS__") {
+                           return className
+                       } else {
+                           return formatStringConstant(constantText)
+                       }
+                   }
+               }
+           }
+
+           return null*/
     }
 
 
