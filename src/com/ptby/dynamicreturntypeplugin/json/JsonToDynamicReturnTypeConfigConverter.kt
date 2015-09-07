@@ -11,7 +11,7 @@ import java.io.IOException
 import java.util.ArrayList
 
 public class JsonToDynamicReturnTypeConfigConverter {
-    var valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
+    val valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
 
     public fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
         val parentFolder = configFile.getParent().getCanonicalPath()

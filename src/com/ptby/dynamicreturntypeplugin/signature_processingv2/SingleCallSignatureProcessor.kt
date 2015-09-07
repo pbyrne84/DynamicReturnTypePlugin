@@ -89,10 +89,17 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
 data class SingleCall private constructor(private val hasParameterValueFormatter: HasParameterValueFormatter?,
                                           private val returnType: ReturnType?) {
     fun isValid(): Boolean {
+        println("hasFoundReturnType " + hasFoundReturnType() )
+
+        println("")
+        println("")
+
+
         return hasParameterValueFormatter !== null && hasParameterValueFormatter.isValid() && hasFoundReturnType()
     }
 
     private fun hasFoundReturnType(): Boolean {
+        println("returnType "+ returnType )
         return returnType !== null && returnType.hasFoundReturnType()
     }
 

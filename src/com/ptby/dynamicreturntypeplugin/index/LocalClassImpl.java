@@ -101,8 +101,7 @@ public class LocalClassImpl implements PhpNamedElement {
 
 
     @Nullable
-    @Override
-    public <ParentType extends PhpPsiElement> ParentType getParentOfType( Class<ParentType> parentTypeClass ) {
+    public <ParentType extends PhpPsiElement> ParentType getParentOfType( Class<ParentType> aClass ) {
         return null;
     }
 

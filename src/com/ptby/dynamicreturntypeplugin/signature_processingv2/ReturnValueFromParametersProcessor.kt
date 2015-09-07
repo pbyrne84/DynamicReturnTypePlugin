@@ -12,6 +12,7 @@ import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 
 public class ReturnValueFromParametersProcessor(
         private val customSignatureProcessor: CustomSignatureProcessor) {
@@ -28,7 +29,7 @@ public class ReturnValueFromParametersProcessor(
         val selectedParameter = classCall.getParameterAtIndex( classMethodConfigKt.parameterIndex )
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
-        if ( treatedParameter.contains("|")) {
+        if ( treatedParameter.isMulti) {
             return ReturnType(createMultiTypedFromMask(treatedParameter, project))
         }
 
@@ -50,50 +51,17 @@ public class ReturnValueFromParametersProcessor(
     }
 
 
-    private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
+    private fun createMultiTypedFromMask(formattedSignature: MaskProcessedSignature, project: Project): Collection<PhpNamedElement>? {
         val customList = ArrayList<PhpNamedElement>()
-        formattedSignature.split("\\|".toRegex()).reverse().forEach { type ->
+        formattedSignature.typeWithOutListSuffix.split("\\|".toRegex()).reverse().forEach { type ->
             customList.add(LocalClassImpl(PhpType().add("#C" + type.removePrefix("#K#C").removeSuffix(".")), project))
         }
 
         return customList
     }
 
-    fun getFunctionReturnValue(parameter: String, phpIndex: PhpIndex, project: Project): ReturnType {
+    fun getFunctionReturnValue(parameter: MaskProcessedSignature, phpIndex: PhpIndex, project: Project): ReturnType {
         return ReturnType(customSignatureProcessor.tryFunctionCall(parameter, phpIndex, project))
-    }
-
-}
-
-
-data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
-    private var fqnClassName: String? = null
-
-    fun getClassName(): String {
-        if ( fqnClassName == null ) {
-            fqnClassName = ""
-            if ( phpNamedElements != null && hasFoundReturnType() ) {
-                val phpNamedElement = phpNamedElements.iterator().next()
-                fqnClassName = if ( phpNamedElement.getFQN() == null ) {
-                    ""
-                } else {
-                    phpNamedElement.getFQN()
-                }
-            }
-        }
-
-        return fqnClassName as String
-    }
-
-    fun hasFoundReturnType(): Boolean {
-        return phpNamedElements != null && phpNamedElements.size() > 0
-    }
-
-
-    companion object {
-        fun empty(): ReturnType {
-            return ReturnType(setOf())
-        }
     }
 
 }

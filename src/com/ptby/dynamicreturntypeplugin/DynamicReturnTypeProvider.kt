@@ -94,6 +94,18 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
+    //    project.
+        //#F\DynamicReturnTypePluginTestEnvironment\getDomDocument
+/*
+        val phpIndex = PhpIndex.getInstance(project)
+        val x = phpIndex.getBySignature("#F\\DynamicReturnTypePluginTestEnvironment\\getDomDocument")
+        if ( true ) {
+            return x
+        }
+*/
+
+        println(signature)
+
         val customSignatureProcessor = CustomSignatureProcessor(
                 returnInitialisedSignatureConverter,
                 ClassConstantAnalyzer(),
@@ -102,7 +114,6 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
         )
 
         val getBySignature = GetBySignature(
-                classConstantAnalyzer,
                 customSignatureProcessor,
                 configAnalyser
         )

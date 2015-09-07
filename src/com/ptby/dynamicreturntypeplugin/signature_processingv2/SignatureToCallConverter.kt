@@ -42,32 +42,13 @@ public class SignatureToCallConverter {
 
 
     private fun getParameters(singleCall: String): List<String> {
-        val parameterSignature = singleCall.substring(singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1)
+        val parameterSignature = singleCall.substring(
+                singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1
+        )
 
         return parameterSignature.splitBy(
                 DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
     }
 }
 
-
-data class ClassCall private constructor(val fqnClass: String, val  method: String, private val parameters: List<String>) {
-    companion object {
-        fun newClassCall(fqnClass: String, method: String, parameters: List<String>): ClassCall {
-            return ClassCall(fqnClass, method, parameters)
-        }
-
-
-        fun newEmpty(): ClassCall {
-            return ClassCall("", "", "".splitBy(""))
-        }
-    }
-
-    fun hasParameterAtIndex( index : Int ): Boolean {
-        return index < parameters.size()
-    }
-
-    fun getParameterAtIndex(index : Int ): String {
-        return parameters.get( index )
-    }
-}
 

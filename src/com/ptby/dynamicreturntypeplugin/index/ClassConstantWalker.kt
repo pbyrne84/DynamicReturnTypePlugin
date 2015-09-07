@@ -18,7 +18,7 @@ public class ClassConstantWalker {
     }
 
 
-    private fun isPhpClassConstantReference(signature: String): Boolean
+     fun isPhpClassConstantReference(signature: String): Boolean
             = signature.startsWith("#K#C") && signature.endsWith(".class")
 
     private fun stripPhpClassConstantReference(signature: String): String

@@ -15,6 +15,11 @@ public class ClassConstantAnalyzer {
 
 
     public fun getClassNameFromConstantLookup(classConstant: String, project: Project): String? {
+        val classConstantWalker  = ClassConstantWalker()
+        val result = classConstantWalker.walkThroughConstants(PhpIndex.getInstance(project), classConstant)
+        return result
+
+
         val trimmedClassConstant = if ( classConstant.endsWith(".class")) {
             classConstant.removeSuffix("class")
         } else {

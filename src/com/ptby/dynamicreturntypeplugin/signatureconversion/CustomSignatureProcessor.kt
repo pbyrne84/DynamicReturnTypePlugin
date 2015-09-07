@@ -24,24 +24,33 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
                          project: Project,
                          signature: String): Collection<PhpNamedElement>? {
 
+        println("a")
         var processedCustomMethodCallSignature = customMethodCallSignature
         val signatureMatcher = SignatureMatcher()
         if (signatureRequiresConversion(processedCustomMethodCallSignature, signatureMatcher)) {
+            println("b")
             processedCustomMethodCallSignature = returnInitialisedSignatureConverter.convertSignatureToClassSignature(
                     processedCustomMethodCallSignature, project
             )
         }
 
         if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(processedCustomMethodCallSignature)) {
+            println("c")
             return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(
                     processedCustomMethodCallSignature.rawStringSignature, project)
             )
         } else if (signatureMatcher.verifySignatureIsFieldCall(processedCustomMethodCallSignature)) {
+            println("d")
 
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup(processedCustomMethodCallSignature, project)
         } else if (signatureMatcher.verifySignatureIsMethodCall(processedCustomMethodCallSignature)) {
+            println("e")
+            println(processedCustomMethodCallSignature)
+
             return variableAnalyser.getClassNameFromVariableLookup(processedCustomMethodCallSignature, project)
         }
+
+        println("f")
 
         return tryToDeferToDefaultType(processedCustomMethodCallSignature, signature, phpIndex)
     }
@@ -53,19 +62,19 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
     }
 
 
-    fun tryFunctionCall(parameter: String,
+    fun tryFunctionCall(parameter: MaskProcessedSignature,
                         phpIndex: PhpIndex,
                         project: Project): Collection<PhpNamedElement> {
         val signatureMatcher = SignatureMatcher()
-        if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter)) {
-            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter, project))
+        if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter.typeWithOutListSuffix)) {
+            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter.typeWithOutListSuffix, project))
         }
 
-        if ( requiresListPackaging(parameter)) {
-            return packageList(parameter, project)
+        if ( parameter.isMulti) {
+            return packageList(parameter , project)
         }
 
-        return tryToDeferToDefaultType(null, parameter, phpIndex)
+        return tryToDeferToDefaultType(null, parameter.typeWithOutListSuffix, phpIndex)
     }
 
 

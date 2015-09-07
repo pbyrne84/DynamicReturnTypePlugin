@@ -1,5 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker;
+
 public class MaskValueReplacementStrategy implements ValueReplacementStrategy {
 
     private final String mask;

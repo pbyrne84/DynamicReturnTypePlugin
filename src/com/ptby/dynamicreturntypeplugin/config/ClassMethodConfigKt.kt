@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.config
 
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 import org.apache.commons.lang.StringUtils
 
 data class ClassMethodConfigKt(public val fqnClassName: String,
@@ -45,12 +46,12 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
     }
 
 
-    override public fun formatBeforeLookup(passedType: String?): String{
+    override public fun formatBeforeLookup(passedType: String?): MaskProcessedSignature {
         val s = valueReplacementStrategy.replaceCalculatedValue(passedType)
         if( s == null ){
-            return "";
+            return MaskProcessedSignature( "" );
         }
-        return s.replace("\\\\", "\\")
+        return MaskProcessedSignature( s.replace("\\\\", "\\") )
 
     }
 

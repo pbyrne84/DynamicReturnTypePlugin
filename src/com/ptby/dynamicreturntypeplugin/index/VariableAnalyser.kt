@@ -3,15 +3,12 @@ package com.ptby.dynamicreturntypeplugin.index
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
-
-import java.util.ArrayList
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 
 public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging {
     private val methodCallValidator: MethodCallValidator
@@ -38,24 +35,33 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             )
         }
 
-        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.desiredParameter)) {
+        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.maskProcessedSignature.typeWithOutListSuffix)) {
             val classNameFromConstantLookup = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    signature.desiredParameter, project
+                    signature.maskProcessedSignature.typeWithOutListSuffix, project
             )
 
+            val maskProcessedSignature = if( classNameFromConstantLookup == null ){
+                null
+            }else{
+                MaskProcessedSignature( classNameFromConstantLookup )
+            }
 
-            return formatWithMask(phpIndex, classNameFromConstantLookup, project)
+            return formatWithMask(phpIndex, maskProcessedSignature, project)
         }
 
-        return formatWithMask(phpIndex, signature.desiredParameter, project)
+        return formatWithMask(phpIndex, signature.maskProcessedSignature, project)
     }
 
 
-    private fun formatWithMask(phpIndex: PhpIndex, signature: String?, project: Project): Collection<PhpNamedElement>? {
-        val formattedSignature = signature ?: ""
+    private fun formatWithMask(phpIndex: PhpIndex, signature: MaskProcessedSignature?, project: Project): Collection<PhpNamedElement>? {
+        val formattedSignature = signature ?: MaskProcessedSignature( "")
 
-        if ( requiresListPackaging(formattedSignature)) {
+        if ( formattedSignature.wouldLikeList) {
             return packageList(formattedSignature, project)
+        }
+
+        if ( formattedSignature.typeWithOutListSuffix.startsWith("#F")) {
+            return phpIndex.getBySignature(formattedSignature.typeWithOutListSuffix)
         }
 
         val createdType = "#C" + formattedSignature

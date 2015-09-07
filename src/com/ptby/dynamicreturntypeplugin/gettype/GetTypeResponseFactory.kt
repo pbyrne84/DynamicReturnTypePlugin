@@ -2,12 +2,12 @@ package com.ptby.dynamicreturntypeplugin.gettype
 
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
+import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.parser.PhpElementTypes
 import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.jetbrains.php.lang.psi.elements.MethodReference
-import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl
-import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl
+import com.jetbrains.php.lang.psi.elements.impl.*
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser

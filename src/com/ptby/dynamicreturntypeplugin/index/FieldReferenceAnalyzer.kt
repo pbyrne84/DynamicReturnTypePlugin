@@ -12,6 +12,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
 import java.util.ArrayList
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
@@ -45,18 +46,18 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
 
     fun processNonNullPhpType(project: Project,
                               phpIndex: PhpIndex,
-                              nullSafePhpType: String): Collection<PhpNamedElement> {
-        var processedType: String? = nullSafePhpType
+                              nullSafePhpType: MaskProcessedSignature): Collection<PhpNamedElement> {
+        var processedType: String? = nullSafePhpType.typeWithOutListSuffix
 
-        if (requiresListPackaging( nullSafePhpType)) {
-            packageList( nullSafePhpType, project )
+        if ( nullSafePhpType.wouldLikeList) {
+           return  packageList( nullSafePhpType , project )
         }
 
-        if (nullSafePhpType.indexOf("#C") == 0) {
+        if (nullSafePhpType.typeWithOutListSuffix.indexOf("#C") == 0) {
             return phpIndex.getBySignature(processedType, null, 0)
-        } else if (classConstantAnalyzer.verifySignatureIsClassConstant(nullSafePhpType)) {
+        } else if (classConstantAnalyzer.verifySignatureIsClassConstant(nullSafePhpType.typeWithOutListSuffix)) {
             processedType = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    nullSafePhpType,
+                    nullSafePhpType.typeWithOutListSuffix ,
                     project
             )
         }
@@ -65,7 +66,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
     }
 
     private fun locateType(phpIndex: PhpIndex, project: Project,
-                           customMethodCallSignature: CustomMethodCallSignature): String? {
+                           customMethodCallSignature: CustomMethodCallSignature): MaskProcessedSignature? {
         val fieldElements = phpIndex.getBySignature(customMethodCallSignature.className, null, 0)
         if (fieldElements.size() == 0) {
             return null
@@ -81,6 +82,6 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
             return null
         }
 
-        return customMethodCallSignature.desiredParameter
+        return customMethodCallSignature.maskProcessedSignature
     }
 }

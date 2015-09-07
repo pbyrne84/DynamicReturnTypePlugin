@@ -5,14 +5,20 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.intellij.openapi.project.Project
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 
 public interface ListReturnPackaging {
 
-    fun requiresListPackaging(returnValue: String): Boolean = returnValue.endsWith("[]")
+    fun requiresListPackaging(returnValue: String): Boolean  {
+        println( returnValue + " - returnValue")
+        return returnValue.endsWith("[]")
+    }
 
-    fun packageList(returnValue: String, project: Project): Collection<PhpNamedElement> {
+    fun packageList(returnValue: MaskProcessedSignature, project: Project): Collection<PhpNamedElement> {
         val customList = ArrayList<PhpNamedElement>()
-        customList.add(LocalClassImpl(PhpType().add("\\" + returnValue.removePrefix("\\")), project))
+        println(returnValue)
+
+        customList.add(LocalClassImpl(PhpType().add(returnValue.createListSignature()), project))
         return customList
     }
 }

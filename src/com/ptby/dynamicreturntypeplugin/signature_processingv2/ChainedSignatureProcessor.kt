@@ -34,6 +34,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
             )
 
             if ( !callConfiguration.isValid() ) {
+                println("invalid")
                 return setOf()
             }
 
@@ -42,8 +43,10 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         }
 
         if ( lastTypes.lastReturnType != null && lastTypes.lastReturnType?.hasFoundReturnType() as Boolean ) {
+            println("found")
             return lastTypes.lastReturnType?.phpNamedElements
         }
+        println("not found")
 
         return setOf()
     }

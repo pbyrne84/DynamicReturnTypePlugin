@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.config
 
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
+import com.ptby.dynamicreturntypeplugin.signatureconversion.MaskProcessedSignature
 import org.apache.commons.lang.StringUtils
 
 data class FunctionCallConfigKt(functionName: String,
@@ -19,11 +20,11 @@ data class FunctionCallConfigKt(functionName: String,
     }
 
 
-    override fun formatBeforeLookup(passedType: String?): String {
+    override fun formatBeforeLookup(passedType: String?): MaskProcessedSignature {
         if(passedType== null){
-            return ""
+            return MaskProcessedSignature( "" )
         }
-        return valueReplacementStrategy.replaceCalculatedValue(passedType).replace("\\\\", "\\")
+        return MaskProcessedSignature( valueReplacementStrategy.replaceCalculatedValue(passedType).replace("\\\\", "\\") )
     }
 
 
