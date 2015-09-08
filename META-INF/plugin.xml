@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-  <version>2.0.4</version>
+  <version>2.0.5</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,6 +85,20 @@
 
     <change-notes>
         <![CDATA[
+       <h3>2.0.5</h3>
+       <ul>
+       <li>
+        Fixed masks causing issues with ::class as a parameter. This means the following mask types now work as expected.<br/>
+         <br/>
+        1. Masks that combine with a fixed type.<br/>
+        "%s|\\PHPUnit_Framework_MockObject_MockObject" <br/>
+ <br/>
+        2. Masks that convert to a list.<br/>
+        "%s[]"
+
+       </li>
+       </ul>
+
         <h3>2.0.4</h3>
        <ul>
        <li>
