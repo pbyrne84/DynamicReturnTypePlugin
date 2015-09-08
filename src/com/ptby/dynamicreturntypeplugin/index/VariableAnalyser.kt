@@ -11,6 +11,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
 
 import java.util.ArrayList
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
 public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging {
@@ -38,7 +39,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
             )
         }
 
-        if (classConstantAnalyzer.verifySignatureIsClassConstant(signature.desiredParameter)) {
+        if ( signature.desiredParameter.matchesPhpClassConstantSignature() ) {
             val classNameFromConstantLookup = classConstantAnalyzer.getClassNameFromConstantLookup(
                     signature.desiredParameter, project
             )

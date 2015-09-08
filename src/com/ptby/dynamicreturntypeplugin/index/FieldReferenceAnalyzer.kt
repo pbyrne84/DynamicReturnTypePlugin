@@ -3,21 +3,17 @@ package com.ptby.dynamicreturntypeplugin.index
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
-
-import java.util.ArrayList
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
 /**
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
  * has to be done later
  */
-public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) : ListReturnPackaging{
+public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) : ListReturnPackaging {
     private val classConstantAnalyzer: ClassConstantAnalyzer
     private val originalCallAnalyzer: OriginalCallAnalyzer
     private val methodCallValidator: MethodCallValidator
@@ -48,13 +44,13 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
                               nullSafePhpType: String): Collection<PhpNamedElement> {
         var processedType: String? = nullSafePhpType
 
-        if (requiresListPackaging( nullSafePhpType)) {
-            packageList( nullSafePhpType, project )
+        if (requiresListPackaging(nullSafePhpType)) {
+            packageList(nullSafePhpType, project)
         }
 
         if (nullSafePhpType.indexOf("#C") == 0) {
             return phpIndex.getBySignature(processedType, null, 0)
-        } else if (classConstantAnalyzer.verifySignatureIsClassConstant(nullSafePhpType)) {
+        } else if (nullSafePhpType.matchesPhpClassConstantSignature() ) {
             processedType = classConstantAnalyzer.getClassNameFromConstantLookup(
                     nullSafePhpType,
                     project

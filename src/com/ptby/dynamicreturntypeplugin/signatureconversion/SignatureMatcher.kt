@@ -47,7 +47,7 @@ public class SignatureMatcher {
 
     companion object {
         private val PROJECT_ROOT_VARIABLE_PATTERN = "(#M#V.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + "(.*)"
-        private val CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)"
+         val CLASS_CONSTANT_CALL_PATTERN = "(#*)K#C(.*)\\.(.*)"
         private val FIELD_CALL_PATTERN = "(#P#C.*):(.*)" +DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +"(.*)"
         private val RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN = "(((#M)+)#M#C.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + "(.*)"
         private val METHOD_CALL_PATTERN = "(#M#C.*):(.*)"+ DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +"(.*)"

@@ -7,6 +7,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.FunctionReference
+import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 
 public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassConstantAnalyzer) {
 
@@ -22,7 +23,7 @@ public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassCon
             if (elementType.toString() != "void") {
                 if (elementType.toString() == "string") {
                     return ParameterType(cleanClassText(element))
-                } else if (classConstantAnalyzer.verifySignatureIsClassConstant(elementType.toString())) {
+                } else if ( elementType.toString().matchesPhpClassConstantSignature() ) {
                     return ParameterType(elementType.toString())
                 }
 
