@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.jetbrains.php.PhpIndex
+import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 
 public class SignatureToCallConverter {
 
@@ -14,7 +15,7 @@ public class SignatureToCallConverter {
         val callSignature = singleCall.substring(0, indexOfParameterStart)
 
         val mutableCollection = if ( callSignature.indexOf(".") == 0) {
-            val chainedSignature = "#M#C" + lastClassType + callSignature
+            val chainedSignature = lastClassType.withMethodCallPrefix() + callSignature
             phpIndex.getBySignature(chainedSignature)
         } else {
             phpIndex.getBySignature(callSignature)

@@ -11,6 +11,8 @@ import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
+import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 
 public class ReturnValueFromParametersProcessor(
         private val customSignatureProcessor: CustomSignatureProcessor) {
@@ -32,7 +34,7 @@ public class ReturnValueFromParametersProcessor(
         }
 
         val customMethodCallSignature = CustomMethodCallSignature.new(
-                "#M#C" + classCall.fqnClass,
+                classCall.fqnClass.withMethodCallPrefix(),
                 classCall.method,
                 treatedParameter
         )
@@ -52,7 +54,7 @@ public class ReturnValueFromParametersProcessor(
     private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
         val customList = ArrayList<PhpNamedElement>()
         formattedSignature.split("\\|".toRegex()).reverse().forEach { type ->
-            customList.add(LocalClassImpl(PhpType().add("#C" + type.removePrefix("#K#C").removeSuffix(".")), project))
+            customList.add(LocalClassImpl(PhpType().add( type.withClassPrefix() ), project))
         }
 
         return customList

@@ -12,7 +12,6 @@ fun String.isPhpClassConstantSignature(): Boolean {
     return this.startsWith("#K#C") && this.endsWith(".class")
 }
 
-
 fun String.stripPhpClassConstantReference(): String{
     return this.removeClassConstantPrefix().removeClassConstantClassSuffix()
 }

@@ -7,6 +7,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
+import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
 
 public class ParameterTypeCalculator() {
 
@@ -30,7 +31,7 @@ public class ParameterTypeCalculator() {
                         ?: return ParameterType(null)
 
                 if (singleType.substring(0, 1) == "\\") {
-                    return ParameterType("#C" + singleType)
+                    return ParameterType( singleType.withClassPrefix() )
                 }
 
                 if (singleType.length() < 3) {
