@@ -7,7 +7,6 @@ import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.jetbrains.php.PhpIndex
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
@@ -74,6 +73,7 @@ data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
             fqnClassName = ""
             if ( phpNamedElements != null && hasFoundReturnType() ) {
                 val phpNamedElement = phpNamedElements.iterator().next()
+                // phpNamedElement.getFQN() says it cannot return null from java but does
                 fqnClassName = if ( phpNamedElement.getFQN() == null ) {
                     ""
                 } else {

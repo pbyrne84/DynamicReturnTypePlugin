@@ -4,12 +4,11 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 
-public class ParameterTypeCalculator(private val classConstantAnalyzer: ClassConstantAnalyzer) {
+public class ParameterTypeCalculator() {
 
 
     public fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {

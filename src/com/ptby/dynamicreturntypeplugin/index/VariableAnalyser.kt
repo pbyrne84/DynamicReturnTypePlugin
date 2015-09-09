@@ -3,21 +3,17 @@ package com.ptby.dynamicreturntypeplugin.index
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
-
-import java.util.ArrayList
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
-public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classConstantAnalyzer: ClassConstantAnalyzer) : ListReturnPackaging {
+public class VariableAnalyser(configAnalyser: ConfigAnalyser,
+                              private val classConstantWalker: ClassConstantWalker) : ListReturnPackaging {
     private val methodCallValidator: MethodCallValidator
     private val originalCallAnalyzer: OriginalCallAnalyzer
-
 
     init {
         this.methodCallValidator = MethodCallValidator(configAnalyser)
@@ -40,10 +36,10 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser, private val classC
         }
 
         if ( signature.desiredParameter.matchesPhpClassConstantSignature() ) {
-            val classNameFromConstantLookup = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    signature.desiredParameter, project
+            val classNameFromConstantLookup = classConstantWalker.walkThroughConstants(
+                    project,
+                    signature.desiredParameter
             )
-
 
             return formatWithMask(phpIndex, classNameFromConstantLookup, project)
         }

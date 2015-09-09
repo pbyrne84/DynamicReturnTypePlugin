@@ -14,13 +14,13 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
  * has to be done later
  */
 public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) : ListReturnPackaging {
-    private val classConstantAnalyzer: ClassConstantAnalyzer
+    private val classConstantWalker: ClassConstantWalker
     private val originalCallAnalyzer: OriginalCallAnalyzer
     private val methodCallValidator: MethodCallValidator
 
 
     init {
-        classConstantAnalyzer = ClassConstantAnalyzer()
+        classConstantWalker = ClassConstantWalker()
         originalCallAnalyzer = OriginalCallAnalyzer()
         methodCallValidator = MethodCallValidator(configAnalyser)
     }
@@ -51,9 +51,9 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
         if (nullSafePhpType.indexOf("#C") == 0) {
             return phpIndex.getBySignature(processedType, null, 0)
         } else if (nullSafePhpType.matchesPhpClassConstantSignature() ) {
-            processedType = classConstantAnalyzer.getClassNameFromConstantLookup(
-                    nullSafePhpType,
-                    project
+            processedType = classConstantWalker.walkThroughConstants(
+                    project,
+                    nullSafePhpType
             )
         }
 

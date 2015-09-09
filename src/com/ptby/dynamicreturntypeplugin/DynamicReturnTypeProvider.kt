@@ -10,11 +10,6 @@ import com.ptby.dynamicreturntypeplugin.config.ConfigState
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer
 import com.ptby.dynamicreturntypeplugin.gettype.FunctionReferenceGetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
-import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
-import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
-import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter
-import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
@@ -30,11 +25,12 @@ import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
 import com.jetbrains.php.lang.psi.elements.Variable
 import com.jetbrains.php.lang.psi.elements.Method
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
+import com.ptby.dynamicreturntypeplugin.index.*
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
 public class DynamicReturnTypeProvider : PhpTypeProvider2 {
-    private val classConstantAnalyzer: ClassConstantAnalyzer
+    private val classConstantWalker: ClassConstantWalker
     private val getTypeResponseFactory: GetTypeResponseFactory
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
     private val logger = getInstance("DynamicReturnTypePlugin")
@@ -45,10 +41,10 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private var variableAnalyser: VariableAnalyser
     init {
         fieldReferenceAnalyzer = FieldReferenceAnalyzer(configAnalyser)
-        classConstantAnalyzer = ClassConstantAnalyzer()
-        variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
+        classConstantWalker = ClassConstantWalker()
+        variableAnalyser = VariableAnalyser(configAnalyser, classConstantWalker)
         returnInitialisedSignatureConverter = ReturnInitialisedSignatureConverter()
-        variableAnalyser = VariableAnalyser(configAnalyser, classConstantAnalyzer)
+        variableAnalyser = VariableAnalyser(configAnalyser, classConstantWalker)
         getTypeResponseFactory = createGetTypeResponseFactory(configAnalyser)
     }
 
@@ -96,13 +92,12 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
         val customSignatureProcessor = CustomSignatureProcessor(
                 returnInitialisedSignatureConverter,
-                ClassConstantAnalyzer(),
+                classConstantWalker,
                 fieldReferenceAnalyzer,
                 variableAnalyser
         )
 
         val getBySignature = GetBySignature(
-                classConstantAnalyzer,
                 customSignatureProcessor,
                 configAnalyser
         )

@@ -6,7 +6,6 @@ import com.jetbrains.php.PhpIndex
 import java.util.ArrayList
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 import com.jetbrains.php.lang.psi.elements.PhpClass
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
@@ -18,7 +17,6 @@ import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 
 class GetBySignature(
-        private val classConstantAnalyzer: ClassConstantAnalyzer,
                      private val customSignatureProcessor: CustomSignatureProcessor,
                      private val configAnalyser: ConfigAnalyser
 ) {

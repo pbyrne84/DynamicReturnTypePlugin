@@ -1,19 +1,17 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion
 
+import com.intellij.openapi.diagnostic.Logger.getInstance
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
 import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
-import java.util.Collections
-
-import com.intellij.openapi.diagnostic.Logger.getInstance
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
 public class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter,
-                                      private val classConstantAnalyzer: ClassConstantAnalyzer,
+                                      private val classConstantWalker: ClassConstantWalker,
                                       private val fieldReferenceAnalyzer: FieldReferenceAnalyzer,
                                       private val variableAnalyser: VariableAnalyser) : ListReturnPackaging {
     private val logger = getInstance("DynamicReturnTypePlugin")
@@ -33,8 +31,10 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
         }
 
         if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(processedCustomMethodCallSignature)) {
-            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(
-                    processedCustomMethodCallSignature.rawStringSignature, project)
+            return phpIndex.getAnyByFQN(classConstantWalker.walkThroughConstants(
+                    project,
+                    processedCustomMethodCallSignature.rawStringSignature
+            )
             )
         } else if (signatureMatcher.verifySignatureIsFieldCall(processedCustomMethodCallSignature)) {
 
@@ -58,7 +58,9 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
                         project: Project): Collection<PhpNamedElement> {
         val signatureMatcher = SignatureMatcher()
         if (signatureMatcher.verifySignatureIsClassConstantFunctionCall(parameter)) {
-            return phpIndex.getAnyByFQN(classConstantAnalyzer.getClassNameFromConstantLookup(parameter, project))
+            return phpIndex.getAnyByFQN(
+                    classConstantWalker.walkThroughConstants( project, parameter)
+            )
         }
 
         if ( requiresListPackaging(parameter)) {

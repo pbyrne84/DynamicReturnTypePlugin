@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantAnalyzer
 
 open class FunctionReferenceGetTypeResponse protected constructor(private val isNull: Boolean,
                                                                   private val originalReference: FunctionReference?) : GetTypeResponse {
@@ -71,7 +70,7 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
 
 
     private fun convertParameters(originalReference: FunctionReference): String {
-        val parameterTypeCalculator = ParameterTypeCalculator(ClassConstantAnalyzer())
+        val parameterTypeCalculator = ParameterTypeCalculator()
 
         var parameters = DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR
         if ( originalReference.getParameters().size() == 0 ) {
