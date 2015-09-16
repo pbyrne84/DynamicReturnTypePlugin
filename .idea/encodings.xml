@@ -3,5 +3,6 @@
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false">
     <file url="file://$PROJECT_DIR$/.idea" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/com/ptby/dynamicreturntypeplugin/signature_processingv2/ChainedSignatureProcessor.kt" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

@@ -14,3 +14,7 @@ fun String.withClassPrefix() : String {
     return "#C" + this
 }
 
+fun String.startsWithFunctionCallPrefix() : Boolean =  this.startsWith("#F")
+
+fun String.startsWithClassPrefix() : Boolean =  this.startsWith("#C")
+

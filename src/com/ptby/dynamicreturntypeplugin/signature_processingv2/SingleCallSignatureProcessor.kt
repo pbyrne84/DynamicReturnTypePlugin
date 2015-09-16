@@ -7,6 +7,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.FunctionConfiguration
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.MethodCallConfiguration
 import com.intellij.openapi.project.Project
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFunctionCallPrefix
 
 public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
                                           private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
@@ -16,7 +17,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
 
 
     fun getParameterFormatterForSignature(signature: String, lastType: String, project: Project): SingleCall {
-        if ( signature.substring(0, 2).equals("#F")) {
+        if ( signature.startsWithFunctionCallPrefix()) {
             return processFunction(signature, project)
         }
 
