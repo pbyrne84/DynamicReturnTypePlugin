@@ -20,11 +20,11 @@ public class ReturnValueFromParametersProcessor(
                              classCall: ClassCall,
                              phpIndex: PhpIndex): ReturnType {
 
-        if(!classCall.hasParameterAtIndex( classMethodConfigKt.parameterIndex )){
+        if(!classCall.hasParameterAtIndex( classMethodConfigKt.getParameterIndex())){
             return ReturnType.empty()
         }
 
-        val selectedParameter = classCall.getParameterAtIndex( classMethodConfigKt.parameterIndex )
+        val selectedParameter = classCall.getParameterAtIndex( classMethodConfigKt.getParameterIndex())
         val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
 
         if ( treatedParameter.contains("|")) {

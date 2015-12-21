@@ -90,9 +90,9 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
 }
 
 
-class FunctionGetTypeResponse(private val isNull: Boolean,
+class FunctionGetTypeResponse(private val responseIsNull: Boolean,
                               private val originalReference: FunctionReference) :
-        FunctionReferenceGetTypeResponse(isNull, originalReference) {
+        FunctionReferenceGetTypeResponse(responseIsNull, originalReference) {
 
 
     override fun toString(): String {

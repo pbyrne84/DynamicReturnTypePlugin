@@ -3,13 +3,13 @@ package com.ptby.dynamicreturntypeplugin.config
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
 
-data class FunctionCallConfigKt(functionName: String,
-                                public override val parameterIndex: Int,
+data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
+                                private val parameterIndex: Int,
                                 private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter {
 
     private val functionName: String?
     init {
-        this.functionName = functionName.toLowerCase()
+        this.functionName = mixedCasefunctionName.toLowerCase()
     }
 
 
@@ -17,6 +17,9 @@ data class FunctionCallConfigKt(functionName: String,
         return functionName != "" && parameterIndex != -1
     }
 
+    override fun getParameterIndex(): Int {
+        return parameterIndex
+    }
 
     override fun formatBeforeLookup(passedType: String?): String {
         if(passedType== null){

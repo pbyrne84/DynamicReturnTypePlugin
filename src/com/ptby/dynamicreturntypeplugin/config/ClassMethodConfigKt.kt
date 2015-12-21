@@ -4,16 +4,20 @@ import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
 
 data class ClassMethodConfigKt(public val fqnClassName: String,
-                               methodName: String,
-                               override public val parameterIndex: Int,
+                               private val mixedCaseMethodName: String,
+                               private val parameterIndex: Int,
                                private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter{
     private val methodName: String
     init {
-        this.methodName = methodName.toLowerCase()
+        this.methodName = mixedCaseMethodName.toLowerCase()
     }
 
     public fun isArrayAccessConfig(): Boolean {
         return methodName == "offsetget"
+    }
+
+    override fun getParameterIndex(): Int {
+        return parameterIndex
     }
 
     //Not equality does not work unless overridden???

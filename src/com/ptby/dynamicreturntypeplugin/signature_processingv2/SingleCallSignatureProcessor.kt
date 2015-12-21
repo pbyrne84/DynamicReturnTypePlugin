@@ -61,7 +61,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
         val functionConfig = dynamicReturnTypeConfig.locateFunctionConfig(functionName)
         val functionConfiguration = FunctionConfiguration(functionConfig, signature)
 
-        val parameterIndex = functionConfiguration.parameterValueFormatter().parameterIndex
+        val parameterIndex = functionConfiguration.parameterValueFormatter().getParameterIndex()
         if ( !parameterIndexIsValid(parameterIndex, parameterList) ) {
             return SingleCall.createInvalid()
         }
