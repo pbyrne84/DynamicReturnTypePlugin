@@ -7,7 +7,7 @@ public class MaskValueReplacementStrategy(private val mask: String) : ValueRepla
 
 
     override fun toString(): String {
-        return "MaskValueReplacementStrategy{" + "\nmask='" + mask + '\'' + '}'
+        return "MaskValueReplacementStrategy{\nmask='$mask'}"
     }
 
 

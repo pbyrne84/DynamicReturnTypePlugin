@@ -28,7 +28,6 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
         private val nashornFactory = "jdk.nashorn.api.scripting.NashornScriptEngineFactory";
         private val groovyFactory = "org.codehaus.groovy.jsr223.GroovyScriptEngineFactory";
 
-        val javascriptRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_JAVASCRIPT
         val groovyRef = ScriptReplacementExecutor.SCRIPT_LANGUAGE_GROOVY
         private val mappings = arrayOf(ScriptLanguageSystemMapping(nashornFactory, "nashorn.jar"),
                                        ScriptLanguageSystemMapping(groovyFactory, "groovy-all-2.2.1.jar")
@@ -75,7 +74,7 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
         }
 
         val jarFileUrl = File(customJarLocation).toURI().toURL();
-        val classLoader = Thread.currentThread().getContextClassLoader()
+        val classLoader = Thread.currentThread().contextClassLoader
         val urlCl = URLClassLoader(arrayOf(jarFileUrl), classLoader);
         val clazz = urlCl.loadClass(scriptLanguageSystemMapping.scriptEngineFactoryName)
         val scriptEngineFactory = clazz.newInstance() as ScriptEngineFactory

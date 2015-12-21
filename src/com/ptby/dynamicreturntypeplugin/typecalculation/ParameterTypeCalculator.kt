@@ -11,13 +11,13 @@ public class ParameterTypeCalculator() {
 
 
     public fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
-        if (parameters.size() <= parameterIndex) {
+        if (parameters.size <= parameterIndex) {
             return ParameterType(null)
         }
 
         val element = parameters[parameterIndex]
         if (element is PhpTypedElement) {
-            val elementType = (element).getType()
+            val elementType = (element).type
             if (elementType.toString() != "void") {
                 if (elementType.toString() == "string") {
                     return ParameterType(cleanClassText(element))
@@ -32,7 +32,7 @@ public class ParameterTypeCalculator() {
                     return ParameterType( singleType.withClassPrefix() )
                 }
 
-                if (singleType.length() < 3) {
+                if (singleType.length < 3) {
                     return ParameterType(null)
                 }
 
@@ -51,17 +51,17 @@ public class ParameterTypeCalculator() {
 
     private fun typeContains(singleType: String, comparison: String): Boolean {
         val projectIdentifiedComparison = "#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY + comparison
-        if (singleType.length() < projectIdentifiedComparison.length()) {
+        if (singleType.length < projectIdentifiedComparison.length) {
             return false
         }
 
-        return singleType.substring(0, projectIdentifiedComparison.length()) == projectIdentifiedComparison
+        return singleType.substring(0, projectIdentifiedComparison.length) == projectIdentifiedComparison
     }
 
 
     private fun getTypeSignature(phpType: PhpType): String? {
         var typeSignature: String? = null
-        for (singleType in phpType.getTypes()) {
+        for (singleType in phpType.types) {
             typeSignature = singleType
         }
 
@@ -70,7 +70,7 @@ public class ParameterTypeCalculator() {
 
 
     private fun cleanClassText(element: PsiElement): String? {
-        val potentialClassName = element.getText().trim()
+        val potentialClassName = element.text.trim()
         if (potentialClassName == "" || potentialClassName == "''") {
             return null
         }

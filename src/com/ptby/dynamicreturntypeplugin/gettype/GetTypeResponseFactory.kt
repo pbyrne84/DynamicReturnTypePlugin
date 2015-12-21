@@ -15,7 +15,7 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
                                     private val functionCallReturnTypeScanner: FunctionCallReturnTypeScanner) {
 
     public fun createDynamicReturnType(psiElement: PsiElement): GetTypeResponse {
-        val project = psiElement.getProject()
+        val project = psiElement.project
 
         if (PlatformPatterns.psiElement(PhpElementTypes.METHOD_REFERENCE).accepts(psiElement)) {
             return createMethodResponse(psiElement as MethodReference)
@@ -30,14 +30,14 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
     }
 
     private fun createMethodResponse(classMethod: MethodReference): GetTypeResponse {
-        val currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(classMethod.getProject())
+        val currentClassMethodConfigs = configAnalyser.getCurrentClassMethodConfigs(classMethod.project)
 
         return methodCallReturnTypeScanner.getTypeFromMethodCall(currentClassMethodConfigs, classMethod)
     }
 
 
     private fun createFunctionResponse(functionReference: FunctionReference): GetTypeResponse {
-        val currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(functionReference.getProject())
+        val currentFunctionCallConfigs = configAnalyser.getCurrentFunctionCallConfigs(functionReference.project)
 
         return functionCallReturnTypeScanner.getTypeFromFunctionCall(currentFunctionCallConfigs, functionReference)
     }

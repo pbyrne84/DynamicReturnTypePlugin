@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 public class ProjectDynamicReturnTypeMap : ConcurrentHashMap<String, DynamicReturnTypeConfig>() {
 
     fun get(project: Project): DynamicReturnTypeConfig {
-        val key = project.getBaseDir().toString()
+        val key = project.baseDir.toString()
         val dynamicReturnTypeConfig = get(key)
                 ?: return DynamicReturnTypeConfig.newEmpty()
 
@@ -16,13 +16,13 @@ public class ProjectDynamicReturnTypeMap : ConcurrentHashMap<String, DynamicRetu
 
 
     fun put(project: Project, dynamicReturnTypeConfig: DynamicReturnTypeConfig) {
-        val key = project.getBaseDir().toString()
+        val key = project.baseDir.toString()
         put(key, dynamicReturnTypeConfig)
     }
 
 
     fun resetProject(project: Project) {
-        val key = project.getBaseDir().toString()
+        val key = project.baseDir.toString()
         put(key, DynamicReturnTypeConfig.newEmpty())
     }
 }

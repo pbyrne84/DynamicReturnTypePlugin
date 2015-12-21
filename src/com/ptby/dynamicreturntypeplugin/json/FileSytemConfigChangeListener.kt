@@ -26,7 +26,7 @@ public class FileSytemConfigChangeListener : VirtualFileListener {
 
 
     private fun refreshIfCorrectFileEvent(virtualFileEvent: VirtualFileEvent) {
-        val currentFileName = virtualFileEvent.getFileName()
+        val currentFileName = virtualFileEvent.fileName
 
         if (currentFileName == expectedConfigFileName) {
             refreshConfigs()

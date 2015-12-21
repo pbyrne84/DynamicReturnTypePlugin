@@ -24,13 +24,13 @@ public class ParameterType(private val parameterType: String?) {
 
 
         val returnTypeParts = formattableType.mySplitBy(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
-        var returnTypePart = returnTypeParts[returnTypeParts.size() - 1]
-        if (returnTypePart.length() > 2 && returnTypePart.startsWithClassPrefix()) {
+        var returnTypePart = returnTypeParts[returnTypeParts.size - 1]
+        if (returnTypePart.length > 2 && returnTypePart.startsWithClassPrefix()) {
             return returnTypePart.substring(2)
         }
 
-        if (returnTypePart.length() > 2 && returnTypePart.substring(returnTypePart.length() - 2) == "|?") {
-            returnTypePart = returnTypePart.substring(0, returnTypePart.length() - 2)
+        if (returnTypePart.length > 2 && returnTypePart.substring(returnTypePart.length - 2) == "|?") {
+            returnTypePart = returnTypePart.substring(0, returnTypePart.length - 2)
         }
 
 

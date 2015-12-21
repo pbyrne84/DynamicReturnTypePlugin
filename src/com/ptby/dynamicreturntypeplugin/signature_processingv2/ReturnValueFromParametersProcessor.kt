@@ -74,10 +74,10 @@ data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
             if ( phpNamedElements != null && hasFoundReturnType() ) {
                 val phpNamedElement = phpNamedElements.iterator().next()
                 // phpNamedElement.getFQN() says it cannot return null from java but does
-                fqnClassName = if ( phpNamedElement.getFQN() == null ) {
+                fqnClassName = if ( phpNamedElement.fqn == null ) {
                     ""
                 } else {
-                    phpNamedElement.getFQN()
+                    phpNamedElement.fqn
                 }
             }
         }
@@ -86,7 +86,7 @@ data class ReturnType(val phpNamedElements: Collection<PhpNamedElement>?) {
     }
 
     fun hasFoundReturnType(): Boolean {
-        return phpNamedElements != null && phpNamedElements.size() > 0
+        return phpNamedElements != null && phpNamedElements.size > 0
     }
 
 

@@ -63,12 +63,12 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
     private fun locateType(phpIndex: PhpIndex, project: Project,
                            customMethodCallSignature: CustomMethodCallSignature): String? {
         val fieldElements = phpIndex.getBySignature(customMethodCallSignature.className, null, 0)
-        if (fieldElements.size() == 0) {
+        if (fieldElements.size == 0) {
             return null
         }
 
         val fieldElement = fieldElements.iterator().next()
-        val phpType = fieldElement.getType()
+        val phpType = fieldElement.type
         val matchingConfig = methodCallValidator.getMatchingConfig(
                 phpIndex, project, customMethodCallSignature.method, "#C" + phpType.toString(), fieldElements
         )

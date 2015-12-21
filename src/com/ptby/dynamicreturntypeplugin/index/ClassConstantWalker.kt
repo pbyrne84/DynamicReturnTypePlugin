@@ -29,7 +29,7 @@ public class ClassConstantWalker {
 
     private fun trySubAssignment(phpIndex: PhpIndex, signature: String): String? {
         val signatureResults = phpIndex.getBySignature(signature)
-        if ( signatureResults.size() == 0 ) {
+        if ( signatureResults.size == 0 ) {
             return null
         }
 
@@ -38,11 +38,11 @@ public class ClassConstantWalker {
             return null
         }
 
-        if ( !phpNamedElement.isConstant()) {
+        if ( !phpNamedElement.isConstant) {
             return null
         }
 
-        val defaultValue = phpNamedElement.getDefaultValue()
+        val defaultValue = phpNamedElement.defaultValue
         if ( defaultValue !is ClassConstantReference  ) {
             if ( defaultValue is ConstantReference ) {
                 return tryConstantReference(signature, defaultValue)
@@ -61,7 +61,7 @@ public class ClassConstantWalker {
 
     private fun tryCalculatingFromClassConstantDefaultValue(defaultValue: ClassConstantReference,
                                                             phpIndex: PhpIndex): String? {
-        val defaultValueSignature = defaultValue.getSignature()
+        val defaultValueSignature = defaultValue.signature
         if ( defaultValueSignature.isPhpClassConstantSignature() ) {
             return defaultValueSignature.stripPhpClassConstantReference()
         }
@@ -72,7 +72,7 @@ public class ClassConstantWalker {
 
 
     private fun tryConstantReference(originalSignature: String, constantReference: ConstantReference): String? {
-        if ( constantReference.getText() == "__CLASS__" && originalSignature.startsWithClassConstantPrefix() ) {
+        if ( constantReference.text == "__CLASS__" && originalSignature.startsWithClassConstantPrefix() ) {
             return originalSignature.removeClassConstantPrefix().substringBefore(".")
         }
 
@@ -81,7 +81,7 @@ public class ClassConstantWalker {
 
 
     private fun tryStringLiteralExpression(stringLiteralExpressio: StringLiteralExpression): String? {
-        var replaceStringConstant = stringLiteralExpressio.getText().replace("'", "").replace("\"", "")
+        var replaceStringConstant = stringLiteralExpressio.text.replace("'", "").replace("\"", "")
         if ( replaceStringConstant.indexOf("\\") != 0 ) {
             replaceStringConstant = "\\" + replaceStringConstant
         }

@@ -40,7 +40,7 @@ public class OpenProjects {
     public fun getOpenProjectsAsArray(): Array<Project> {
         waitUntilAvailable()
         isAccessing = true
-        val projectsArray = projects.toArray<Project>(arrayOfNulls<Project>(projects.size()))
+        val projectsArray = projects.toArray<Project>(arrayOfNulls<Project>(projects.size))
         isAccessing = false
 
         return projectsArray

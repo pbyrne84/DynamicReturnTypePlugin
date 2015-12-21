@@ -35,7 +35,7 @@ data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
     }
 
     fun equalsFunctionReference(functionReference: FunctionReference): Boolean {
-        val lowerCaseFullFunctionName = (functionReference.getNamespaceName() + functionReference.getName()).toLowerCase()
+        val lowerCaseFullFunctionName = (functionReference.namespaceName + functionReference.name).toLowerCase()
 
         return functionName == lowerCaseFullFunctionName || validateAgainstPossibleGlobalFunction(functionReference)
     }
@@ -45,8 +45,8 @@ data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
     }
 
     private fun validateAgainstPossibleGlobalFunction(functionReference: FunctionReference): Boolean {
-        val functionReferenceText = functionReference.getText()
-        return functionReferenceText.trim().indexOf("\\") != 0 && ("\\" + functionReference.getName()).toLowerCase() == functionName
+        val functionReferenceText = functionReference.text
+        return functionReferenceText.trim().indexOf("\\") != 0 && ("\\" + functionReference.name).toLowerCase() == functionName
     }
 
 

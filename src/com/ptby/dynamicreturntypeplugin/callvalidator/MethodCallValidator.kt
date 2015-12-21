@@ -18,7 +18,7 @@ public class MethodCallValidator(private val configAnalyser: ConfigAnalyser) {
 
         for (fieldElement in fieldElements) {
             val currentConfig = configAnalyser.getCurrentConfig(project)
-            val fieldElementType = fieldElement.getType()
+            val fieldElementType = fieldElement.type
             for (classMethodConfig in currentConfig.classMethodConfigs) {
                 if (classMethodConfig.methodCallMatches(fieldElementType.toString(), calledMethod)) {
                     return classMethodConfig

@@ -45,13 +45,13 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
         //
         //#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mock|#M#C\object.mock�Bouh?
         //signature #M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\PhockitoChild.mock�Bouh?
-        var reference = originalReference?.getSignature() as String
+        var reference = originalReference?.signature as String
         return filterExcessReturnTypes(reference) + parameters
     }
 
     private fun filterExcessReturnTypes(originalReference: String): String {
         val multiAliasedMethodCalls = originalReference.split("\\|".toRegex())
-        if ( multiAliasedMethodCalls.size() == 1 ) {
+        if ( multiAliasedMethodCalls.size == 1 ) {
             return originalReference;
         }
 
@@ -69,17 +69,17 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
         val parameterTypeCalculator = ParameterTypeCalculator()
 
         var parameters = DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR
-        if ( originalReference.getParameters().size() == 0 ) {
+        if ( originalReference.parameters.size == 0 ) {
             return parameters
         }
 
 
         var index = 0
-        for ( parameter in originalReference.getParameters() ) {
+        for ( parameter in originalReference.parameters) {
             if ( parameter is PhpTypedElement ) {
                 parameters += parameterTypeCalculator.calculateTypeFromParameter(
                         index,
-                        originalReference.getParameters()).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
+                        originalReference.parameters).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
             }
 
             index++;

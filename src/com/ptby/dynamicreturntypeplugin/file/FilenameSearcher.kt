@@ -18,7 +18,7 @@ public class FilenameSearcher {
                 val files = ApplicationManager.getApplication().runReadAction(
                         object : Computable<Collection<VirtualFile>> {
                             override fun compute(): Collection<VirtualFile>? {
-                                if (project.isDisposed()) {
+                                if (project.isDisposed) {
                                     return null
                                 }
 

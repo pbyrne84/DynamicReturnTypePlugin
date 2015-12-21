@@ -38,12 +38,12 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
             return parsedSignature.prefix + result
         } catch (e: ScriptException) {
             val message = "Error executing " + callableScriptConfiguration.call + " in " +
-                    callableScriptConfiguration.fileLocation + "\n" + e.getMessage()
+                    callableScriptConfiguration.fileLocation + "\n" + e.message
 
             Notifications.Bus.notify(createWarningNotification(message))
         } catch (e: NoSuchMethodException) {
             val message = "No such method " + callableScriptConfiguration.call + " in " +
-                    callableScriptConfiguration.fileLocation + "\n" + e.getMessage()
+                    callableScriptConfiguration.fileLocation + "\n" + e.message
 
             Notifications.Bus.notify(createWarningNotification(message))
         }
@@ -57,7 +57,7 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
     }
 
     companion object {
-        public val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
-        public val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
+        const public val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
+        const public val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
     }
 }

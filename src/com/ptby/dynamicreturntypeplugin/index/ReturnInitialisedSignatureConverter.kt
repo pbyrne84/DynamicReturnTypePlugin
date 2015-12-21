@@ -15,13 +15,13 @@ public class ReturnInitialisedSignatureConverter {
 
         val cleanedVariableSignature = signature.className.substring(2)
         val bySignature = phpIndex.getBySignature(cleanedVariableSignature)
-        if (bySignature.size() == 0) {
+        if (bySignature.size == 0) {
             return signature
         }
 
         val firstSignatureMatch = bySignature.iterator().next() as FunctionImpl
         return CustomMethodCallSignature.new(
-                firstSignatureMatch.getType().withMethodCallPrefix(),
+                firstSignatureMatch.type.withMethodCallPrefix(),
                 signature.method,
                 signature.desiredParameter
         )

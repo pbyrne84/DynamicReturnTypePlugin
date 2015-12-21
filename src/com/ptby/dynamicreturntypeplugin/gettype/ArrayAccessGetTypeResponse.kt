@@ -23,27 +23,27 @@ class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
         }
 
         private fun attemptSignature(arrayAccessExpression: ArrayAccessExpression): String? {
-            if ( arrayAccessExpression.getValue() !is PhpReference ) {
+            if ( arrayAccessExpression.value !is PhpReference ) {
                 return null
             }
 
-            val index = arrayAccessExpression.getIndex()?.getValue()
+            val index = arrayAccessExpression.index?.value
             val indexSignature: String = if ( index is StringLiteralExpression ) {
-                index.getContents()
+                index.contents
             } else if ( index is PhpReference ) {
-                index.getSignature()
+                index.signature
             } else {
                 return null
             }
 
             return formatSignature(
-                    arrayAccessExpression.getValue() as PhpReference,
+                    arrayAccessExpression.value as PhpReference,
                     indexSignature
             )
         }
 
         private fun formatSignature(reference: PhpReference, index: String): String {
-            return "#M" + reference.getSignature() + ".offsetGet" +
+            return "#M" + reference.signature + ".offsetGet" +
                     DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +
                     index +
                     DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR

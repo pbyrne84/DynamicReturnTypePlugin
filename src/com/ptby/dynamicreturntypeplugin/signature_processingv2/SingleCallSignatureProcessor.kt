@@ -47,7 +47,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
     }
 
     private fun parameterIndexIsValid(desiredParameterIndex: Int, parameterValueList: List<String>): Boolean {
-        return desiredParameterIndex < parameterValueList.size()
+        return desiredParameterIndex < parameterValueList.size
     }
 
     private fun processFunction(signature: String, project: Project): SingleCall {

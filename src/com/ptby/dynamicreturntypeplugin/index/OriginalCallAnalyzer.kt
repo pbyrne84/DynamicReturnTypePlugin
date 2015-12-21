@@ -21,12 +21,12 @@ public class OriginalCallAnalyzer {
                                                   project: Project): Collection<PhpNamedElement> {
         val methodSignatures = phpIndex.getBySignature(customMethodCallSignature.className, null, 0)
 
-        if (methodSignatures.size() == 0) {
+        if (methodSignatures.size == 0) {
             return setOf()
         }
 
         val field = methodSignatures.iterator().next() as Field
-        val classToFindOriginalTurnTypeOf = field.getType().toString()
+        val classToFindOriginalTurnTypeOf = field.type.toString()
         val typeCollection: Collection<PhpNamedElement>? = getMethodCallReturnType(
                 phpIndex,
                 classToFindOriginalTurnTypeOf,
@@ -52,15 +52,15 @@ public class OriginalCallAnalyzer {
         for (phpClass in anyByFQN) {
             val method = findClassMethodByName(phpClass, calledMethod)
             if (method != null ) {
-                val returnType = method.getType().toString()
+                val returnType = method.type.toString()
                 val registeredTypes = phpIndex.getAnyByFQN(returnType)
 
-                if (registeredTypes.size() > 0) {
+                if (registeredTypes.size > 0) {
                     return registeredTypes
                 }
 
                 val primitiveList = ArrayList<PhpNamedElement>()
-                primitiveList.add(LocalClassImpl(method.getType(), project))
+                primitiveList.add(LocalClassImpl(method.type, project))
                 return primitiveList
             }
         }
@@ -70,8 +70,8 @@ public class OriginalCallAnalyzer {
 
 
     private fun findClassMethodByName(phpClass: PhpClass, methodName: String): Method? {
-        for (method in phpClass.getMethods()) {
-            if (method.getName() == methodName) {
+        for (method in phpClass.methods) {
+            if (method.name == methodName) {
                 return method
             }
         }

@@ -113,7 +113,7 @@ public class CustomSignatureProcessor(private val returnInitialisedSignatureConv
     private fun cleanConstant(signature: String): String {
         var cleanedSignature = signature
         if (cleanedSignature.indexOf("#K#C") == 0 && !cleanedSignature.contains("|?")) {
-            cleanedSignature = cleanedSignature + ".|?"
+            cleanedSignature += ".|?"
         }
         return cleanedSignature
     }

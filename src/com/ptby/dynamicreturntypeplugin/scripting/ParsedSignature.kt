@@ -5,6 +5,6 @@ public data class ParsedSignature(public val prefix: String?,
                                   public val returnClassName: String?) {
 
     override fun equals(other: Any?): Boolean {
-        return super<Any>.equals(other)
+        return super.equals(other)
     }
 }

@@ -15,13 +15,13 @@ public class JsonToDynamicReturnTypeConfigConverter {
     var valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
 
     public fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
-        val parentFolder = configFile.getParent().getCanonicalPath()
+        val parentFolder = configFile.parent.canonicalPath
         val jsonElement = createJsonElementFromJson(String(configFile.contentsToByteArray()))
-        if (parentFolder ==null || jsonElement == null || !jsonElement.isJsonObject()) {
+        if (parentFolder ==null || jsonElement == null || !jsonElement.isJsonObject) {
             return DynamicReturnTypeConfig.newEmpty()
         }
 
-        val jsonObject = jsonElement.getAsJsonObject()
+        val jsonObject = jsonElement.asJsonObject
         val methodCalls = jsonObject.getAsJsonArray("methodCalls")
         val classMethodConfigs = castJsonMethodCallConfigToClassMethodConfigs(parentFolder, methodCalls)
 
@@ -50,10 +50,10 @@ public class JsonToDynamicReturnTypeConfigConverter {
             return classMethodConfigs
         }
 
-        val jsonMethodConfigList = methodCalls.getAsJsonArray()
+        val jsonMethodConfigList = methodCalls.asJsonArray
         for (jsonElement in jsonMethodConfigList) {
-            if (!jsonElement.isJsonNull()) {
-                val jsonMethodCall = jsonElement.getAsJsonObject()
+            if (!jsonElement.isJsonNull) {
+                val jsonMethodCall = jsonElement.asJsonObject
                 val classMethodConfig = ClassMethodConfigKt(
                         getJsonString(jsonMethodCall, "class"),
                         getJsonString(jsonMethodCall, "method"),
@@ -77,7 +77,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
             return ""
         }
 
-        return jsonObject.get(name).getAsString()
+        return jsonObject.get(name).asString
     }
 
 
@@ -86,7 +86,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
             return -1
         }
 
-        return jsonObject.get(name).getAsInt()
+        return jsonObject.get(name).asInt
     }
 
 
@@ -97,10 +97,10 @@ public class JsonToDynamicReturnTypeConfigConverter {
             return functionCallConfigs
         }
 
-        val jsonFunctionCalConfigList = functionCalls.getAsJsonArray()
+        val jsonFunctionCalConfigList = functionCalls.asJsonArray
         for (jsonElement in jsonFunctionCalConfigList) {
-            if (!jsonElement.isJsonNull()) {
-                val jsonFunctionCall = jsonElement.getAsJsonObject()
+            if (!jsonElement.isJsonNull) {
+                val jsonFunctionCall = jsonElement.asJsonObject
                 val functionCallConfig = FunctionCallConfigKt(
                         getJsonString(jsonFunctionCall, "function"),
                         getJsonInt(jsonFunctionCall, "position"),

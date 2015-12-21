@@ -39,7 +39,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
     }
 
     public fun equalsMethodReferenceName(methodReference: MethodReference): Boolean {
-        val methodName = methodReference.getName()
+        val methodName = methodReference.name
         if( methodName == null ){
             return false
 

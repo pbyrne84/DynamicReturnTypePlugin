@@ -35,7 +35,7 @@ public class BySignatureSignatureSplitter {
             }
 
             currentStringPos = nextSignatureStart
-            currentOrdinalIncrement = currentOrdinalIncrement + 1
+            currentOrdinalIncrement += 1
         }
 
         return chainedSignatureList

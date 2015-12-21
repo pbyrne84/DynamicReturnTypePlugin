@@ -18,7 +18,7 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
     }
 
     override fun equals(other: Any?): Boolean {
-        return super<Any>.equals(other)
+        return super.equals(other)
     }
 
     public fun merge(newConfig: DynamicReturnTypeConfig) {
@@ -45,9 +45,9 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
             if ( it.equalsMethodName(methodName) ) {
 
                 val classesByFQN = phpIndex.getAnyByFQN(className)
-                if ( classesByFQN.size() > 0 ) {
+                if ( classesByFQN.size > 0 ) {
                     val phpClass = classesByFQN.iterator().next()
-                    if ( phpClass.getFQN() == className ) {
+                    if ( phpClass.fqn == className ) {
                         return it
                     }
                 }

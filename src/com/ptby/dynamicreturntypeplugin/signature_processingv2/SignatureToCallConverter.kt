@@ -22,14 +22,14 @@ public class SignatureToCallConverter {
             phpIndex.getBySignature(callSignature)
         }
 
-        if ( mutableCollection.size() == 0 ) {
+        if ( mutableCollection.size == 0 ) {
             return ClassCall.newEmpty()
         }
 
         val phpNamedElement = mutableCollection.iterator().next()
 
-        val fqn = phpNamedElement.getFQN()
-        val indexOfMethod = fqn!!.indexOf(".")
+        val fqn = phpNamedElement.fqn
+        val indexOfMethod = fqn.indexOf(".")
 
         if ( indexOfMethod == -1 ) {
             return ClassCall.newEmpty()
@@ -65,11 +65,11 @@ data class ClassCall private constructor(val fqnClass: String, val  method: Stri
     }
 
     fun hasParameterAtIndex( index : Int ): Boolean {
-        return index < parameters.size()
+        return index < parameters.size
     }
 
     fun getParameterAtIndex(index : Int ): String {
-        return parameters.get( index )
+        return parameters[index]
     }
 }
 
