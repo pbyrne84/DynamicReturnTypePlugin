@@ -51,7 +51,7 @@ public class ReturnValueFromParametersProcessor(
 
     private fun createMultiTypedFromMask(formattedSignature: String, project: Project): Collection<PhpNamedElement>? {
         val customList = ArrayList<PhpNamedElement>()
-        formattedSignature.split("\\|".toRegex()).reverse().forEach { type ->
+        formattedSignature.split("\\|".toRegex()).reversed().forEach { type ->
             customList.add(LocalClassImpl(PhpType().add( type.withClassPrefix() ), project))
         }
 
