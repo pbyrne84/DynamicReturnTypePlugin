@@ -2,7 +2,6 @@ package com.ptby.dynamicreturntypeplugin.config
 
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
-import org.apache.commons.lang.StringUtils
 
 data class ClassMethodConfigKt(public val fqnClassName: String,
                                methodName: String,
@@ -37,6 +36,10 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
 
     public fun equalsMethodReferenceName(methodReference: MethodReference): Boolean {
         val methodName = methodReference.getName()
+        if( methodName == null ){
+            return false
+
+        }
         return equalsMethodName(methodName)
     }
 

@@ -2,10 +2,8 @@ package com.ptby.dynamicreturntypeplugin.config.multi
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.file.FilenameSearchResultsListener
 import com.ptby.dynamicreturntypeplugin.file.FilenameSearcher
-
 import java.io.IOException
 
 public class ProjectsConfigRefresher {

@@ -1,14 +1,15 @@
 package com.ptby.dynamicreturntypeplugin.json
 
-import com.google.gson.*
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import com.intellij.openapi.vfs.VirtualFile
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategyFromConfigFactory
-
-import java.io.IOException
-import java.util.ArrayList
+import java.util.*
 
 public class JsonToDynamicReturnTypeConfigConverter {
     var valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
@@ -16,7 +17,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
     public fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
         val parentFolder = configFile.getParent().getCanonicalPath()
         val jsonElement = createJsonElementFromJson(String(configFile.contentsToByteArray()))
-        if (jsonElement == null || !jsonElement.isJsonObject()) {
+        if (parentFolder ==null || jsonElement == null || !jsonElement.isJsonObject()) {
             return DynamicReturnTypeConfig.newEmpty()
         }
 

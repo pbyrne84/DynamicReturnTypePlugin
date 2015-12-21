@@ -1,10 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.gettype
 
-import com.jetbrains.php.lang.psi.elements.*
-import com.jetbrains.php.lang.psi.elements.impl.ConstantReferenceImpl
-import com.jetbrains.php.lang.psi.elements.impl.PhpNamedElementImpl
-import com.jetbrains.php.lang.psi.elements.impl.StringLiteralExpressionImpl
-import com.jetbrains.php.lang.psi.elements.impl.VariableImpl
+import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
+import com.jetbrains.php.lang.psi.elements.PhpReference
+import com.jetbrains.php.lang.psi.elements.StringLiteralExpression
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 class ArrayAccessGetTypeResponse(private val  isNull: Boolean,

@@ -1,18 +1,16 @@
 package com.ptby.dynamicreturntypeplugin.scripting
 
-import java.net.URLClassLoader
 import java.io.File
-import java.net.URL
-import javax.script.ScriptEngineManager
+import java.net.URLClassLoader
 import javax.script.ScriptEngine
 import javax.script.ScriptEngineFactory
-import javax.script.ScriptContext
+import javax.script.ScriptEngineManager
 import javax.script.ScriptException
 
 
 data class ScriptLanguageSystemMapping(val scriptEngineFactoryName: String, val jarName: String) {
     fun matchesType(jarFileLocation: String): Boolean {
-        return 0 == jarFileLocation.reverse().indexOf(jarName.reverse())
+        return 0 == jarFileLocation.reversed().indexOf(jarName.reversed())
     }
 }
 

@@ -1,13 +1,13 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
-import com.jetbrains.php.PhpIndex
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.HasParameterValueFormatter
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.FunctionConfiguration
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.MethodCallConfiguration
 import com.intellij.openapi.project.Project
+import com.jetbrains.php.PhpIndex
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFunctionCallPrefix
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.FunctionConfiguration
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.HasParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.MethodCallConfiguration
 
 public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
                                           private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,

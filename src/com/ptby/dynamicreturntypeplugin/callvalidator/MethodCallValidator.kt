@@ -1,12 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.callvalidator
 
-import java.util.*
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 
 public class MethodCallValidator(private val configAnalyser: ConfigAnalyser) {

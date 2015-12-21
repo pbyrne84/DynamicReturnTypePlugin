@@ -1,33 +1,23 @@
 package com.ptby.dynamicreturntypeplugin
 
+import com.intellij.openapi.diagnostic.Logger.getInstance
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2
-import com.ptby.dynamicreturntypeplugin.config.ConfigState
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer
-import com.ptby.dynamicreturntypeplugin.gettype.FunctionReferenceGetTypeResponse
+import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
+import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
+import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter
+import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
-import com.ptby.dynamicreturntypeplugin.signatureconversion.BySignatureSignatureSplitter
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
-
-import java.util.ArrayList
-
-import com.intellij.openapi.diagnostic.Logger.getInstance
-import com.jetbrains.php.PhpIndex
-import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
-import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
-import com.jetbrains.php.lang.psi.elements.Variable
-import com.jetbrains.php.lang.psi.elements.Method
-import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
-import com.ptby.dynamicreturntypeplugin.index.*
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
-import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 
 public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val classConstantWalker: ClassConstantWalker

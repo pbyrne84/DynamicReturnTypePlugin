@@ -1,8 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.config.multi
 
 import com.intellij.openapi.project.Project
-
-import java.util.ArrayList
+import java.util.*
 
 public class OpenProjects {
 

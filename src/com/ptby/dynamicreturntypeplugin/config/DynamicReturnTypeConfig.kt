@@ -1,10 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.config
 
 
-import java.util.ArrayList
 import com.jetbrains.php.PhpIndex
+import java.util.*
 
-open data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
+data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
                                    public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
     private var arrayAccessEnabled = false;

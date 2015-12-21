@@ -1,7 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion
 
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 
 
 public data class CustomMethodCallSignature private constructor(public val className: String,

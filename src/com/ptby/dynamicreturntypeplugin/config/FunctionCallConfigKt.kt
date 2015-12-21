@@ -2,7 +2,6 @@ package com.ptby.dynamicreturntypeplugin.config
 
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
-import org.apache.commons.lang.StringUtils
 
 data class FunctionCallConfigKt(functionName: String,
                                 public override val parameterIndex: Int,

@@ -1,31 +1,13 @@
 package com.ptby.dynamicreturntypeplugin.index
 
-import com.intellij.lang.ASTNode
-import com.intellij.lang.Language
-import com.intellij.navigation.ItemPresentation
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.*
-import com.intellij.psi.scope.PsiScopeProcessor
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.search.SearchScope
-import com.intellij.psi.stubs.IStubElementType
-import com.intellij.psi.stubs.NamedStub
-import com.intellij.util.IncorrectOperationException
-import com.intellij.util.ui.EmptyIcon
 import com.jetbrains.php.PhpIndex
-import com.jetbrains.php.lang.PhpLanguage
-import com.jetbrains.php.lang.documentation.phpdoc.psi.PhpDocComment
-import com.jetbrains.php.lang.psi.elements.*
-import com.jetbrains.php.lang.psi.elements.impl.FieldImpl
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
+import com.jetbrains.php.lang.psi.elements.Field
+import com.jetbrains.php.lang.psi.elements.Method
+import com.jetbrains.php.lang.psi.elements.PhpClass
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
-import org.jetbrains.annotations.NonNls
-
-import javax.swing.*
-import java.util.ArrayList
-import java.util.Collections
+import java.util.*
 
 
 /**

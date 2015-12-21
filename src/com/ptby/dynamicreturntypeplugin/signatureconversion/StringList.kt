@@ -1,6 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion
 
-import java.util.ArrayList
+import java.util.*
 
 public class StringList(vararg strings: String) : ArrayList<String>() {
 

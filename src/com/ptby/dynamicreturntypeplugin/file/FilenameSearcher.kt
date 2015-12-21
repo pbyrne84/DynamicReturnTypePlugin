@@ -6,7 +6,6 @@ import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.ProjectAndLibrariesScope
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 public class FilenameSearcher {

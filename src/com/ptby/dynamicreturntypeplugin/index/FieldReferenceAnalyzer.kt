@@ -49,7 +49,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
         }
 
         if (nullSafePhpType.indexOf("#C") == 0) {
-            return phpIndex.getBySignature(processedType, null, 0)
+            return phpIndex.getBySignature(nullSafePhpType, null, 0)
         } else if (nullSafePhpType.matchesPhpClassConstantSignature() ) {
             processedType = classConstantWalker.walkThroughConstants(
                     project,

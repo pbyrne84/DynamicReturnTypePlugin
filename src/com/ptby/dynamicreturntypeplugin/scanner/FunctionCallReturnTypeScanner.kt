@@ -1,9 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.scanner
 
-import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl
+import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt
 import com.ptby.dynamicreturntypeplugin.gettype.FunctionReferenceGetTypeResponse
-import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
 
 public class FunctionCallReturnTypeScanner() {

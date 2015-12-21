@@ -4,7 +4,6 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration
-import com.ptby.dynamicreturntypeplugin.scripting.PhpCallReferenceInfo
 import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor
 
 public class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptReplacementExecutor) {

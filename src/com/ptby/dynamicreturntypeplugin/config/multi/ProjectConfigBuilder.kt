@@ -4,8 +4,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.json.JsonToDynamicReturnTypeConfigConverter
 
-import java.io.IOException
-
 public class ProjectConfigBuilder {
 
     private val jsonToDynamicReturnTypeConfigConverter: JsonToDynamicReturnTypeConfigConverter

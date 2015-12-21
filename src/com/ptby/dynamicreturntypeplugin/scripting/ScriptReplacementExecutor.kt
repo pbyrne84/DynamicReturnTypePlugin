@@ -5,14 +5,10 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi
-
 import javax.script.Invocable
-import javax.script.ScriptEngine
-import javax.script.ScriptEngineManager
 import javax.script.ScriptException
-import kotlin.reflect
 
-public class ScriptReplacementExecutor @throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
+public class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
                                                                                    public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
     private val scriptSignatureParser: ScriptSignatureParser

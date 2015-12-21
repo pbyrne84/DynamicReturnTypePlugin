@@ -1,15 +1,11 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
+import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
-import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import com.intellij.openapi.project.Project
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
-import com.ptby.dynamicreturntypeplugin.signature_processingv2
-
 
 public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
@@ -53,7 +49,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                 .removePrefix("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
 
-        return preparedSignature.splitBy(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+        return preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
     }
 
 

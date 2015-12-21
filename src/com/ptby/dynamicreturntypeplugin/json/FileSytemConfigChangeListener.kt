@@ -1,8 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.json
 
 import com.intellij.openapi.vfs.*
-
-import java.util.ArrayList
+import java.util.*
 
 public class FileSytemConfigChangeListener : VirtualFileListener {
     private val projectConfigChangeListeners = ArrayList<ProjectConfigChangeListener>()

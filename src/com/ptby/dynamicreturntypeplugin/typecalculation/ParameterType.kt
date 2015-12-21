@@ -1,7 +1,5 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation
 
-import com.jetbrains.php.lang.psi.elements.MethodReference
-import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassPrefix
 

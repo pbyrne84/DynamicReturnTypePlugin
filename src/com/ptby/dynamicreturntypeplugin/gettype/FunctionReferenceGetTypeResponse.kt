@@ -1,12 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.gettype
 
-import com.jetbrains.php.lang.psi.elements.PhpReference
-import com.jetbrains.php.lang.psi.elements.MethodReference
-import com.jetbrains.php.lang.psi.elements.ParameterListOwner
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
-import com.intellij.psi.PsiElement
-import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.elements.FunctionReference
+import com.jetbrains.php.lang.psi.elements.PhpTypedElement
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.typecalculation.ParameterTypeCalculator
 
 open class FunctionReferenceGetTypeResponse protected constructor(private val isNull: Boolean,

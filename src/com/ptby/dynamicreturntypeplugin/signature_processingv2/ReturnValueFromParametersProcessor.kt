@@ -1,18 +1,16 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
 import com.intellij.openapi.project.Project
-import com.jetbrains.php.lang.psi.elements.PhpNamedElement
-import java.util.ArrayList
-import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
-import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.jetbrains.php.PhpIndex
-import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
-import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
+import com.jetbrains.php.lang.psi.elements.PhpNamedElement
+import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
 import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
+import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
+import java.util.*
 
 public class ReturnValueFromParametersProcessor(
         private val customSignatureProcessor: CustomSignatureProcessor) {

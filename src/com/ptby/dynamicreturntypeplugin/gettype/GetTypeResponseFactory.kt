@@ -6,10 +6,6 @@ import com.jetbrains.php.lang.parser.PhpElementTypes
 import com.jetbrains.php.lang.psi.elements.ArrayAccessExpression
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.jetbrains.php.lang.psi.elements.MethodReference
-import com.jetbrains.php.lang.psi.elements.impl.FunctionReferenceImpl
-import com.jetbrains.php.lang.psi.elements.impl.MethodReferenceImpl
-import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
-import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner

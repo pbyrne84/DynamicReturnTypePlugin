@@ -52,7 +52,6 @@ public class ClassConstantWalker {
                 return tryStringLiteralExpression(defaultValue)
             }
 
-            println(defaultValue.javaClass)
             return null
         }
 

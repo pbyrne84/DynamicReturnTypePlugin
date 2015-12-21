@@ -3,8 +3,6 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import org.apache.commons.lang.StringUtils
 
-import java.util.ArrayList
-
 public class BySignatureSignatureSplitter {
 
     public fun createChainedSignatureList(signature: String): List<String> {

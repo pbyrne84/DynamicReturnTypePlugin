@@ -4,8 +4,6 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
-import com.jetbrains.php.lang.psi.elements.MethodReference
-import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
 

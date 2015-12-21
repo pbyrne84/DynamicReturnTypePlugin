@@ -1,7 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
-import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.jetbrains.php.PhpIndex
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 
 public class SignatureToCallConverter {
@@ -28,7 +28,7 @@ public class SignatureToCallConverter {
         val phpNamedElement = mutableCollection.iterator().next()
 
         val fqn = phpNamedElement.getFQN()
-        val indexOfMethod = fqn.indexOf(".")
+        val indexOfMethod = fqn!!.indexOf(".")
 
         if ( indexOfMethod == -1 ) {
             return ClassCall.newEmpty()
