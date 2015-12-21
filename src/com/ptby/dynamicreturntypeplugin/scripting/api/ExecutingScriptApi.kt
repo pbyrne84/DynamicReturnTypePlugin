@@ -24,7 +24,7 @@ public class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptRep
         Notifications.Bus.notify(notification)
     }
 
-    SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     public fun getCallableScriptConfiguration(): CallableScriptConfiguration {
         return scriptReplacementExecutor.callableScriptConfiguration
     }

@@ -35,7 +35,7 @@ public class JsonToDynamicReturnTypeConfigConverter {
     private fun createJsonElementFromJson(json: String): JsonElement? {
         val gson = Gson()
         try {
-            return gson.fromJson<JsonElement>(json, javaClass<JsonElement>())
+            return gson.fromJson<JsonElement>(json, JsonElement::class.java)
         } catch (e: JsonSyntaxException) {
             return null
         }
