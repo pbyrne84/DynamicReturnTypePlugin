@@ -367,6 +367,7 @@ public class LocalClassImpl implements PhpNamedElement {
 
 
     @Override
+    @Deprecated
     public void checkAdd( @NotNull PsiElement psiElement ) throws IncorrectOperationException {
 
     }
@@ -397,6 +398,7 @@ public class LocalClassImpl implements PhpNamedElement {
 
 
     @Override
+    @Deprecated
     public void checkDelete() throws IncorrectOperationException {
 
     }

@@ -1,6 +1,7 @@
 package com.ptby.dynamicreturntypeplugin.typecalculation
 
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassPrefix
 
 public class ParameterType(private val parameterType: String?) {
@@ -22,7 +23,7 @@ public class ParameterType(private val parameterType: String?) {
         }
 
 
-        val returnTypeParts = formattableType.splitBy(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
+        val returnTypeParts = formattableType.mySplitBy(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
         var returnTypePart = returnTypeParts[returnTypeParts.size() - 1]
         if (returnTypePart.length() > 2 && returnTypePart.startsWithClassPrefix()) {
             return returnTypePart.substring(2)

@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
 import com.jetbrains.php.PhpIndex
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
+import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 
 public class SignatureToCallConverter {
@@ -45,7 +46,7 @@ public class SignatureToCallConverter {
     private fun getParameters(singleCall: String): List<String> {
         val parameterSignature = singleCall.substring(singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR) + 1)
 
-        return parameterSignature.splitBy(
+        return parameterSignature.mySplitBy(
                 DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR)
     }
 }
@@ -59,7 +60,7 @@ data class ClassCall private constructor(val fqnClass: String, val  method: Stri
 
 
         fun newEmpty(): ClassCall {
-            return ClassCall("", "", "".splitBy(""))
+            return ClassCall("", "", "".mySplitBy(""))
         }
     }
 
