@@ -52,8 +52,8 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
         scriptEngine = tryLoadingFromCustomPath()
         if ( scriptEngine == null) {
             throw ScriptException(
-                    "Script engine '" + scriptType + "' was not created. Relevant jar may not be in classpath." +
-                            envVariable + " was not set to point to custom location."
+                    "Script engine '$scriptType' was not created. Relevant jar may not be in classpath." +
+                            "$envVariable was not set to point to custom location."
             )
         }
 
@@ -69,7 +69,7 @@ class CustomScriptEngineFactory( private val scriptEngineManager : ScriptEngineM
         val scriptLanguageSystemMapping = locateMappingForJar(customJarLocation)
         if ( scriptLanguageSystemMapping == null ) {
             throw ScriptException(
-                    "Script engine '" + scriptType + "' could not be mapped to " + customJarLocation
+                    "Script engine '$scriptType' could not be mapped to $customJarLocation"
             )
         }
 

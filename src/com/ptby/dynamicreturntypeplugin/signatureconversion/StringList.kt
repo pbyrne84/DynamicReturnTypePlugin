@@ -18,7 +18,7 @@ public class StringList(vararg strings: String) : ArrayList<String>() {
             output += "signature : " + s + "\n"
         }
 
-        return "[" + "\n" + output + "]"
+        return "[\n$output]"
     }
 
 }

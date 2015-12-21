@@ -1,7 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.signatureconversion;
 
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 

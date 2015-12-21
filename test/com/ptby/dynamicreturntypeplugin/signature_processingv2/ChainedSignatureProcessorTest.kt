@@ -1,9 +1,5 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
-import org.junit.Test
-import com.jetbrains.php.PhpIndex
-import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
-
 public class ChainedSignatureProcessorTest {
 
 //    Test fun moo() {

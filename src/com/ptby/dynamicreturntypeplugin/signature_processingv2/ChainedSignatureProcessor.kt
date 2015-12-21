@@ -37,11 +37,11 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
             callIndex += 1
         }
 
-        if ( lastTypes.lastReturnType != null && lastTypes.lastReturnType?.hasFoundReturnType() as Boolean ) {
-            return lastTypes.lastReturnType?.phpNamedElements
+        if( lastTypes.lastReturnType == null || !lastTypes.lastReturnType!!.hasFoundReturnType() ){
+            return setOf()
         }
 
-        return setOf()
+       return lastTypes.lastReturnType!!.phpNamedElements
     }
 
     fun createChainedCalls(signature: String): List<String> {

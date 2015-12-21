@@ -6,9 +6,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFunctionCallPrefix
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.FunctionConfiguration
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.HasParameterValueFormatter
-import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.MethodCallConfiguration
+import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.*
 
 public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
                                           private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
