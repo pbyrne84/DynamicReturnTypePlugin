@@ -6,6 +6,7 @@ import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
+import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 
 public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
@@ -48,8 +49,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
         var preparedSignature = cleanParameterEndSignature(signature)
                 .removePrefix("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
-
-        return preparedSignature.split(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR.toRegex()).dropLastWhile { it.isEmpty() }
+        return preparedSignature.mySplitBy(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR )
     }
 
 
