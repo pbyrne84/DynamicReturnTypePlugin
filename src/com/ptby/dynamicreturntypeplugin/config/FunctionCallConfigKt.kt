@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.config
 
+import com.intellij.openapi.project.Project
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
 
@@ -21,11 +22,11 @@ data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
         return parameterIndex
     }
 
-    override fun formatBeforeLookup(passedType: String?): String {
+    override fun formatBeforeLookup(project : Project, passedType: String?): String {
         if(passedType== null){
             return ""
         }
-        return valueReplacementStrategy.replaceCalculatedValue(passedType).replace("\\\\", "\\")
+        return valueReplacementStrategy.replaceCalculatedValue(project, passedType).replace("\\\\", "\\")
     }
 
 

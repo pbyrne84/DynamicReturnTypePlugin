@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.config.valuereplacement
 
+import com.intellij.openapi.project.Project
 import com.ptby.dynamicreturntypeplugin.signature_extension.isPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_extension.stripPhpClassConstantReference
 
@@ -28,7 +29,7 @@ public class MaskValueReplacementStrategy(private val mask: String) : ValueRepla
     }
 
 
-    override fun replaceCalculatedValue(currentValue: String): String {
+    override fun replaceCalculatedValue(project : Project, currentValue: String): String {
         val replacableValue = if ( currentValue.isPhpClassConstantSignature() ) {
             currentValue.stripPhpClassConstantReference()
         } else {

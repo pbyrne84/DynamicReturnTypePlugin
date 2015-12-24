@@ -25,8 +25,10 @@ public class ScriptReplacementExecutorTest {
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
+
+
         String actual = replacementExecutor
-                .executeAndReplace( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
+                .executeAndReplace( null, "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
         assertEquals( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
     }
 
@@ -45,7 +47,7 @@ public class ScriptReplacementExecutorTest {
         );
 
         String actual = replacementExecutor
-                .executeAndReplace( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
+                .executeAndReplace(null, "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses\\ServiceBroker" );
         assertEquals( "#K#C\\DynamicReturnTypePluginTestEnvironment\\TestClasses_ServiceBroker", actual );
     }
 
@@ -62,7 +64,7 @@ public class ScriptReplacementExecutorTest {
                 new CallableScriptConfiguration( "file location", javascript, "abc" )
         );
 
-        replacementExecutor.executeAndReplace( "calculatedvalue" );
+        replacementExecutor.executeAndReplace(null, "calculatedvalue" );
     }
 
 

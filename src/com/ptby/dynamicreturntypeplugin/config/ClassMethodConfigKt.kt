@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.config
 
+import com.intellij.openapi.project.Project
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
 
@@ -52,8 +53,8 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
     }
 
 
-    override public fun formatBeforeLookup(passedType: String?): String{
-        val s = valueReplacementStrategy.replaceCalculatedValue(passedType)
+    override public fun formatBeforeLookup(project : Project, passedType: String?): String{
+        val s = valueReplacementStrategy.replaceCalculatedValue(project, passedType)
         if( s == null ){
             return "";
         }

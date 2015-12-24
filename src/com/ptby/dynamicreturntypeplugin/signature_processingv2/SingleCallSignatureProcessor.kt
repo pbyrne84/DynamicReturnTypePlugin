@@ -66,7 +66,7 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
 
         val originalParameterValue = parameterList[parameterIndex]
         val processedParameterValue = functionConfiguration.parameterValueFormatter().formatBeforeLookup(
-                originalParameterValue)
+                project, originalParameterValue)
 
         return SingleCall.createValid(
                 functionConfiguration,

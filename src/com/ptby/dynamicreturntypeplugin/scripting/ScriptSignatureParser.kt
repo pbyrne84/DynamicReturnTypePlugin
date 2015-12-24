@@ -26,7 +26,7 @@ public class ScriptSignatureParser {
             }
         }
 
-        return ParsedSignature(prefix, namespace, returnClassName)
+        return ParsedSignature(prefix, namespace, returnClassName.removePrefix("\\"))
 
     }
 

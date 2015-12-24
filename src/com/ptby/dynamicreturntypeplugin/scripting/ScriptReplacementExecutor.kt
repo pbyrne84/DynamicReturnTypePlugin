@@ -4,6 +4,8 @@ package com.ptby.dynamicreturntypeplugin.scripting
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import com.intellij.openapi.project.Project
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi
 import javax.script.Invocable
 import javax.script.ScriptException
@@ -12,7 +14,7 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
                                                                                    public val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
     private val scriptSignatureParser: ScriptSignatureParser
-
+    private val classConstantWalker = ClassConstantWalker()
 
     init {
         val executingScriptApi = ExecutingScriptApi(this)
@@ -25,8 +27,8 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
     }
 
 
-    public fun executeAndReplace(currentValue: String): String {
-        val parsedSignature = scriptSignatureParser.parseSignature(currentValue)
+    public fun executeAndReplace(project: Project, currentValue: String): String {
+        val parsedSignature = parseSignature(project, currentValue)
                 ?: return ""
 
         try {
@@ -49,6 +51,14 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
         }
 
         return ""
+    }
+
+    private fun parseSignature(project: Project, currentValue: String): ParsedSignature? {
+        val signatureToParse = classConstantWalker.walkThroughConstants(project, currentValue) ?:
+                currentValue
+
+        return scriptSignatureParser.parseSignature(signatureToParse)
+
     }
 
 

@@ -3,6 +3,7 @@ package com.ptby.dynamicreturntypeplugin.config.valuereplacement;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration;
@@ -117,12 +118,12 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
 
 
     @Override
-    public String replaceCalculatedValue( String currentValue ) {
+    public String replaceCalculatedValue( Project project,  String currentValue ) {
         if ( scriptReplacementExecutor == null ) {
             return currentValue;
         }
 
-        return scriptReplacementExecutor.executeAndReplace( currentValue );
+        return scriptReplacementExecutor.executeAndReplace( project, currentValue );
     }
 
 

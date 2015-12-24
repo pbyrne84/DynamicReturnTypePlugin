@@ -25,7 +25,7 @@ public class ReturnValueFromParametersProcessor(
         }
 
         val selectedParameter = classCall.getParameterAtIndex( classMethodConfigKt.getParameterIndex())
-        val treatedParameter = classMethodConfigKt.formatBeforeLookup(selectedParameter)
+        val treatedParameter = classMethodConfigKt.formatBeforeLookup(project, selectedParameter)
 
         if ( treatedParameter.contains("|")) {
             return ReturnType(createMultiTypedFromMask(treatedParameter, project))
