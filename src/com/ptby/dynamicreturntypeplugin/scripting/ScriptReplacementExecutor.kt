@@ -7,6 +7,7 @@ import com.intellij.notification.Notifications
 import com.intellij.openapi.project.Project
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
 import javax.script.Invocable
 import javax.script.ScriptException
 
@@ -54,11 +55,14 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
     }
 
     private fun parseSignature(project: Project, currentValue: String): ParsedSignature? {
-        val signatureToParse = classConstantWalker.walkThroughConstants(project, currentValue) ?:
-                currentValue
+        val signatureToParse = if ( !currentValue.startsWithClassConstantPrefix() ) {
+            currentValue
+        } else {
+            classConstantWalker.walkThroughConstants(project, currentValue) ?:
+                    currentValue
+        }
 
         return scriptSignatureParser.parseSignature(signatureToParse)
-
     }
 
 
