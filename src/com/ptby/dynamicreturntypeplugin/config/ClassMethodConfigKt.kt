@@ -45,6 +45,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
             return false
 
         }
+
         return equalsMethodName(methodName)
     }
 

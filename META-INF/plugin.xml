@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-  <version>2.0.6</version>
+  <version>2.0.7-a</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,6 +85,15 @@
 
     <change-notes>
         <![CDATA[
+       <h3>2.0.7</h3>
+       <ul>
+       <li>
+          Fix   <a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/43">"Cannot support different handling for the same named method in different classes"</a>.
+          <br/><br/>
+           Note: There is a small potential for accidental bc break.
+       </li>
+       </ul>
+
        <h3>2.0.6</h3>
        <ul>
        <li>
@@ -95,6 +104,7 @@
           be there and other times it would not so it should be more consistent now.
        </li>
        </ul>
+
 
        <h3>2.0.5.1</h3>
        <ul>

@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.config
 
 
 import com.jetbrains.php.PhpIndex
+import com.jetbrains.php.lang.psi.elements.PhpClass
 import java.util.*
 
 data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
@@ -9,7 +10,7 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
 
     private var arrayAccessEnabled = false;
 
-    public fun hasArrayAccessEnabled(): Boolean {
+    fun hasArrayAccessEnabled(): Boolean {
         return arrayAccessEnabled
     }
 
@@ -21,8 +22,8 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
         return super.equals(other)
     }
 
-    public fun merge(newConfig: DynamicReturnTypeConfig) {
-        for (possibleNewMethodConfig in newConfig.classMethodConfigs ) {
+    fun merge(newConfig: DynamicReturnTypeConfig) {
+        for (possibleNewMethodConfig in newConfig.classMethodConfigs) {
             if (!classMethodConfigs.contains(possibleNewMethodConfig)) {
                 if ( possibleNewMethodConfig.isArrayAccessConfig()) {
                     arrayAccessEnabled = true
@@ -40,15 +41,18 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
     }
 
 
-    public fun locateClassMethodConfig(phpIndex: PhpIndex, className: String, methodName: String): ClassMethodConfigKt? {
-        for (it in classMethodConfigs) {
-            if ( it.equalsMethodName(methodName) ) {
-
+    fun locateClassMethodConfig(phpIndex: PhpIndex, className: String, methodName: String): ClassMethodConfigKt? {
+        for (classMethodConfig in classMethodConfigs) {
+            if ( classMethodConfig.equalsMethodName(methodName) ) {
                 val classesByFQN = phpIndex.getAnyByFQN(className)
                 if ( classesByFQN.size > 0 ) {
                     val phpClass = classesByFQN.iterator().next()
-                    if ( phpClass.fqn == className ) {
-                        return it
+                    val configFqnClassName = classMethodConfig.fqnClassName
+                    if ( phpClass.fqn == configFqnClassName ||
+                            maybeSuperClassMatches(configFqnClassName, phpClass.superClass) ||
+                            classNameMatchesInList(configFqnClassName, phpClass.implementedInterfaces) ||
+                            classNameMatchesInList(configFqnClassName, phpClass.traits) ) {
+                        return classMethodConfig
                     }
                 }
             }
@@ -57,11 +61,31 @@ data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<Cl
         return null
     }
 
+    private fun maybeSuperClassMatches(configFqnClassName: String, maybeParent: PhpClass?): Boolean {
+        if ( maybeParent == null ) {
+            return false;
+        }
 
-    public fun locateFunctionConfig( functionSignature : String ) : FunctionCallConfigKt?{
+        if ( configFqnClassName == maybeParent.fqn ) {
+            return true
+        }
+
+        return maybeSuperClassMatches(configFqnClassName, maybeParent.superClass)
+    }
+
+    private fun classNameMatchesInList(configFqnClassName: String, phpClassList: Array<out PhpClass>): Boolean {
+        return null != phpClassList.find { item ->
+            item.fqn == configFqnClassName ||
+                    maybeSuperClassMatches(configFqnClassName, item.superClass) ||
+                    classNameMatchesInList( configFqnClassName, item.implementedInterfaces )
+        }
+    }
+
+
+    fun locateFunctionConfig(functionSignature: String): FunctionCallConfigKt? {
         val absoluteFqn = "\\" + functionSignature.removePrefix("\\")
-        for( functionCallConfig in functionCallConfigs){
-            if( functionCallConfig.equalsFqnString( absoluteFqn )){
+        for (functionCallConfig in functionCallConfigs) {
+            if ( functionCallConfig.equalsFqnString(absoluteFqn)) {
                 return functionCallConfig
             }
         }

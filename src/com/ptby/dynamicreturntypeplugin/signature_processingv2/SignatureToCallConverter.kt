@@ -10,7 +10,6 @@ public class SignatureToCallConverter {
     fun getCallFromSignature(phpIndex: PhpIndex, lastClassType: String, singleCall: String): ClassCall {
         val indexOfParameterStart = singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)
         if ( indexOfParameterStart == -1 ) {
-            println("Single call has no parameters " + singleCall)
             return ClassCall.newEmpty()
         }
         val callSignature = singleCall.substring(0, indexOfParameterStart)
