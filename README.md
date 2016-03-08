@@ -85,7 +85,7 @@ Currently it looks for a files called dynamicReturnTypeMeta.json anywhere in the
             "class": "\\Phockito",
             "method": "verify",
             "position": 0
-        },
+        }
     ],
     "functionCalls": [
         {
