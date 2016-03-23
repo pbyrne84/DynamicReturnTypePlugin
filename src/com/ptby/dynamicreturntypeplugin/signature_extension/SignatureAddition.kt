@@ -30,11 +30,12 @@ fun String.getRealFunctionSignature(phpIndex: PhpIndex): String {
         throw RuntimeException("$this is not a function")
     }
 
-    val desiredFunctionLookup = phpIndex.getBySignature(this)
+    val signatureBeforeParameters = getSignatureBeforeParameters()
+    val desiredFunctionLookup = phpIndex.getBySignature(signatureBeforeParameters)
     if ( !desiredFunctionLookup.isEmpty() ) {
         return this
     } else {
-        val possibleGlobalSignature = "#F\\" + this.substringBefore(PARAMETER_START_SEPARATOR).split("\\").last()
+        val possibleGlobalSignature = "#F\\" + substringBefore(PARAMETER_START_SEPARATOR).split("\\").last()
 
         if ( phpIndex.getBySignature(possibleGlobalSignature).isEmpty() ) {
             throw RuntimeException("Global deferred function from $this to failed $possibleGlobalSignature")
@@ -46,6 +47,11 @@ fun String.getRealFunctionSignature(phpIndex: PhpIndex): String {
 
 fun String.getParameterSection(): String {
     return substringAfter(PARAMETER_START_SEPARATOR)
+}
+
+
+fun String.getSignatureBeforeParameters(): String {
+    return substringBefore(PARAMETER_START_SEPARATOR)
 }
 
 
