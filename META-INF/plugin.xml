@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-  <version>2.0.7</version>
+  <version>2.0.8</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,6 +85,15 @@
 
     <change-notes>
         <![CDATA[
+       <h3>2.0.8</h3>
+       <ul>
+       <li>
+          Fix   <a href="https://github.com/pbyrne84/DynamicReturnTypePlugin/issues/58">Non backslashed global function lookup has changed in 2016, manual fallback to global is now done.</a>.
+          <br/><br/>
+       </li>
+       <li><b>This plugin has moved to jdk8</b></li>
+       </ul>
+
        <h3>2.0.7</h3>
        <ul>
        <li>
@@ -239,7 +248,7 @@
     </change-notes>
 
     <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="141.1619"/>
+  <idea-version since-build="145.258"/>
     <extensions defaultExtensionNs="com.intellij">
      </extensions>
 

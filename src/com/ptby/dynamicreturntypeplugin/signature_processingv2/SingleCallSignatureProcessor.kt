@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
+import com.ptby.dynamicreturntypeplugin.signature_extension.getRealFunctionSignature
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFunctionCallPrefix
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.*
@@ -17,7 +18,8 @@ public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
 
     fun getParameterFormatterForSignature(signature: String, lastType: String, project: Project): SingleCall {
         if ( signature.startsWithFunctionCallPrefix()) {
-            return processFunction(signature, project)
+
+            return processFunction(signature.getRealFunctionSignature( phpIndex), project)
         }
 
         val methodCallConfiguration = processMethod(lastType, signature)
