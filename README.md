@@ -217,7 +217,30 @@ Any probs just give me a shout.
 
 
 
+### Easiest way to set up a the ide to play with sourcecode/develop a plugin relying on internal plugins.
+When a plugin JDK is setup it only includes default libraries of idea. A php plugin requires some of the following to
+compile.
 
+(I include all of them as they are in the same folder so proabably they are all needed)
+ +   php-openapi.jar
+ +   php.jar
+ +   resources_en.jar
+
+On my machine I go to my plugin sdk classpaths and manually add the following
+
+ + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/php-openapi.jar
+ + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/php.jar
+ + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/resources_en.jar
+
+As actually adding them to the lib directory in github will cause major problems with the internal class loader/pico
+container stuff. I put settings in non normal places so just do a file search.
+
+I also use gson and junit which on my machine is located at
+ + /opt/jetbrains/idea-16/lib/junit-4.12.jar
+ + /opt/jetbrains/idea-16/lib/gson-2.5.jar
+
+These are part of the default idea install. There are quite a few goodies floating around there not included by default.
+These are also pretty standard libraries so small chance of them being dropped.
 
 
 
