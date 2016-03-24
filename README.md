@@ -217,7 +217,7 @@ Any probs just give me a shout.
 
 
 
-### Easiest way to set up a the ide to play with sourcecode/develop a plugin relying on internal plugins.
+### Easiest way to set up a the ide to play with the source code/develop a plugin relying on internal plugins.
 When a plugin JDK is setup it only includes default libraries of idea. A php plugin requires some of the following to
 compile.
 
@@ -241,14 +241,3 @@ I also use gson and junit which on my machine is located at
 
 These are part of the default idea install. There are quite a few goodies floating around there not included by default.
 These are also pretty standard libraries so small chance of them being dropped.
-
-
-
-
-
-
-
-
-
-
-
