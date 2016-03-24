@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.ptby.dynamicreturntypeplugin</id>
     <name>DynamicReturnTypePlugin</name>
-  <version>2.0.8</version>
+  <version>2.0.8.1</version>
     <vendor email="pbyrne84@gmail.com" url="https://github.com/pbyrne84/DynamicReturnTypePlugin">P Byrne</vendor>
 
     <description><![CDATA[
@@ -85,6 +85,16 @@
 
     <change-notes>
         <![CDATA[
+        <h3>2.0.8.1</h3>
+       <ul>
+       <li>
+          Needed to remove parameter from internal function lookup as it was breaking namespaced function resolution.
+          Regression test case has been added for this
+         <a href="https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/TestEnvironment/lib/DynamicReturnTypePluginTestEnvironment/MaskedStringParameterTest.php">here</a>
+         locatable by ifInNameSpacedShouldBeMaskedMock.
+       </li>
+       </ul>
+
        <h3>2.0.8</h3>
        <ul>
        <li>
