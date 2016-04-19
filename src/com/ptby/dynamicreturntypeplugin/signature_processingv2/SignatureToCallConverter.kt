@@ -1,5 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.signature_processingv2
 
+import com.intellij.openapi.diagnostic.Logger
 import com.jetbrains.php.PhpIndex
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
@@ -18,7 +19,13 @@ public class SignatureToCallConverter {
             val chainedSignature = lastClassType.withMethodCallPrefix() + callSignature
             phpIndex.getBySignature(chainedSignature)
         } else {
-            phpIndex.getBySignature(callSignature)
+            try {
+                phpIndex.getBySignature(callSignature)
+            } catch(e: StackOverflowError) {
+                val logger = Logger.getInstance("DynamicReturnTypePlugin")
+                logger.error("signature : $callSignature", e)
+                throw e
+            }
         }
 
         if ( mutableCollection.size == 0 ) {
