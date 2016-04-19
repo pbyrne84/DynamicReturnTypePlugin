@@ -19,49 +19,37 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
     )
 
     fun parseSignature(signature: String, project: Project): Collection<PhpNamedElement>? {
-        val chainedCalls: List<String> = createChainedCalls(signature)
-        val lastTypes = processCallList(LastTypes("", null), chainedCalls, 0, project)
-                ?: return null
+        val chainedCalls = createChainedCalls(signature)
+        var lastTypes = LastTypes("", null)
+        var callIndex = 0
 
-        if ( lastTypes.lastReturnType == null || !lastTypes.hasLastReturnType ) {
+        for ( singleCall in chainedCalls ) {
+            val callConfiguration = singleCallSignatureProcessor.getParameterFormatterForSignature(
+                    singleCall,
+                    lastTypes.lastClassType,
+                    project
+            )
+
+            if ( !callConfiguration.isValid() ) {
+                return setOf()
+            }
+
+            lastTypes = LastTypes(callConfiguration.getReturnTypeClassName(), callConfiguration.getReturnType())
+            callIndex += 1
+        }
+
+        if( lastTypes.lastReturnType == null || !lastTypes.lastReturnType!!.hasFoundReturnType() ){
             return setOf()
         }
 
-        return lastTypes.lastReturnType!!.phpNamedElements
+       return lastTypes.lastReturnType!!.phpNamedElements
     }
-
-    tailrec private fun processCallList(lastTypes: LastTypes, chainedCalls: List<String>, index: Int, project: Project): LastTypes? {
-        if ( index >= chainedCalls.size ) {
-            return lastTypes
-        }
-
-        val newlastTypes = processSingleCall(chainedCalls[index], lastTypes, project)
-                ?: return null
-
-        return processCallList(newlastTypes, chainedCalls, index + 1, project)
-    }
-
-
-    private fun processSingleCall(singleCall: String, lastTypes: LastTypes, project: Project): LastTypes? {
-        val callConfiguration: SingleCall = singleCallSignatureProcessor.getParameterFormatterForSignature(
-                singleCall,
-                lastTypes.lastClassType,
-                project
-        )
-
-        if ( !callConfiguration.isValid() ) {
-            return null
-        }
-
-        return LastTypes(callConfiguration.getReturnTypeClassName(), callConfiguration.getReturnType())
-    }
-
 
     fun createChainedCalls(signature: String): List<String> {
         var preparedSignature = cleanParameterEndSignature(signature)
                 .removePrefix("#M#" + DynamicReturnTypeProvider.PLUGIN_IDENTIFIER_KEY_STRING)
 
-        return preparedSignature.mySplitBy(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR)
+        return preparedSignature.mySplitBy(DynamicReturnTypeProvider.PARAMETER_END_SEPARATOR )
     }
 
 
@@ -76,14 +64,7 @@ public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
     }
 
 
-    data class LastTypes(val lastClassType: String, val lastReturnType: ReturnType?) {
-        val hasLastReturnType: Boolean = if ( lastReturnType != null ) {
-            lastReturnType.hasFoundReturnType()
-        } else {
-            false
-        }
-    }
-
+    data class LastTypes(val lastClassType: String, val lastReturnType: ReturnType?)
 
     data class MethodCallConfiguration(private val _parameterValueFormatter: ParameterValueFormatter?,
                                        val callFromSignature: ClassCall,
