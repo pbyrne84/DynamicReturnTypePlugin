@@ -39,8 +39,8 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
     companion object {
-        const val PLUGIN_IDENTIFIER_KEY: Char = 'Ђ'
-        const val PLUGIN_IDENTIFIER_KEY_STRING: String = "Ђ"
+        const val PLUGIN_IDENTIFIER_KEY: Char = '☘'
+        const val PLUGIN_IDENTIFIER_KEY_STRING: String = "☘"
         const val PARAMETER_START_SEPARATOR: String = "ª"
         const val PARAMETER_ITEM_SEPARATOR: String = "♠"
         const val PARAMETER_END_SEPARATOR: String = "♣"
