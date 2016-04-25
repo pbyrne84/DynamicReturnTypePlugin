@@ -5,14 +5,16 @@ import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
 import com.intellij.openapi.project.Project
+import com.jetbrains.php.PhpIndex
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithMethodCallPrefix
 import javax.script.Invocable
 import javax.script.ScriptException
 
-public class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
-                                                                                   public val callableScriptConfiguration: CallableScriptConfiguration) {
+class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(customScriptEngineFactory: CustomScriptEngineFactory,
+                                                                            val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
     private val scriptSignatureParser: ScriptSignatureParser
     private val classConstantWalker = ClassConstantWalker()
@@ -28,7 +30,7 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
     }
 
 
-    public fun executeAndReplace(project: Project, currentValue: String): String {
+    fun executeAndReplace(project: Project, currentValue: String): String {
         val parsedSignature = parseSignature(project, currentValue)
                 ?: return ""
 
@@ -55,12 +57,17 @@ public class ScriptReplacementExecutor @Throws(ScriptException::class) construct
     }
 
     private fun parseSignature(project: Project, currentValue: String): ParsedSignature? {
-        val signatureToParse = if ( !currentValue.startsWithClassConstantPrefix() ) {
-            currentValue
-        } else {
-            classConstantWalker.walkThroughConstants(project, currentValue) ?:
+
+        val signatureToParse =
+                if ( currentValue.startsWithMethodCallPrefix()) {
+                    val index = PhpIndex.getInstance(project)
+                    index.getBySignature(currentValue).first().type.toString()
+                } else if ( !currentValue.startsWithClassConstantPrefix() ) {
                     currentValue
-        }
+                } else {
+                    classConstantWalker.walkThroughConstants(project, currentValue) ?:
+                            currentValue
+                }
 
         return scriptSignatureParser.parseSignature(signatureToParse)
     }

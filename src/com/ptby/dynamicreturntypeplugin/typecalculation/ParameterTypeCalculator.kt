@@ -5,6 +5,7 @@ import com.jetbrains.php.lang.psi.elements.PhpTypedElement
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithMethodCallPrefix
 import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
 
 public class ParameterTypeCalculator() {
@@ -28,15 +29,15 @@ public class ParameterTypeCalculator() {
                 val singleType = getTypeSignature(elementType)
                         ?: return ParameterType(null)
 
+
                 if (singleType.substring(0, 1) == "\\") {
                     return ParameterType( singleType.withClassPrefix() )
-                }
-
-                if (singleType.length < 3) {
+                }else  if (singleType.length < 3) {
                     return ParameterType(null)
+                }else if( singleType.startsWithMethodCallPrefix() ){
+                    return ParameterType( singleType );
                 }
-
-                if (typeContains(singleType, "#C\\") || typeContains(singleType, "#P#C\\")) {
+                else if (typeContains(singleType, "#C\\") || typeContains(singleType, "#P#C\\")) {
                     return ParameterType(singleType.substring(2))
                 }
 

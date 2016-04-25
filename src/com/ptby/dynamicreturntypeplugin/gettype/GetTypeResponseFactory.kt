@@ -44,7 +44,9 @@ public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
 
 
     private fun createArrayAccessResponse(arrayAccess: ArrayAccessExpression): GetTypeResponse {
-        return methodCallReturnTypeScanner.getTypeFromArrayAccess(arrayAccess)
+        val typeFromArrayAccess = methodCallReturnTypeScanner.getTypeFromArrayAccess(arrayAccess)
+
+        return typeFromArrayAccess
     }
 
 }

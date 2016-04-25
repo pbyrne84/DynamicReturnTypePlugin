@@ -5,10 +5,8 @@ import com.jetbrains.php.lang.psi.elements.PhpReference
 import com.jetbrains.php.lang.psi.elements.StringLiteralExpression
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
-class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
+class ArrayAccessGetTypeResponse(private val isNull: Boolean,
                                  private val signature: String) : GetTypeResponse {
-
-
 
     companion object {
         public fun createNull(): GetTypeResponse {
@@ -36,8 +34,13 @@ class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
                 return null
             }
 
+            val phpReference = arrayAccessExpression.value as PhpReference
+            if (  phpReference.signature.startsWith("#VMESS")) {
+                return null;
+            }
+
             return formatSignature(
-                    arrayAccessExpression.value as PhpReference,
+                    phpReference,
                     indexSignature
             )
         }
@@ -57,7 +60,6 @@ class ArrayAccessGetTypeResponse(private val  isNull: Boolean,
     override fun toString(): String {
         return getSignature()
     }
-
 
 
     override fun getSignature(): String {

@@ -62,8 +62,7 @@ public class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
     override fun getType(psiElement: PsiElement): String? {
         try {
-            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(
-                    psiElement)
+            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType( psiElement)
             if (dynamicReturnType.isNull()) {
                 return null
             }

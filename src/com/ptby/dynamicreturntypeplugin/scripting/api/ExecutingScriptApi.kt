@@ -6,14 +6,14 @@ import com.intellij.notification.Notifications
 import com.ptby.dynamicreturntypeplugin.scripting.CallableScriptConfiguration
 import com.ptby.dynamicreturntypeplugin.scripting.ScriptReplacementExecutor
 
-public class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptReplacementExecutor) {
+ class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptReplacementExecutor) {
 
     /**
      * Used by script execution
      *
      * @param message - message to send to event log
      */
-    public fun writeToEventLog(message: String) {
+     fun writeToEventLog(message: String) {
         val notification = Notification(
                 "DynamicReturnTypePlugin",
                 "script debug for " + getCallableScriptConfiguration().fileLocation,
@@ -25,7 +25,7 @@ public class ExecutingScriptApi(private val scriptReplacementExecutor: ScriptRep
     }
 
     @SuppressWarnings("unused")
-    public fun getCallableScriptConfiguration(): CallableScriptConfiguration {
+     fun getCallableScriptConfiguration(): CallableScriptConfiguration {
         return scriptReplacementExecutor.callableScriptConfiguration
     }
 

@@ -11,6 +11,10 @@ fun String.startsWithClassConstantPrefix() : Boolean =  this.startsWith("#K#C")
 
 fun String.removeClassConstantClassSuffix(): String = this.removeSuffix(".class")
 
+
+fun String.startsWithMethodCallPrefix(): Boolean = this.startsWith("#M#C")
+
+
 /**
  * This is for the native class constant signature for the ::class format
  */

@@ -23,7 +23,7 @@ public class SignatureToCallConverter {
                 phpIndex.getBySignature(callSignature)
             } catch(e: StackOverflowError) {
                 val logger = Logger.getInstance("DynamicReturnTypePlugin")
-                logger.error("signature : $callSignature", e)
+                logger.error("signature : $callSignature - from $singleCall", e)
                 throw e
             }
         }
