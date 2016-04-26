@@ -87,7 +87,7 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
     }
 
     companion object {
-        const public val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
-        const public val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
+        const  val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
+        const  val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
     }
 }

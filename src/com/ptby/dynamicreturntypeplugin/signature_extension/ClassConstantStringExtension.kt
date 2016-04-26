@@ -7,13 +7,14 @@ fun String.removeClassConstantPrefix(): String = this.removePrefix("#K#C")
 /**
  * All internal references for klass constants start with this signature
  */
-fun String.startsWithClassConstantPrefix() : Boolean =  this.startsWith("#K#C")
+fun String.startsWithClassConstantPrefix(): Boolean = this.startsWith("#K#C")
 
 fun String.removeClassConstantClassSuffix(): String = this.removeSuffix(".class")
 
 
-fun String.startsWithMethodCallPrefix(): Boolean = this.startsWith("#M#C")
-
+fun String.startsWithMethodCallPrefix(): Boolean {
+    return this.matches(SignatureMatcher.STARTS_WITH_METHOD_CALL_PATTERN)
+}
 
 /**
  * This is for the native class constant signature for the ::class format
@@ -22,10 +23,10 @@ fun String.isPhpClassConstantSignature(): Boolean {
     return this.startsWith("#K#C") && this.endsWith(".class")
 }
 
-fun String.stripPhpClassConstantReference(): String{
+fun String.stripPhpClassConstantReference(): String {
     return this.removeClassConstantPrefix().removeClassConstantClassSuffix()
 }
 
-fun String.matchesPhpClassConstantSignature() : Boolean {
-    return this.matches(SignatureMatcher.CLASS_CONSTANT_CALL_PATTERN.toRegex())
+fun String.matchesPhpClassConstantSignature(): Boolean {
+    return this.matches(SignatureMatcher.CLASS_CONSTANT_CALL_PATTERN)
 }
