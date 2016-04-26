@@ -61,13 +61,22 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
         val signatureToParse =
                 if ( currentValue.startsWithMethodCallPrefix()) {
                     val index = PhpIndex.getInstance(project)
-                    index.getBySignature(currentValue).first().type.toString()
+                    val bySignature = index.getBySignature(currentValue)
+                    if ( bySignature.size > 0){
+                        bySignature.first().type.toString()
+                    }else {
+                        ""
+                    }
                 } else if ( !currentValue.startsWithClassConstantPrefix() ) {
                     currentValue
                 } else {
                     classConstantWalker.walkThroughConstants(project, currentValue) ?:
                             currentValue
                 }
+
+        if( signatureToParse == "" ){
+            return null
+        }
 
         return scriptSignatureParser.parseSignature(signatureToParse)
     }
