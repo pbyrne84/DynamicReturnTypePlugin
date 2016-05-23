@@ -9,7 +9,7 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFunctionCallPrefix
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ChainedSignatureProcessor.*
 
-public class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
+class SingleCallSignatureProcessor(private val phpIndex: PhpIndex,
                                           private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
                                           private val returnValueFromParametersProcessor: ReturnValueFromParametersProcessor) {
 

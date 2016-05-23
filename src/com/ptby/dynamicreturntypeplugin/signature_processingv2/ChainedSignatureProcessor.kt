@@ -8,7 +8,7 @@ import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.config.ParameterValueFormatter
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 
-public class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
+class ChainedSignatureProcessor(private val phpIndex: PhpIndex,
                                        private val dynamicReturnTypeConfig: DynamicReturnTypeConfig,
                                        private val returnValueFromParametersProcessor: ReturnValueFromParametersProcessor) {
 

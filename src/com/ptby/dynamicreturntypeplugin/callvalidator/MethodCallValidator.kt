@@ -7,10 +7,10 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 
-public class MethodCallValidator(private val configAnalyser: ConfigAnalyser) {
+class MethodCallValidator(private val configAnalyser: ConfigAnalyser) {
 
 
-    public fun getMatchingConfig(phpIndex: PhpIndex,
+    fun getMatchingConfig(phpIndex: PhpIndex,
                                  project: Project,
                                  calledMethod: String,
                                  cleanedVariableSignature: String,

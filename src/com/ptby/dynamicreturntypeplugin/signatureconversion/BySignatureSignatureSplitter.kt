@@ -3,9 +3,9 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import org.apache.commons.lang.StringUtils
 
-public class BySignatureSignatureSplitter {
+class BySignatureSignatureSplitter {
 
-    public fun createChainedSignatureList(signature: String): List<String> {
+    fun createChainedSignatureList(signature: String): List<String> {
         val chainedSignatureList = StringList()
         if (signature == "") {
             return chainedSignatureList

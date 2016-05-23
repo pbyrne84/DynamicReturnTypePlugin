@@ -8,9 +8,9 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.ProjectAndLibrariesScope
 import java.util.concurrent.Executors
 
-public class FilenameSearcher {
+class FilenameSearcher {
 
-    public fun findByFileName(project: Project, filename: String, resultsListener: FilenameSearchResultsListener) {
+    fun findByFileName(project: Project, filename: String, resultsListener: FilenameSearchResultsListener) {
         val executorService = Executors.newSingleThreadExecutor()
 
         executorService.execute(object : Runnable {

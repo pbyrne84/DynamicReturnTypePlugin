@@ -10,11 +10,11 @@ import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
 
-public class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
+class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
                                     private val methodCallReturnTypeScanner: MethodCallReturnTypeScanner,
                                     private val functionCallReturnTypeScanner: FunctionCallReturnTypeScanner) {
 
-    public fun createDynamicReturnType(psiElement: PsiElement): GetTypeResponse {
+    fun createDynamicReturnType(psiElement: PsiElement): GetTypeResponse {
         val project = psiElement.project
 
         if (PlatformPatterns.psiElement(PhpElementTypes.METHOD_REFERENCE).accepts(psiElement)) {

@@ -3,10 +3,10 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
 
-public data class CustomMethodCallSignature private constructor(public val className: String,
-                                                    public val method: String,
-                                                    public val desiredParameter: String,
-                                                    public val rawStringSignature: String) {
+data class CustomMethodCallSignature private constructor(val className: String,
+                                                                val method: String,
+                                                                val desiredParameter: String,
+                                                                val rawStringSignature: String) {
 
 
     companion object {

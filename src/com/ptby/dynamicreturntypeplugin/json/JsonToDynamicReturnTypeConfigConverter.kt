@@ -11,10 +11,10 @@ import com.ptby.dynamicreturntypeplugin.config.FunctionCallConfigKt
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategyFromConfigFactory
 import java.util.*
 
-public class JsonToDynamicReturnTypeConfigConverter {
+class JsonToDynamicReturnTypeConfigConverter {
     var valueReplacementStrategyFromConfigFactory = ValueReplacementStrategyFromConfigFactory()
 
-    public fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
+    fun convertJson(configFile: VirtualFile): DynamicReturnTypeConfig {
         val parentFolder = configFile.parent.canonicalPath
         val jsonElement = createJsonElementFromJson(String(configFile.contentsToByteArray()))
         if (parentFolder ==null || jsonElement == null || !jsonElement.isJsonObject) {

@@ -13,7 +13,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
  * I cannot seem to be able to find the type from a field without looking at the index so final validation on whether to actually ovveride
  * has to be done later
  */
-public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) : ListReturnPackaging {
+class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) : ListReturnPackaging {
     private val classConstantWalker: ClassConstantWalker
     private val originalCallAnalyzer: OriginalCallAnalyzer
     private val methodCallValidator: MethodCallValidator
@@ -26,7 +26,7 @@ public class FieldReferenceAnalyzer(private val configAnalyser: ConfigAnalyser) 
     }
 
 
-    public fun getClassNameFromFieldLookup(customMethodCallSignature: CustomMethodCallSignature,
+    fun getClassNameFromFieldLookup(customMethodCallSignature: CustomMethodCallSignature,
                                            project: Project): Collection<PhpNamedElement> {
         val phpIndex = PhpIndex.getInstance(project)
 

@@ -5,8 +5,8 @@ import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.elements.PhpClass
 import java.util.*
 
-data class DynamicReturnTypeConfig(public val classMethodConfigs: MutableList<ClassMethodConfigKt>,
-                                   public val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
+data class DynamicReturnTypeConfig(val classMethodConfigs: MutableList<ClassMethodConfigKt>,
+                                   val functionCallConfigs: MutableList<FunctionCallConfigKt>) {
 
     private var arrayAccessEnabled = false;
 

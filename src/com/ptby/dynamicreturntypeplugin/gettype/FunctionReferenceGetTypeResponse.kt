@@ -24,7 +24,7 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
     }
 
 
-    override public fun isNull(): Boolean {
+    override fun isNull(): Boolean {
         return isNull
     }
 

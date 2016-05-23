@@ -2,7 +2,7 @@ package com.ptby.dynamicreturntypeplugin.signatureconversion
 
 import java.util.*
 
-public class StringList(vararg strings: String) : ArrayList<String>() {
+class StringList(vararg strings: String) : ArrayList<String>() {
 
     init {
         for (string in strings) {

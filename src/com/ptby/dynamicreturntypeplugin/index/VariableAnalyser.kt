@@ -10,7 +10,7 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConst
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
-public class VariableAnalyser(configAnalyser: ConfigAnalyser,
+class VariableAnalyser(configAnalyser: ConfigAnalyser,
                               private val classConstantWalker: ClassConstantWalker) : ListReturnPackaging {
     private val methodCallValidator: MethodCallValidator
     private val originalCallAnalyzer: OriginalCallAnalyzer
@@ -21,7 +21,7 @@ public class VariableAnalyser(configAnalyser: ConfigAnalyser,
     }
 
 
-    public fun getClassNameFromVariableLookup(signature: CustomMethodCallSignature,
+    fun getClassNameFromVariableLookup(signature: CustomMethodCallSignature,
                                               project: Project): Collection<PhpNamedElement>? {
         val phpIndex = PhpIndex.getInstance(project)
 

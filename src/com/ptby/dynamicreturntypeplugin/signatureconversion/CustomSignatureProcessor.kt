@@ -10,7 +10,7 @@ import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverte
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
-public class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter,
+class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter,
                                       private val classConstantWalker: ClassConstantWalker,
                                       private val fieldReferenceAnalyzer: FieldReferenceAnalyzer,
                                       private val variableAnalyser: VariableAnalyser) : ListReturnPackaging {

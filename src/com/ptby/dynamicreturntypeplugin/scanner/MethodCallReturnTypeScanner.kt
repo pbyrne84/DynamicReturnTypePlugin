@@ -7,10 +7,10 @@ import com.ptby.dynamicreturntypeplugin.gettype.ArrayAccessGetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.FunctionReferenceGetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
 
-public class MethodCallReturnTypeScanner() {
+class MethodCallReturnTypeScanner() {
 
 
-    public fun getTypeFromMethodCall(classMethodConfigList: List<ClassMethodConfigKt>,
+    fun getTypeFromMethodCall(classMethodConfigList: List<ClassMethodConfigKt>,
                                      methodReference: MethodReference): FunctionReferenceGetTypeResponse {
 
         for (classMethodConfig in classMethodConfigList) {
@@ -23,7 +23,7 @@ public class MethodCallReturnTypeScanner() {
     }
 
 
-    public fun getTypeFromArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
+    fun getTypeFromArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
 
         return ArrayAccessGetTypeResponse.newArrayAccess(arrayAccessExpression)
     }

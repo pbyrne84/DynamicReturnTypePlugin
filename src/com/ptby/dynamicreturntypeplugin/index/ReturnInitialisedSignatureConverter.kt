@@ -6,10 +6,10 @@ import com.jetbrains.php.lang.psi.elements.impl.FunctionImpl
 import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
-public class ReturnInitialisedSignatureConverter {
+class ReturnInitialisedSignatureConverter {
 
 
-    public fun convertSignatureToClassSignature(signature: CustomMethodCallSignature,
+    fun convertSignatureToClassSignature(signature: CustomMethodCallSignature,
                                                 project: Project): CustomMethodCallSignature {
         val phpIndex = PhpIndex.getInstance(project)
 

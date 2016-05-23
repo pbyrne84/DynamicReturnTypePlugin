@@ -3,7 +3,7 @@ package com.ptby.dynamicreturntypeplugin.json
 import com.intellij.openapi.vfs.*
 import java.util.*
 
-public class FileSytemConfigChangeListener : VirtualFileListener {
+class FileSytemConfigChangeListener : VirtualFileListener {
     private val projectConfigChangeListeners = ArrayList<ProjectConfigChangeListener>()
 
     init {
@@ -15,7 +15,7 @@ public class FileSytemConfigChangeListener : VirtualFileListener {
     override fun propertyChanged(event: VirtualFilePropertyEvent) {
     }
 
-    public fun registerProjectConfigChangeListener(projectConfigChangeListener: ProjectConfigChangeListener) {
+    fun registerProjectConfigChangeListener(projectConfigChangeListener: ProjectConfigChangeListener) {
         projectConfigChangeListeners.add(projectConfigChangeListener)
     }
 

@@ -11,14 +11,14 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.removeClassConstantP
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
 import com.ptby.dynamicreturntypeplugin.signature_extension.stripPhpClassConstantReference
 
-public class ClassConstantWalker {
+class ClassConstantWalker {
 
-    public fun walkThroughConstants(project: Project, classConstant : String ): String? {
+    fun walkThroughConstants(project: Project, classConstant : String ): String? {
         return walkThroughConstants(PhpIndex.getInstance(project), classConstant)
     }
 
 
-    public fun walkThroughConstants(phpIndex: PhpIndex, signature: String): String? {
+    fun walkThroughConstants(phpIndex: PhpIndex, signature: String): String? {
         //Class constants resolve directly
         if ( signature.isPhpClassConstantSignature()) {
             return signature.stripPhpClassConstantReference()

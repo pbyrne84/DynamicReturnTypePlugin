@@ -8,10 +8,10 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConst
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithMethodCallPrefix
 import com.ptby.dynamicreturntypeplugin.signature_extension.withClassPrefix
 
-public class ParameterTypeCalculator() {
+class ParameterTypeCalculator() {
 
 
-    public fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
+    fun calculateTypeFromParameter(parameterIndex: Int, parameters: Array<PsiElement>): ParameterType {
         if (parameters.size <= parameterIndex) {
             return ParameterType(null)
         }

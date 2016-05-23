@@ -14,9 +14,9 @@ import java.util.*
  * As I haven't found a way to validate whether calls involving inheritance are valid with using the php index
  * calls with duplicate method names can get overridden by the loose getType call so this puts them back into their original state.
  */
-public class OriginalCallAnalyzer {
+class OriginalCallAnalyzer {
 
-    public fun getFieldInstanceOriginalReturnType(phpIndex: PhpIndex,
+    fun getFieldInstanceOriginalReturnType(phpIndex: PhpIndex,
                                                   customMethodCallSignature: CustomMethodCallSignature,
                                                   project: Project): Collection<PhpNamedElement> {
         val methodSignatures = phpIndex.getBySignature(customMethodCallSignature.className, null, 0)
@@ -43,7 +43,7 @@ public class OriginalCallAnalyzer {
     }
 
 
-    public fun getMethodCallReturnType(phpIndex: PhpIndex,
+    fun getMethodCallReturnType(phpIndex: PhpIndex,
                                        className: String,
                                        calledMethod: String,
                                        project: Project): Collection<PhpNamedElement>? {

@@ -19,7 +19,7 @@ import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 
-public class DynamicReturnTypeProvider : PhpTypeProvider2 {
+class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val classConstantWalker: ClassConstantWalker
     private val getTypeResponseFactory: GetTypeResponseFactory
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter

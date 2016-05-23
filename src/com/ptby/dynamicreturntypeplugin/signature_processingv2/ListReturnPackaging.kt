@@ -6,7 +6,7 @@ import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.index.LocalClassImpl
 import java.util.*
 
-public interface ListReturnPackaging {
+interface ListReturnPackaging {
 
     fun requiresListPackaging(returnValue: String): Boolean = returnValue.endsWith("[]")
 

@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 
 import java.util.concurrent.ConcurrentHashMap
 
-public class ProjectDynamicReturnTypeMap : ConcurrentHashMap<String, DynamicReturnTypeConfig>() {
+class ProjectDynamicReturnTypeMap : ConcurrentHashMap<String, DynamicReturnTypeConfig>() {
 
     fun get(project: Project): DynamicReturnTypeConfig {
         val key = project.baseDir.toString()

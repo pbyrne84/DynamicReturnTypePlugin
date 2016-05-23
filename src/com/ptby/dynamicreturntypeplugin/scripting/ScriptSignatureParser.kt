@@ -1,9 +1,9 @@
 package com.ptby.dynamicreturntypeplugin.scripting
 
-public class ScriptSignatureParser {
+class ScriptSignatureParser {
 
 
-    public fun parseSignature(currentParameterSignature: String): ParsedSignature? {
+    fun parseSignature(currentParameterSignature: String): ParsedSignature? {
         if (currentParameterSignature == "") {
             return null
         }

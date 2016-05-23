@@ -3,14 +3,14 @@ package com.ptby.dynamicreturntypeplugin.config.multi
 import com.intellij.openapi.project.Project
 import java.util.*
 
-public class OpenProjects {
+class OpenProjects {
 
     private val projects = ArrayList<Project>()
 
     private var isAccessing = false
 
 
-    public fun addProject(project: Project) {
+    fun addProject(project: Project) {
         waitUntilAvailable()
         isAccessing = true
         projects.add(project)
@@ -37,7 +37,7 @@ public class OpenProjects {
     }
 
 
-    public fun getOpenProjectsAsArray(): Array<Project> {
+    fun getOpenProjectsAsArray(): Array<Project> {
         waitUntilAvailable()
         isAccessing = true
         val projectsArray = projects.toArray<Project>(arrayOfNulls<Project>(projects.size))
@@ -47,7 +47,7 @@ public class OpenProjects {
     }
 
 
-    public fun removeProject(project: Project) {
+    fun removeProject(project: Project) {
         waitUntilAvailable()
         isAccessing = true
         projects.remove(project)

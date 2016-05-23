@@ -1,6 +1,6 @@
 package com.ptby.dynamicreturntypeplugin.json
 
-public interface ProjectConfigChangeListener {
+interface ProjectConfigChangeListener {
 
-    public fun refreshAllConfigs()
+    fun refreshAllConfigs()
 }

@@ -4,12 +4,12 @@ import com.ptby.dynamicreturntypeplugin.config.multi.OpenProjects
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.json.FileSytemConfigChangeListener
 
-public class ConfigState {
+class ConfigState {
 
-    public val configAnalyser: ConfigAnalyser
+    val configAnalyser: ConfigAnalyser
 
     private val fileSytemConfigChangeListener: FileSytemConfigChangeListener
-    public val openProjects: OpenProjects
+    val openProjects: OpenProjects
 
 
     init {

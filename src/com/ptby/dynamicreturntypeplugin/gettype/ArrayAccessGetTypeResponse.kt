@@ -9,11 +9,11 @@ class ArrayAccessGetTypeResponse(private val isNull: Boolean,
                                  private val signature: String) : GetTypeResponse {
 
     companion object {
-        public fun createNull(): GetTypeResponse {
+        fun createNull(): GetTypeResponse {
             return ArrayAccessGetTypeResponse(true, "")
         }
 
-        public fun newArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
+        fun newArrayAccess(arrayAccessExpression: ArrayAccessExpression): GetTypeResponse {
             val attemptedSignature = attemptSignature(arrayAccessExpression)
                     ?: return createNull()
 

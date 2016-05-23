@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.ptby.dynamicreturntypeplugin.config.DynamicReturnTypeConfig
 import com.ptby.dynamicreturntypeplugin.json.JsonToDynamicReturnTypeConfigConverter
 
-public class ProjectConfigBuilder {
+class ProjectConfigBuilder {
 
     private val jsonToDynamicReturnTypeConfigConverter: JsonToDynamicReturnTypeConfigConverter
 
@@ -12,7 +12,7 @@ public class ProjectConfigBuilder {
         jsonToDynamicReturnTypeConfigConverter = JsonToDynamicReturnTypeConfigConverter()
     }
 
-    public fun createConfigFromFileList(configFiles: Collection<VirtualFile>): DynamicReturnTypeConfig {
+    fun createConfigFromFileList(configFiles: Collection<VirtualFile>): DynamicReturnTypeConfig {
         val dynamicReturnTypeConfig = DynamicReturnTypeConfig.newEmpty()
 
         for (configFile in configFiles) {

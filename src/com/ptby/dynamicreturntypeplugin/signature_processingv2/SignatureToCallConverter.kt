@@ -6,7 +6,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.withMethodCallPrefix
 
-public class SignatureToCallConverter {
+class SignatureToCallConverter {
 
     fun getCallFromSignature(phpIndex: PhpIndex, lastClassType: String, singleCall: String): ClassCall {
         val indexOfParameterStart = singleCall.indexOf(DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR)

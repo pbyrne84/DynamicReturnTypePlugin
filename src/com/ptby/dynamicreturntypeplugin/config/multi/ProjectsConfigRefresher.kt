@@ -6,7 +6,7 @@ import com.ptby.dynamicreturntypeplugin.file.FilenameSearchResultsListener
 import com.ptby.dynamicreturntypeplugin.file.FilenameSearcher
 import java.io.IOException
 
-public class ProjectsConfigRefresher {
+class ProjectsConfigRefresher {
 
     private val filenameSearcher: FilenameSearcher
     private val projectConfigBuilder: ProjectConfigBuilder
@@ -16,7 +16,7 @@ public class ProjectsConfigRefresher {
         projectConfigBuilder = ProjectConfigBuilder()
     }
 
-    public fun refreshProjects(projects: Array<Project>, refreshProjectCallBack: RefreshProjectCallBack) {
+    fun refreshProjects(projects: Array<Project>, refreshProjectCallBack: RefreshProjectCallBack) {
         for (project in projects) {
             val resultsListener = object : FilenameSearchResultsListener {
                 override fun respondToResults(virtualFilesByName: Collection<VirtualFile>) {

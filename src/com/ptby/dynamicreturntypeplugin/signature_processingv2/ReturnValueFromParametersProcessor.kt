@@ -12,7 +12,7 @@ import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSign
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 import java.util.*
 
-public class ReturnValueFromParametersProcessor(
+class ReturnValueFromParametersProcessor(
         private val customSignatureProcessor: CustomSignatureProcessor) {
 
     fun getMethodReturnValue(project: Project,

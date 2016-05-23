@@ -9,34 +9,34 @@ import com.ptby.dynamicreturntypeplugin.config.multi.OpenProjects
 import com.ptby.dynamicreturntypeplugin.config.multi.ProjectsConfigRefresher
 import com.ptby.dynamicreturntypeplugin.config.multi.RefreshProjectCallBack
 
-public class ConfigAnalyser(private val openProjects: OpenProjects) : ProjectConfigChangeListener,
+class ConfigAnalyser(private val openProjects: OpenProjects) : ProjectConfigChangeListener,
                                                                       RefreshProjectCallBack {
     private val projectDynamicReturnTypeMap = ProjectDynamicReturnTypeMap()
 
     private val openProjectsConfigRefresher = ProjectsConfigRefresher()
 
 
-    public fun getCurrentConfig(project: Project): DynamicReturnTypeConfig {
+    fun getCurrentConfig(project: Project): DynamicReturnTypeConfig {
         return projectDynamicReturnTypeMap.get(project)
     }
 
 
-    public fun hasArrayAccessEnabled(project: Project): Boolean {
+    fun hasArrayAccessEnabled(project: Project): Boolean {
         return getCurrentConfig(project).hasArrayAccessEnabled()
     }
 
 
-    public fun getCurrentClassMethodConfigs(project: Project): List<ClassMethodConfigKt> {
+    fun getCurrentClassMethodConfigs(project: Project): List<ClassMethodConfigKt> {
         return projectDynamicReturnTypeMap.get(project).classMethodConfigs
     }
 
 
-    public fun getCurrentFunctionCallConfigs(project: Project): List<FunctionCallConfigKt> {
+    fun getCurrentFunctionCallConfigs(project: Project): List<FunctionCallConfigKt> {
         return projectDynamicReturnTypeMap.get(project).functionCallConfigs
     }
 
 
-    public fun notifyProjectIsClosed(project: Project) {
+    fun notifyProjectIsClosed(project: Project) {
         projectDynamicReturnTypeMap.resetProject(project)
     }
 

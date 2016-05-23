@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
 
-data class ClassMethodConfigKt(public val fqnClassName: String,
+data class ClassMethodConfigKt(val fqnClassName: String,
                                private val mixedCaseMethodName: String,
                                private val parameterIndex: Int,
                                private val valueReplacementStrategy: ValueReplacementStrategy) : ParameterValueFormatter{
@@ -13,7 +13,7 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         this.methodName = mixedCaseMethodName.toLowerCase()
     }
 
-    public fun isArrayAccessConfig(): Boolean {
+    fun isArrayAccessConfig(): Boolean {
         return methodName == "offsetget"
     }
 
@@ -26,20 +26,20 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         return super.equals(other)
     }
 
-    public fun isValid(): Boolean {
+    fun isValid(): Boolean {
         return fqnClassName != "" && methodName != "" && parameterIndex != -1
     }
 
-    public fun methodCallMatches(actualFqnClassName: String, actualMethodName: String): Boolean {
+    fun methodCallMatches(actualFqnClassName: String, actualMethodName: String): Boolean {
         return fqnClassName == actualFqnClassName && equalsMethodName(actualMethodName)
     }
 
-    public fun equalsMethodName(currentMethodName: String): Boolean {
+    fun equalsMethodName(currentMethodName: String): Boolean {
         val lowerCaseCurrentMethodName = currentMethodName.toLowerCase()
         return lowerCaseCurrentMethodName == methodName
     }
 
-    public fun equalsMethodReferenceName(methodReference: MethodReference): Boolean {
+    fun equalsMethodReferenceName(methodReference: MethodReference): Boolean {
         val methodName = methodReference.name
         if( methodName == null ){
             return false
@@ -49,12 +49,12 @@ data class ClassMethodConfigKt(public val fqnClassName: String,
         return equalsMethodName(methodName)
     }
 
-    public fun equalsMethodReferenceName(methodName: String): Boolean {
+    fun equalsMethodReferenceName(methodName: String): Boolean {
         return equalsMethodName(methodName)
     }
 
 
-    override public fun formatBeforeLookup(project : Project, passedType: String?): String{
+    override fun formatBeforeLookup(project : Project, passedType: String?): String{
         val s = valueReplacementStrategy.replaceCalculatedValue(project, passedType)
         if( s == null ){
             return "";

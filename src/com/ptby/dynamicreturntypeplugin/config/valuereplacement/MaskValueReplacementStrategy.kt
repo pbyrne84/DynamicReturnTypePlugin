@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.ptby.dynamicreturntypeplugin.signature_extension.isPhpClassConstantSignature
 import com.ptby.dynamicreturntypeplugin.signature_extension.stripPhpClassConstantReference
 
-public class MaskValueReplacementStrategy(private val mask: String) : ValueReplacementStrategy {
+class MaskValueReplacementStrategy(private val mask: String) : ValueReplacementStrategy {
 
 
     override fun toString(): String {

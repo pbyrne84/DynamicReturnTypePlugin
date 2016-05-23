@@ -4,7 +4,7 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.mySplitBy
 import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassPrefix
 
-public class ParameterType(private val parameterType: String?) {
+class ParameterType(private val parameterType: String?) {
 
     override fun toString(): String {
         throw RuntimeException( "use toNullableString" )
