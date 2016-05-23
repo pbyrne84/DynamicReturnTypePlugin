@@ -1,5 +1,8 @@
 package com.ptby.dynamicreturntypeplugin.signature_extension
 
+import com.intellij.openapi.project.Project
+import com.jetbrains.php.PhpIndex
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.signatureconversion.SignatureMatcher
 
 fun String.removeClassConstantPrefix(): String = this.removePrefix("#K#C")
@@ -30,3 +33,4 @@ fun String.stripPhpClassConstantReference(): String {
 fun String.matchesPhpClassConstantSignature(): Boolean {
     return this.matches(SignatureMatcher.CLASS_CONSTANT_CALL_PATTERN)
 }
+

@@ -3,6 +3,7 @@ package com.ptby.dynamicreturntypeplugin.config
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
+import com.ptby.dynamicreturntypeplugin.signature_extension.parseParameter
 
 data class ClassMethodConfigKt(val fqnClassName: String,
                                private val mixedCaseMethodName: String,
@@ -55,7 +56,14 @@ data class ClassMethodConfigKt(val fqnClassName: String,
 
 
     override fun formatBeforeLookup(project : Project, passedType: String?): String{
-        val s = valueReplacementStrategy.replaceCalculatedValue(project, passedType)
+        if(passedType== null){
+            return ""
+        }
+
+        val lookedUpType=  passedType.parseParameter( project ) ?:
+                return ""
+
+        val s = valueReplacementStrategy.replaceCalculatedValue(project, lookedUpType)
         if( s == null ){
             return "";
         }

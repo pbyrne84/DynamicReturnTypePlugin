@@ -3,6 +3,7 @@ package com.ptby.dynamicreturntypeplugin.config
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.lang.psi.elements.FunctionReference
 import com.ptby.dynamicreturntypeplugin.config.valuereplacement.ValueReplacementStrategy
+import com.ptby.dynamicreturntypeplugin.signature_extension.parseParameter
 
 data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
                                 private val parameterIndex: Int,
@@ -26,7 +27,11 @@ data class FunctionCallConfigKt(private val mixedCasefunctionName: String,
         if(passedType== null){
             return ""
         }
-        return valueReplacementStrategy.replaceCalculatedValue(project, passedType).replace("\\\\", "\\")
+
+        val lookedUpType=  passedType.parseParameter( project ) ?:
+                return ""
+
+        return valueReplacementStrategy.replaceCalculatedValue(project, lookedUpType).replace("\\\\", "\\")
     }
 
 

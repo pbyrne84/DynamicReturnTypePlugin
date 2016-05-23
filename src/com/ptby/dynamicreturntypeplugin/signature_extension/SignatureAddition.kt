@@ -1,8 +1,10 @@
 package com.ptby.dynamicreturntypeplugin.signature_extension
 
+import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider.Companion.PARAMETER_START_SEPARATOR
+import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 
 fun String.withMethodCallPrefix(): String {
     return "#M#C" + this
@@ -55,5 +57,28 @@ fun String.getSignatureBeforeParameters(): String {
 }
 
 
+fun String.parseParameter(project: Project): String? {
+    val signatureToParse =
+            if ( this.startsWithMethodCallPrefix()) {
+                val index = PhpIndex.getInstance(project)
+                val bySignature = index.getBySignature(this)
+                if ( bySignature.size > 0) {
+                    bySignature.first().type.toString()
+                } else {
+                    ""
+                }
+            } else if ( !this.startsWithClassConstantPrefix() ) {
+                this
+            } else {
+                ClassConstantWalker().walkThroughConstants(project, this) ?:
+                        this
+            }
+
+    if( signatureToParse == "" ){
+        return null
+    }
+
+    return signatureToParse
+}
 
 

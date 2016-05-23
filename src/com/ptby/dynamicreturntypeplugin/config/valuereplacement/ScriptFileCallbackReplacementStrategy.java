@@ -123,7 +123,7 @@ public class ScriptFileCallbackReplacementStrategy implements ValueReplacementSt
             return currentValue;
         }
 
-        return scriptReplacementExecutor.executeAndReplace( project, currentValue );
+        return scriptReplacementExecutor.executeAndReplace( currentValue );
     }
 
 

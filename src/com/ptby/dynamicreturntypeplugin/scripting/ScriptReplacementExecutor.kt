@@ -4,12 +4,7 @@ package com.ptby.dynamicreturntypeplugin.scripting
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
-import com.intellij.openapi.project.Project
-import com.jetbrains.php.PhpIndex
-import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.scripting.api.ExecutingScriptApi
-import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
-import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithMethodCallPrefix
 import javax.script.Invocable
 import javax.script.ScriptException
 
@@ -17,7 +12,6 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
                                                                             val callableScriptConfiguration: CallableScriptConfiguration) {
     private val invocable: Invocable
     private val scriptSignatureParser: ScriptSignatureParser
-    private val classConstantWalker = ClassConstantWalker()
 
     init {
         val executingScriptApi = ExecutingScriptApi(this)
@@ -30,8 +24,8 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
     }
 
 
-    fun executeAndReplace(project: Project, currentValue: String): String {
-        val parsedSignature = parseSignature(project, currentValue)
+    fun executeAndReplace( currentValue: String): String {
+        val parsedSignature = scriptSignatureParser.parseSignature(currentValue)
                 ?: return ""
 
         try {
@@ -56,30 +50,6 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
         return ""
     }
 
-    private fun parseSignature(project: Project, currentValue: String): ParsedSignature? {
-
-        val signatureToParse =
-                if ( currentValue.startsWithMethodCallPrefix()) {
-                    val index = PhpIndex.getInstance(project)
-                    val bySignature = index.getBySignature(currentValue)
-                    if ( bySignature.size > 0){
-                        bySignature.first().type.toString()
-                    }else {
-                        ""
-                    }
-                } else if ( !currentValue.startsWithClassConstantPrefix() ) {
-                    currentValue
-                } else {
-                    classConstantWalker.walkThroughConstants(project, currentValue) ?:
-                            currentValue
-                }
-
-        if( signatureToParse == "" ){
-            return null
-        }
-
-        return scriptSignatureParser.parseSignature(signatureToParse)
-    }
 
 
     private fun createWarningNotification(message: String): Notification {
@@ -87,7 +57,7 @@ class ScriptReplacementExecutor @Throws(ScriptException::class) constructor(cust
     }
 
     companion object {
-        const  val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
-        const  val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
+        const val SCRIPT_LANGUAGE_JAVASCRIPT: String = "JavaScript"
+        const val SCRIPT_LANGUAGE_GROOVY: String = "groovy"
     }
 }
