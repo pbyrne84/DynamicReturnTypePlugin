@@ -7,6 +7,7 @@ import com.ptby.dynamicreturntypeplugin.callvalidator.MethodCallValidator
 import com.ptby.dynamicreturntypeplugin.config.ClassMethodConfigKt
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithFieldPrefix
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomMethodCallSignature
 
@@ -41,17 +42,19 @@ class VariableAnalyser(configAnalyser: ConfigAnalyser,
                     signature.desiredParameter
             )
 
-            return formatWithMask(phpIndex, classNameFromConstantLookup, project)
+            return lookupElements(phpIndex, classNameFromConstantLookup, project)
         }
 
-        return formatWithMask(phpIndex, signature.desiredParameter, project)
+        return lookupElements(phpIndex, signature.desiredParameter, project)
     }
 
 
-    private fun formatWithMask(phpIndex: PhpIndex, signature: String?, project: Project): Collection<PhpNamedElement>? {
+    private fun lookupElements(phpIndex: PhpIndex, signature: String?, project: Project): Collection<PhpNamedElement>? {
         val formattedSignature = signature ?: ""
 
-        if ( requiresListPackaging(formattedSignature)) {
+        if( formattedSignature.startsWithFieldPrefix() ){
+            return phpIndex.getBySignature(formattedSignature)
+        }else if ( requiresListPackaging(formattedSignature)) {
             return packageList(formattedSignature, project)
         }
 

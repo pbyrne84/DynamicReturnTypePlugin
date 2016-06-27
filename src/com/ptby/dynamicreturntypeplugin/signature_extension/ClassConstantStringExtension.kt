@@ -10,7 +10,14 @@ fun String.removeClassConstantPrefix(): String = this.removePrefix("#K#C")
 /**
  * All internal references for klass constants start with this signature
  */
-fun String.startsWithClassConstantPrefix(): Boolean = this.startsWith("#K#C")
+fun String.startsWithClassConstantPrefix(): Boolean  {
+    return this.startsWith("#K#C")
+}
+
+
+fun String.startsWithFieldPrefix() : Boolean {
+    return this.startsWith("#P#C")
+}
 
 fun String.removeClassConstantClassSuffix(): String = this.removeSuffix(".class")
 

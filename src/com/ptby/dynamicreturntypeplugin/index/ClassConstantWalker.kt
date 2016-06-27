@@ -6,10 +6,7 @@ import com.jetbrains.php.lang.psi.elements.ClassConstantReference
 import com.jetbrains.php.lang.psi.elements.ConstantReference
 import com.jetbrains.php.lang.psi.elements.StringLiteralExpression
 import com.jetbrains.php.lang.psi.elements.impl.FieldImpl
-import com.ptby.dynamicreturntypeplugin.signature_extension.isPhpClassConstantSignature
-import com.ptby.dynamicreturntypeplugin.signature_extension.removeClassConstantPrefix
-import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
-import com.ptby.dynamicreturntypeplugin.signature_extension.stripPhpClassConstantReference
+import com.ptby.dynamicreturntypeplugin.signature_extension.*
 
 class ClassConstantWalker {
 

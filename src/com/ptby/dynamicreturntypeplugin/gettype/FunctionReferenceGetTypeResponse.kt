@@ -77,7 +77,8 @@ open class FunctionReferenceGetTypeResponse protected constructor(private val is
         var index = 0
         for ( parameter in originalReference.parameters) {
             if ( parameter is PhpTypedElement ) {
-                parameters += parameterTypeCalculator.calculateTypeFromParameter(
+                parameters +=
+                        parameterTypeCalculator.calculateTypeFromParameter(
                         index,
                         originalReference.parameters).toNullableString() + DynamicReturnTypeProvider.PARAMETER_ITEM_SEPARATOR
             }

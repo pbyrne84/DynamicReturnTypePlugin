@@ -58,7 +58,6 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
         private val RETURN_INITIALISED_LOCAL_AND_STATIC_METHOD_CALL_PATTERN: Regex =
                 ("(((#M)+)#M#C.*):(.*)" + DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR + "(.*)").toRegex()
 
-
         private val METHOD_CALL_PATTERN: Regex =
                 ("(#M#C.*):(.*)"+ DynamicReturnTypeProvider.PARAMETER_START_SEPARATOR +"(.*)").toRegex()
 
@@ -67,7 +66,6 @@ import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 
          val STARTS_WITH_METHOD_CALL_PATTERN : Regex =
                 "#M((#.)*)#C(.*)".toRegex()
-
 
         //signature	#M#P#C\StaticPropertyDataProvider.user.getAccessToken
     }

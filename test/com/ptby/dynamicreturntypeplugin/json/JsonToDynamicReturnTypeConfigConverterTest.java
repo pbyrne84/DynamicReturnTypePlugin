@@ -18,7 +18,6 @@ public class JsonToDynamicReturnTypeConfigConverterTest {
     @Test
     public void testConvertJson() throws Exception {
 
-
         String json = "{\n" +
                 "    \"methodCalls\": [\n" +
                 "        {\n" +

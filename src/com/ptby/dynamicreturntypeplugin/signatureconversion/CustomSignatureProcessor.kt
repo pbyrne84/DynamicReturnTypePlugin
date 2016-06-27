@@ -8,6 +8,7 @@ import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 import com.ptby.dynamicreturntypeplugin.index.FieldReferenceAnalyzer
 import com.ptby.dynamicreturntypeplugin.index.ReturnInitialisedSignatureConverter
 import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
+import com.ptby.dynamicreturntypeplugin.signature_extension.startsWithClassConstantPrefix
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.ListReturnPackaging
 
 class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter,
@@ -37,7 +38,6 @@ class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: 
             )
             )
         } else if (signatureMatcher.verifySignatureIsFieldCall(processedCustomMethodCallSignature)) {
-
             return fieldReferenceAnalyzer.getClassNameFromFieldLookup(processedCustomMethodCallSignature, project)
         } else if (signatureMatcher.verifySignatureIsMethodCall(processedCustomMethodCallSignature)) {
             return variableAnalyser.getClassNameFromVariableLookup(processedCustomMethodCallSignature, project)
@@ -112,7 +112,7 @@ class CustomSignatureProcessor(private val returnInitialisedSignatureConverter: 
      */
     private fun cleanConstant(signature: String): String {
         var cleanedSignature = signature
-        if (cleanedSignature.indexOf("#K#C") == 0 && !cleanedSignature.contains("|?")) {
+        if (cleanedSignature.startsWithClassConstantPrefix() && !cleanedSignature.contains("|?")) {
             cleanedSignature += ".|?"
         }
         return cleanedSignature
