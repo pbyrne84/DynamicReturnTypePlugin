@@ -3,6 +3,8 @@ package com.ptby.dynamicreturntypeplugin.signature_extension
 import com.intellij.openapi.project.Project
 import com.jetbrains.php.PhpIndex
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider.Companion.PARAMETER_END_SEPARATOR
+import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider.Companion.PARAMETER_ITEM_SEPARATOR
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider.Companion.PARAMETER_START_SEPARATOR
 import com.ptby.dynamicreturntypeplugin.index.ClassConstantWalker
 
@@ -51,6 +53,11 @@ fun String.getParameterSection(): String {
     return substringAfter(PARAMETER_START_SEPARATOR)
 }
 
+
+fun String.cleanNestedSignatureMangling() : String {
+    //♣◮
+   return  this.replace(PARAMETER_END_SEPARATOR + PARAMETER_ITEM_SEPARATOR, PARAMETER_ITEM_SEPARATOR)
+}
 
 fun String.getSignatureBeforeParameters(): String {
     return substringBefore(PARAMETER_START_SEPARATOR)

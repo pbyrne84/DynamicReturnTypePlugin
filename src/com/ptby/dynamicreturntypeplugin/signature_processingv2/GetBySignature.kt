@@ -14,8 +14,7 @@ class GetBySignature(private val customSignatureProcessor: CustomSignatureProces
         val phpIndex = PhpIndex.getInstance(project)
         val currentConfig = configAnalyser.getCurrentConfig(project)
 
-        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor(
-                customSignatureProcessor)
+        val returnValueFromParametersProcessor = ReturnValueFromParametersProcessor( customSignatureProcessor)
 
         val chainedSignatureProcessor = ChainedSignatureProcessor(phpIndex,
                 currentConfig,

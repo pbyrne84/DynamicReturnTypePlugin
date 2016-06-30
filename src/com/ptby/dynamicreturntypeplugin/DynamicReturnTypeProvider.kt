@@ -16,6 +16,7 @@ import com.ptby.dynamicreturntypeplugin.index.VariableAnalyser
 import com.ptby.dynamicreturntypeplugin.json.ConfigAnalyser
 import com.ptby.dynamicreturntypeplugin.scanner.FunctionCallReturnTypeScanner
 import com.ptby.dynamicreturntypeplugin.scanner.MethodCallReturnTypeScanner
+import com.ptby.dynamicreturntypeplugin.signature_extension.cleanNestedSignatureMangling
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 
@@ -42,7 +43,7 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
         const val PLUGIN_IDENTIFIER_KEY: Char = '☘'
         const val PLUGIN_IDENTIFIER_KEY_STRING: String = "☘"
         const val PARAMETER_START_SEPARATOR: String = "ª"
-        const val PARAMETER_ITEM_SEPARATOR: String = "♠"
+        const val PARAMETER_ITEM_SEPARATOR: String = "◮"
         const val PARAMETER_END_SEPARATOR: String = "♣"
     }
 
@@ -91,7 +92,7 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
                 configAnalyser
         )
 
-        return getBySignature.getBySignature(signature, project)
+        return getBySignature.getBySignature(signature.cleanNestedSignatureMangling(), project)
     }
 
 
