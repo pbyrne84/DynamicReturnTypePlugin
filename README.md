@@ -23,7 +23,7 @@ released any further changes as currently I cannot guarantee quality of release.
 Anyway apologies if anyone has been effected and it seems like I am ignoring them :)
 
 
-### Example usage, if done right no errors will be evident and this like appendChild are automated refactor safe.
+### Example usage, if done right no errors will be evident and things like methods such appendChild are automated refactor safe across tests.
 ----
 1. Generic like calls to simulate Phockito ( PHP Mockito) verify calls that return the object passed in.
 eg. Phockito php example
