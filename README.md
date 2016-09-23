@@ -12,6 +12,7 @@ Note: Use fully qualified names.
 Example project
 https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment
 
+### Note about PhpTypeProvider3
 Currently the the PhpTypeProvider used has been deprecated. PhpTypeProvider3 has changed behaviour significantly and it  
 looks like for general use  it will be a lot better for other plugins, but it will require re-engineering the parts these 
 changes have effected, such as interop with Symfony plugin.
@@ -21,6 +22,8 @@ released any further changes as currently I cannot guarantee quality of release.
 
 Anyway apologies if anyone has been effected and it seems like I am ignoring them :)
 
+
+### Example usage, if done right no errors will be evident and this like appendChild are automated refactor safe.
 ----
 1. Generic like calls to simulate Phockito ( PHP Mockito) verify calls that return the object passed in.
 eg. Phockito php example
