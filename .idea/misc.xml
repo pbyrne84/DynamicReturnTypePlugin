@@ -143,7 +143,7 @@
   <component name="ProjectKey">
     <option name="state" value="https://github.com/pbyrne84/DynamicReturnTypePlugin.git" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IU-139.872.1" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA IC-123.72" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="RegexUtilComponent" text="#M#C\DynamicReturnTypePluginTestEnvironment\OverriddenReturnType\Phockito:mock:#C\DomDocument" flags="0" regex="((#M)?#C.*):(.*):(.*)" mode="0" />

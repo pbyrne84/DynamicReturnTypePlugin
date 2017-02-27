@@ -3,8 +3,12 @@ package com.ptby.dynamicreturntypeplugin
 import com.intellij.openapi.diagnostic.Logger.getInstance
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.Project
+import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
+import com.jetbrains.php.lang.parser.PhpElementTypes
+import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
+import com.jetbrains.php.lang.psi.elements.impl.ClassConstantReferenceImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
@@ -30,6 +34,7 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
     private val configAnalyser = configState.configAnalyser
 
     private var variableAnalyser: VariableAnalyser
+
     init {
         fieldReferenceAnalyzer = FieldReferenceAnalyzer(configAnalyser)
         classConstantWalker = ClassConstantWalker()
@@ -63,7 +68,7 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
     override fun getType(psiElement: PsiElement): String? {
         try {
-            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType( psiElement)
+            val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(psiElement)
             if (dynamicReturnType.isNull()) {
                 return null
             }
@@ -77,6 +82,18 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
         }
 
         return null
+    }
+
+
+    private fun debug(psiElement: PsiElement) {
+        if (PlatformPatterns.psiElement(PhpElementTypes.METHOD_REFERENCE).accepts(psiElement)) {
+            val methodRef = psiElement as MethodReference
+            if (methodRef.parameters.size == 1) {
+                val ref = methodRef.parameters[0] as ClassConstantReferenceImpl
+
+                println(ref.signature)
+            }
+        }
     }
 
     override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {

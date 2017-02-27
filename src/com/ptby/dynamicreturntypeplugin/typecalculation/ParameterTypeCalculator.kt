@@ -2,6 +2,7 @@ package com.ptby.dynamicreturntypeplugin.typecalculation
 
 import com.intellij.psi.PsiElement
 import com.jetbrains.php.lang.psi.elements.PhpTypedElement
+import com.jetbrains.php.lang.psi.elements.impl.ClassConstantReferenceImpl
 import com.jetbrains.php.lang.psi.resolve.types.PhpType
 import com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider
 import com.ptby.dynamicreturntypeplugin.signature_extension.matchesPhpClassConstantSignature
@@ -17,7 +18,10 @@ class ParameterTypeCalculator() {
             return ParameterType(null)
         }
         val element = parameters[parameterIndex]
-        if (element is PhpTypedElement) {
+
+        if( element is ClassConstantReferenceImpl){
+            return ParameterType( element.signature )
+        }else if (element is PhpTypedElement) {
             val elementType = (element).type
             if (elementType.toString() != "void") {
                 if (elementType.toString() == "string") {
