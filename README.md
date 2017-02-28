@@ -22,6 +22,11 @@ released any further changes as currently I cannot guarantee quality of release.
 
 Anyway apologies if anyone has been effected and it seems like I am ignoring them :)
 
+### Installing from zip in deploy
+download zip from 
+https://github.com/pbyrne84/DynamicReturnTypePlugin/blob/master/deploy/DynamicReturnTypePlugin.zip
+
+Delete original DynamicReturnTypePlugin folder in plugin directory and unzip new one in same location.
 
 ### Example usage, if done right no errors will be evident and things like methods such appendChild are automated refactor safe across tests.
 ----
