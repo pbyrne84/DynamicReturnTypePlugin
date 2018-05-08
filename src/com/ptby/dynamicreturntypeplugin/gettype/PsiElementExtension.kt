@@ -24,7 +24,7 @@ fun PsiElement.debugString(): String {
         }
         (this is Variable) -> {
             if (this.signature == "") {
-                OutCome("Variable", this.name + " - " + this.parent.debugString()).toString()
+                OutCome("Variable", this.name + " - " + this.parent!!.debugString()).toString()
 
             } else {
                 OutCome("Variable", this.name + " - " + this.signature).toString()

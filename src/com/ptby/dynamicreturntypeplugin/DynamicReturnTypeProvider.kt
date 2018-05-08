@@ -9,7 +9,8 @@ import com.jetbrains.php.lang.parser.PhpElementTypes
 import com.jetbrains.php.lang.psi.elements.MethodReference
 import com.jetbrains.php.lang.psi.elements.PhpNamedElement
 import com.jetbrains.php.lang.psi.elements.impl.ClassConstantReferenceImpl
-import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider2
+import com.jetbrains.php.lang.psi.resolve.types.PhpType
+import com.jetbrains.php.lang.psi.resolve.types.PhpTypeProvider3
 import com.ptby.dynamicreturntypeplugin.config.ConfigStateContainer
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponse
 import com.ptby.dynamicreturntypeplugin.gettype.GetTypeResponseFactory
@@ -24,7 +25,13 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.cleanNestedSignature
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 
-class DynamicReturnTypeProvider : PhpTypeProvider2 {
+class DynamicPhpType( signature: String ) : PhpType(){
+
+
+
+}
+
+class DynamicReturnTypeProvider : PhpTypeProvider3 {
     private val classConstantWalker: ClassConstantWalker
     private val getTypeResponseFactory: GetTypeResponseFactory
     private val returnInitialisedSignatureConverter: ReturnInitialisedSignatureConverter
@@ -66,14 +73,16 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
     }
 
 
-    override fun getType(psiElement: PsiElement): String? {
+    override fun getType(psiElement: PsiElement):  PhpType? {
+
+
         try {
             val dynamicReturnType: GetTypeResponse = getTypeResponseFactory.createDynamicReturnType(psiElement)
             if (dynamicReturnType.isNull()) {
                 return null
             }
 
-            return dynamicReturnType.getSignature()
+            return     PhpType.builder().add( "#" + this.key + dynamicReturnType.getSignature()).build()
         } catch (e: Exception) {
             if (e !is ProcessCanceledException) {
                 logger.error("Exception", e)
@@ -96,7 +105,7 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
         }
     }
 
-    override fun getBySignature(signature: String, project: Project): Collection<PhpNamedElement>? {
+    override fun getBySignature(signature :String, visited: MutableSet<String>?, depth: Int, project: Project): Collection< PhpNamedElement>? {
         val customSignatureProcessor = CustomSignatureProcessor(
                 returnInitialisedSignatureConverter,
                 classConstantWalker,
@@ -111,6 +120,8 @@ class DynamicReturnTypeProvider : PhpTypeProvider2 {
 
         return getBySignature.getBySignature(signature.cleanNestedSignatureMangling(), project)
     }
+
+
 
 
 }

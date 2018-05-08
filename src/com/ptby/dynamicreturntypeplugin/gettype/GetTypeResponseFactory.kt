@@ -24,7 +24,6 @@ class GetTypeResponseFactory(private val configAnalyser: ConfigAnalyser,
         return if( maybeArrayAccesResonse != null ){
             maybeArrayAccesResonse;
         }else{
-            println(psiElement.debugString())
             FunctionReferenceGetTypeResponse.createNull()
         }
 

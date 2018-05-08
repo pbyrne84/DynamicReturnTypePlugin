@@ -303,9 +303,9 @@
         <!-- Add your actions here -->
     </actions>
 
-    <extensions defaultExtensionNs="com.intellij">
+    <extensions defaultExtensionNs="com.jetbrains.php">
 <!--        <php.typeProvider implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>-->
-        <php.typeProvider2 implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>
+         <typeProvider3  implementation="com.ptby.dynamicreturntypeplugin.DynamicReturnTypeProvider"/>
     </extensions>
     <depends>com.jetbrains.php</depends>
     <depends>com.intellij.modules.platform</depends>
