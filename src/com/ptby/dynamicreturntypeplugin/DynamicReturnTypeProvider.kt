@@ -25,12 +25,6 @@ import com.ptby.dynamicreturntypeplugin.signature_extension.cleanNestedSignature
 import com.ptby.dynamicreturntypeplugin.signature_processingv2.GetBySignature
 import com.ptby.dynamicreturntypeplugin.signatureconversion.CustomSignatureProcessor
 
-class DynamicPhpType( signature: String ) : PhpType(){
-
-
-
-}
-
 class DynamicReturnTypeProvider : PhpTypeProvider3 {
     private val classConstantWalker: ClassConstantWalker
     private val getTypeResponseFactory: GetTypeResponseFactory
