@@ -6,29 +6,115 @@ DynamicReturnTypePlugin
 
 ( Jetbrains url https://plugins.jetbrains.com/plugin/7251 )
 
+## Migration notice
+
+A lot of this plugins functionality is now covered by PHPStorm itself
+
+[https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html](https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html)
+
+There is an example project here with some basic usage including using a mask so the string
+**\Dom** becomes **\DomDocument** etc.
+
+[https://github.com/pbyrne84/phpstorm-metadata-example](https://github.com/pbyrne84/phpstorm-metadata-example)
+
+There is also an example of using PHPDoc for simple cases where an instance or a ::class reference is
+being passed to something using the generic signature as exampled below :-
+
+[https://phpstan.org/blog/generics-in-php-using-phpdocs](https://phpstan.org/blog/generics-in-php-using-phpdocs)
+
+```php
+/**
+ * @template T
+ *
+ * @param T $a
+ *
+ * @return T
+ */
+function a($a) {
+    return $a;
+}
+```
+
+Truthfully if the concept of **::class** and the phpdoc syntax has both existed and were also supported by PHPStorm then I would not have written
+this plugin. I wanted a php version of Mockito as the generic way is works is IDE friendly. The passing the method name as a string
+is not very friendly even for experienced developers and I have the rule that the simpler tests the more complicated. 
+
+Ideally tests are simple but mocking with string method names and arrays for args massively increases the cognitive load and makes things
+harder to do test first easily. From my monkey handed experience there is a much greater chance of having to fix the mock code after
+the implementation code has been written meaning the implementation code is now being used as the source of truth. Really there is
+always a bidirectional relationship between code and test, the bias of being the truth should be heavily in the test.
+
+[https://github.com/pbyrne84/phpmockito](https://github.com/pbyrne84/phpmockito)
+
+There was a similar project but that used serialize which fatalled for certain things.
+
+For example this will hard error as SplFileInfo is not serializable :-
+```php
+echo serialize(new SplFileInfo("moo.txt"));
+```
+
+### Why I stopped supporting and why it fundamentally became unsupportable.
+
+1. The jvm was going to go through its third scriptengine change. There was rhino (https://github.com/mozilla/rhino) then 
+   Nashorn (https://www.oracle.com/technical-resources/articles/java/jf14-nashorn.html) and that will move to graalvm
+   (https://docs.oracle.com/en/graalvm/enterprise/20/docs/reference-manual/js/NashornMigrationGuide/). There was no documentation
+   for this at the time. I believe currently the scripting stuff is the only thing PHPStorm now cannot do natively meaning most of this
+   project is redundant.
+2. The internals of PHPStorm kept changing to accommodate support for the more magical methods of PHP. Libraries used __call a lot to
+   get around limitations of the language and to make PHPStorm play nice with what was created the internals had to fluctuate.
+   Internal changes meant random edge cases would break. There is this project  https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment which has
+   every edge case that so that when you rab inspections it should show no invalid method calls. When something was broken 
+   then I had to use the https://plugins.jetbrains.com/plugin/227-psiviewer plugin to try and work out how the signature was garbled. 
+   That is a not fun puzzle, more functionality, more edge cases more things broken. Not a case of if, but when.
+3. I stopped doing PHP, so I would never notice if it was broken in some way.
+
+#### Example internal signature
+
+This is fairly simple one of 2 generic methods, **mock** and **when**. The result of **mock** is being passed to **when** and then **__call**
+is being called on the returned *mock*. This signature is then used to give you autocomplete on the **__call** params.
+
+```
+signatureParts	[#M#π(#g#F\PHPMockito\EndToEnd\when)((#M#π(#g#F\PHPMockito\EndToEnd\mock)(\PHPMockito\TestClass\MagicMethodTestClass).__call)(#M#g#F\PHPMockito\EndToEnd\mock.__call)).thenReturn, #M#g#F\PHPMockito\EndToEnd\when.thenReturn]```
+```
+
+Do I know what it should look like, NO :) 
+Each call was a case of trial and error and why there is little unit testing and mostly end-to-end testing using inspections.
+
+Code for above signature:
+
+```php
+  $magicMethodTestClass = mock( MagicMethodTestClass::class );
+  $fullyActionedMethodCall =
+          when( $magicMethodTestClass->__call( 'magicMethodCall', array( 'testValue' ) ) )
+                  ->thenReturn( $magicMethodCallResult );
+```
+
+### Timeline for demise.
+
+The plugin currently uses **PHPTypeProvider3** which is deprecated, though **PhpTypeProvider2** still exists. When intellij upgrades
+its default JVM then the scripting engine stuff will just likely just fail with exceptions.
+
+### Thanks
+Thanks to everyone who used and liked this project, it is nice to be appreciated :)
+
+## Overview
+
 Intellij/Phpstorm PHP plugin to allow a dynamic return type from method/function calls. It can use either the instance type of the passed parameter or a string lookup.
 Note: Use fully qualified names.
 
 Example project
 https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment
 
-### Note about PhpTypeProvider3
-Currently the the PhpTypeProvider used has been deprecated. PhpTypeProvider3 has changed behaviour significantly and it  
-looks like for general use  it will be a lot better for other plugins, but it will require re-engineering the parts these 
-changes have effected, such as interop with Symfony plugin.
- 
-I am keeping an eye on this as I do not like having integration tests broken. This is also why I have not
-released any further changes as currently I cannot guarantee quality of release.
 
-Anyway apologies if anyone has been effected and it seems like I am ignoring them :)
 
-### Installing from zip in deploy
+## Installing from zip in deploy
 download zip from 
 https://github.com/pbyrne84/DynamicReturnTypePlugin/blob/master/deploy/DynamicReturnTypePlugin.zip
 
 Delete original DynamicReturnTypePlugin folder in plugin directory and unzip new one in same location.
 
-### Example usage, if done right no errors will be evident and things like methods such appendChild are automated refactor safe across tests.
+## Example usage, if done right no errors will be evident and things like methods such appendChild are automated refactor safe across tests.
+
 ----
 1. Generic like calls to simulate Phockito ( PHP Mockito) verify calls that return the object passed in.
 eg. Phockito php example
@@ -123,7 +209,7 @@ Optional Configuration
 ----------------------
 There are currently 2 return type manipulation strategies.
 
-### 1.Masks
+## 1.Masks
 These were the original replacement strategy but it has been found to be a rather limiting approach to the problem of frameworks containers expecting strings as parameters that do not easily match the final result without some string reduction/manipulation.
 
 It simply works by using String.format on the the result.
@@ -147,7 +233,7 @@ There was no easy way to solve changing 'Entity\User' into 'MyNameSpace\User' wi
 
 ### 2.Script engine calls
 
-#### NOTE: Script engine jar paths can now be set using IDEA_GROOVY_JAR_PATH and IDEA_JAVASCRIPT_JAR_PATH environment variables. IDEA_JAVASCRIPT_JAR_PATH is for the path to the nashorn.jar file for javascript in JDK8.
+### NOTE: Script engine jar paths can now be set using IDEA_GROOVY_JAR_PATH and IDEA_JAVASCRIPT_JAR_PATH environment variables. IDEA_JAVASCRIPT_JAR_PATH is for the path to the nashorn.jar file for javascript in JDK8.
 
 This allows custom code to be executed within the vm designed per consumer/framework. The 2 languages on offer are javascript via rhino and groovy if the groovy-all-2.2.1.jar is present in the ides lib folder. For interoperability between rhino and java the following reading is quite useful.
 
@@ -196,15 +282,15 @@ function replaceWithJavaScriptAliasing( returnTypeNameSpace, returnTypeClass ){
 }
 ```
 
-returnTypeNameSpace and returnTypeClass are separated before hand to ease manipulation within the function call. The returnTypeNameSpace trims the leading slash so \DomDocument is DomDocument.
+returnTypeNameSpace and returnTypeClass are separated beforehand to ease manipulation within the function call. The returnTypeNameSpace trims the leading slash so \DomDocument is DomDocument.
 
-#### Replacement callback file handling/compilation.
-The only restriction is the script file must be in the the same folder as its related dynamicReturnTypeMeta.json. This restriction may be lifted at some point but it adds complexity.
+### Replacement callback file handling/compilation.
+The only restriction is the script file must be in the same folder as its related dynamicReturnTypeMeta.json. This restriction may be lifted at some point but it adds complexity.
 
 Recompilation is triggered when a dynamicReturnTypeMeta.json is altered (say adding a space and pressing enter). This restriction will be removed now I can write compilation errors to the event log versus file log( basically compile on save will be offered).
 
 
-#### Api
+### Api
 A variable call api is injected into the script which allows communication back to the ide. This can be expanded on request.
 A javascript file that will offer completion can be found here :
 https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/ExecutingScriptApi.js
@@ -213,47 +299,11 @@ Example initialisation can be seen here at the top :
 https://github.com/pbyrne84/DynamicReturnTypePluginTestEnvironment/blob/master/JavaScriptReplacementCallback.js
 
 
-#### Debugging
+### Debugging
 ```js
 api.writeToEventLog("your message")
 ````
 
 Will write a message to the event log in the ide. Errors in your script will also appear here.
 
-
-### Notes/Todos
-Unfortunately I cannot offer array access as the open api would have to alias the key to the offsetGet call internally which would trigger this plugin to be called. It was mentioned here in the task that started it all :-
-http://youtrack.jetbrains.com/issue/WI-6027
-
-I do plan to add file handling to the api so you can talk to the virtual file system for basic tasks and I will also see if I can open up some completion provider methods through the javascript api.
-
-Currently IDEA_JAVASCRIPT_JAR_PATH is only for nashorn but rhino will be added for historical reasons.
-
-Any probs just give me a shout.
-
-
-
-### Easiest way to set up a the ide to play with the source code/develop a plugin relying on internal plugins.
-When a plugin JDK is setup it only includes default libraries of idea. A php plugin requires some of the following to
-compile.
-
-(I include all of them as they are in the same folder so proabably they are all needed)
- +   php-openapi.jar
- +   php.jar
- +   resources_en.jar
-
-On my machine I go to my plugin sdk classpaths and manually add the following
-
- + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/php-openapi.jar
- + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/php.jar
- + /opt/jetbrains/IntellijIdea15/config/plugins/php/lib/resources_en.jar
-
-As actually adding them to the lib directory in github will cause major problems with the internal class loader/pico
-container stuff. I put settings in non normal places so just do a file search.
-
-I also use gson and junit which on my machine is located at
- + /opt/jetbrains/idea-16/lib/junit-4.12.jar
- + /opt/jetbrains/idea-16/lib/gson-2.5.jar
-
-These are part of the default idea install. There are quite a few goodies floating around there not included by default.
-These are also pretty standard libraries so small chance of them being dropped.
+ 
