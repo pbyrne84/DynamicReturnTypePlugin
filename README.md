@@ -6,7 +6,7 @@ DynamicReturnTypePlugin
 
 ( Jetbrains url https://plugins.jetbrains.com/plugin/7251 )
 
-## Migration notice
+## Deprecation notice and migration tips
 
 A lot of this plugins functionality is now covered by PHPStorm itself
 
